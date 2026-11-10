@@ -150,6 +150,10 @@ ln --symbolic --verbose --relative scripts/commit-msg \
     "$(git rev-parse --git-path hooks)/commit-msg"
 ```
 
+`scripts/check.py` runs `check-style.sh` on each commit of a range, each
+in a worktree of its own and with that commit's own scripts. With no range
+it takes the commits since `upstream/main`, or `origin/main`.
+
 ## A second reader
 
 A pattern cannot tell whether a comment restates its code, or whether a

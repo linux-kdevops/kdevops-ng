@@ -36,8 +36,8 @@ as automating what needs root, stops and asks.
 
 ## Checks
 
-`scripts/check-style.sh` checks the tree and HEAD. Run it before a commit
-is reported as done.
+`scripts/check-style.sh` checks the tree and HEAD, and `scripts/check.py`
+each commit of a range. Run them before a commit is reported as done.
 
 ## Commits
 
