@@ -1,0 +1,142 @@
+.. SPDX-License-Identifier: copyleft-next-0.3.1
+
+============
+Requirements
+============
+
+kdevops-ng needs Linux with `systemd`_ 258 or later, and `Git`_ to clone
+it. A task
+calls every other tool by its name, and the host's distribution provides
+it.
+
+Distributions
+=============
+
+Three are supported: `Debian`_ testing, `Fedora`_ Rawhide and the
+development release of `Ubuntu`_.
+
+Root installs the packages, once. Nothing in kdevops-ng runs :cmd:`sudo`:
+each list is a command for you to run.
+
+.. tab-set::
+   :sync-group: distro
+
+   .. tab-item:: Debian
+      :sync: debian
+
+      .. code-block:: console
+
+         $ sudo apt install git
+
+   .. tab-item:: Fedora
+      :sync: fedora
+
+      .. code-block:: console
+
+         $ sudo dnf install git
+
+   .. tab-item:: Ubuntu
+      :sync: ubuntu
+
+      .. code-block:: console
+
+         $ sudo apt install git
+
+.. _requirements-units:
+
+The units' settings
+===================
+
+A task runs its tool as a unit of your service manager. Where the unit
+runs, what it may write and what files its record are drop-ins kdevops-ng
+ships. Link them once, from the checkout, where your service manager looks
+for a user's units:
+
+.. code-block:: console
+
+   $ mkdir --parents --verbose ~/.local/share/systemd/user
+   $ ln --symbolic --verbose --target-directory ~/.local/share/systemd/user \
+       "$PWD"/units/user/*.d
+   $ systemctl --user daemon-reload
+
+.. _requirements-journal:
+
+The journal
+===========
+
+A task runs its tool as a unit of your service manager, and what the tool
+printed is read back from your own journal. journald keeps a journal for
+each user only while it stores on disk, under ``/var/log/journal``. Every
+distribution here sets that up, so most hosts need nothing. Check that
+yours has the file:
+
+.. code-block:: console
+
+   $ ls /var/log/journal/*/user-"$(id --user)".journal
+
+If it is missing, the journal is still in memory, under ``/run``. Root
+moves it to disk, once there is room on ``/var``:
+
+.. code-block:: console
+
+   $ sudo mkdir --parents --verbose /var/log/journal
+   $ sudo journalctl --flush
+
+Your own journal needs no group. To read the system's too, as
+:cmd:`journalctl` does without ``--user``, join ``systemd-journal`` and log
+in again:
+
+.. code-block:: console
+
+   $ sudo usermod --append --groups systemd-journal "$(whoami)"
+
+.. _requirements-io:
+
+I/O accounting
+==============
+
+A :doc:`record </records>` says how much a run read and wrote where your
+service manager accounts for I/O. systemd gives a user's service manager
+the ``cpu``, ``memory`` and ``pids`` controllers only. Root adds ``io``,
+once, and it holds from your next login:
+
+.. code-block:: console
+
+   $ sudo mkdir --parents --verbose /etc/systemd/system/user@.service.d
+
+.. code-block:: ini
+   :caption: /etc/systemd/system/user@.service.d/delegate.conf
+
+   [Service]
+   Delegate=pids memory cpu io
+
+.. code-block:: console
+
+   $ sudo systemctl daemon-reload
+
+Check that your service manager has it:
+
+.. code-block:: console
+
+   $ cat "/sys/fs/cgroup/user.slice/user-$UID.slice/user@$UID.service/cgroup.controllers"
+   cpu io memory pids
+
+Without it a record leaves those figures out. systemd accounts for
+network traffic in system services only, so no record has it.
+
+What each part needs
+====================
+
+Each part of kdevops-ng lists its own tools, on its page:
+
+- :ref:`The kernel tasks <requirements-kernel>`: make and a compiler.
+- :ref:`Records <requirements-records>`: kresults' :cmd:`krecord`, and a
+  name for your lab.
+- :ref:`A change to kdevops-ng <requirements-contributing>`: the checks,
+  and Sphinx for these pages.
+
+.. _Debian: https://www.debian.org/releases/testing/
+.. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
+.. _Git: https://git-scm.com
+.. _systemd: https://systemd.io
+.. _Ubuntu: https://wiki.ubuntu.com/Releases

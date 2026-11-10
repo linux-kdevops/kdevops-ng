@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
 # Style and commit-message checks, run from the top of the checkout
-# (designs/writing.md, "The checks"). LICENSES/ stays byte for byte, so it
-# is exempt.
+# (designs/writing.md, "The checks"). LICENSES/ stays byte for byte and the
+# images are binary, so both are exempt.
 set -o errexit -o nounset -o pipefail
 
-scope=(-- . ':!LICENSES')
+scope=(-- . ':!LICENSES' ':!*.png' ':!*.ico')
 status=0
 here="$(dirname "${BASH_SOURCE[0]}")"
 

@@ -14,27 +14,11 @@ tied to no engine.
 everything follows, and [designs/tasks.md](designs/tasks.md) draws the
 lines between a tool, a task and a workflow.
 
-## Tasks
+## Documentation
 
-A task runs by hand, and `--help` prints what it takes:
-
-```sh
-tasks/kernel/kconfig --directory ~/linux --target tinyconfig
-tasks/kernel/build --directory ~/linux
-```
-
-The two build a Linux tree with the host's `make` and compiler, in
-`build/` of the tree, and change no file the tree tracks. `ARCH` and
-`LLVM` are kbuild's own and come from the environment.
-
-With a lab named once, each task files what its tool reported as a
-[kresults](https://github.com/linux-kdevops/kresults) record under
-`~/.local/state/kdevops-ng/records`:
-
-```sh
-git config --global kresults.origin my-lab
-tasks/kernel/build --directory ~/linux
-```
+The documentation starts at [docs/index.rst](docs/index.rst): what a host
+needs, a quick start that builds a kernel, the tasks, and the records they
+file. `scripts/docs` renders it and `scripts/serve` serves it.
 
 ## Contributing
 

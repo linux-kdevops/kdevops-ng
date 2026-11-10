@@ -113,6 +113,25 @@ A page starts with its SPDX line, wraps its prose at 80 columns, and
 states each fact once: a second page that needs the fact links to the
 first.
 
+`docs/` says what exists, for whoever uses kdevops-ng. Its pages are
+reStructuredText, built with Sphinx (`scripts/docs`, which fails on a
+warning):
+
+- Headings take the kernel's adornments: `=` with an overline for the
+  title, `=` for chapters and `-` for sections, in sentence case.
+- Commands go in a `.. code-block:: console`, each after a `$` prompt, and
+  a literal in double backticks.
+- A command that installs a file or a directory, as `ln`, `mkdir` or `cp`
+  does, takes `--verbose`, so its output shows what it installed.
+- A file the reader writes is a code block of its content, captioned with
+  its path, which a button copies. No command that prints a file or pipes
+  text into one stands for it.
+- A command is linked with the `:cmd:` role, which takes its manual from
+  the `cmd_links` table of `docs/conf.py`, and a path of this repository
+  with `:src:`. An unknown command or a missing path fails the build.
+- Another page is linked with `:doc:` and a labelled section with `:ref:`,
+  never by its path.
+
 ## The checks
 
 `scripts/check-prose.py` refuses the phrasing these maintainers almost

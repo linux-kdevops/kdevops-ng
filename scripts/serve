@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: scripts/serve [--port PORT]
+##
+## Serve the documentation on 127.0.0.1, port 8001 unless PORT is given,
+## and render it again each time a page is saved
+## (docs/contributing/index.rst, "Documentation"):
+##
+##   scripts/serve --port 8002
+. "$(dirname "$0")/../tasks/common/task"
+[ $# -eq 0 ] || { [ $# -eq 2 ] && [ "$1" = --port ]; } || usage
+port=${2:-8001}
+docs=$(dirname "$0")/../docs
+
+transcript
+sphinx-autobuild --write-all "$docs" "$docs/_build/html" --host 127.0.0.1 \
+	--port "$port"
