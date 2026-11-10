@@ -53,14 +53,14 @@ an argument array, and never a function that runs the tool for it.
 A task is `tasks/<subsystem>/<name>`, the subsystem being what its tasks
 work on. The name is a verb where the tool's name does not say what is
 asked, `tasks/kernel/build`, and the tool's own name where its verdict is
-what is asked, `tasks/kernel/sparse`, with the mode where one tool runs
-two ways, `tasks/kernel/checkpatch_strict`. No directory is made up to
-sort tasks, as `check/` would be.
+what is asked, `tasks/kernel/sparse`. No directory is made up to sort
+tasks, as `check/` would be.
 
 ### T3. A task binds what a developer would have to look up
 
 Its caller says what to work on, never how: no flag of the tool, no place
-to work in, no number of jobs.
+to work in, no number of jobs. Where a tool runs two ways the task takes
+one, as `checkpatch.pl` runs with `--strict`.
 
 ### T4. One goal, and it reruns alone
 
@@ -68,7 +68,9 @@ A task is split where a developer would rerun one part and not the other.
 After it fails, a developer fixes the cause and runs that task again,
 alone, so a task reaches its goal from whatever an earlier run of it left.
 A test that makes the second run safe, as adding a worktree only where it
-is missing, is no choice of method (T5).
+is missing, is no choice of method (T5). A task that checks object files
+takes one each time, so each object has its verdict and is checked again
+alone.
 
 ### T5. The workflow loops, retries and chooses
 
@@ -186,11 +188,6 @@ another.
 Check each changed task against T1 to T5, I1 to I3 and O1, and each
 changed workflow against W1 to W3 and E1. A finding names the rule, the
 file and line, what fails, and the smaller design.
-
-## 7. Open decisions
-
-- Whether a check takes one object file or the list `make` can take (T5),
-  which sets how many times kbuild starts for a series.
 
 [Dagu]: https://github.com/dagucloud/dagu
 [kdevops]: https://github.com/linux-kdevops/kdevops
