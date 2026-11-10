@@ -138,10 +138,12 @@ checked is that engine's way (section 5).
   its tool. Its usage line shows the one form it accepts. `--help` prints
   the usage, and arguments of any other form print it and fail.
 - I2. A task takes from the environment only what exists without
-  kdevops-ng. One kind is a variable its tool reads that says what to
-  build or check, under the tool's name, as kbuild reads `ARCH` and
-  `LLVM`; the log names each one that is set. The other is what every
-  program is given: `HOME`, `TMPDIR` and XDG's directories.
+  kdevops-ng. One kind is a variable its tool reads
+  that says what to build or check, under the tool's name, as kbuild reads
+  `ARCH` and `LLVM`. The task sets no default for it: unset, the tool's
+  own default holds, as GCC does without `LLVM`, and the log names each
+  one that is set. The other kind is what every program is given: `HOME`,
+  `TMPDIR` and XDG's directories.
 - I3. A task takes nothing else: no JSON, no file of settings, no variable
   of an engine's.
 - O1. A task that reports facts prints them as `name=value` lines, to the
@@ -187,12 +189,6 @@ file and line, what fails, and the smaller design.
 
 ## 7. Open decisions
 
-- What a task run by hand does where a tool's variable is unset and a
-  workflow's default differs from the tool's own, as clang differs from
-  kbuild's GCC: the tool's default, or one the task sets. It is decided
-  with the first task whose tool has such a variable.
-- How a task learns which run it records for, when it reads no variable of
-  an engine's (I3).
 - Whether a check takes one object file or the list `make` can take (T5),
   which sets how many times kbuild starts for a series.
 
