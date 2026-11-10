@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+line-length = 88
+target-version = "py311"
+
+[lint]
+select = ["ALL"]
+ignore = [
+    # black places the trailing commas.
+    "COM812",
+    # A file names its licence in an SPDX line, and carries no copyright
+    # notice.
+    "CPY001",
+    # scripts/ and tests/ hold programs, not packages.
+    "INP001",
+    # A script is named as the command it is, with a hyphen.
+    "N999",
+    # A tool is run by its name from PATH (designs/principles.md, 2).
+    "S607",
+    # Every command line is built from the scripts' own constants and from
+    # what git prints, and none goes through a shell.
+    "S603",
+    # The scripts are commands, and their report goes to standard output.
+    "T201",
+]
+
+[lint.per-file-ignores]
+"tests/*" = [
+    # A test's name says what it tests.
+    "D102",
+    # The tests are unittest's, as the standard library is all they use.
+    "PT",
+]
+
+[lint.pydocstyle]
+convention = "pep257"

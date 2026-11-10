@@ -113,9 +113,33 @@ A page starts with its SPDX line, wraps its prose at 80 columns, and
 states each fact once: a second page that needs the fact links to the
 first.
 
+## The checks
+
+`scripts/check-prose.py` refuses the phrasing these maintainers almost
+never write. The script holds the patterns and the rates measured for
+them. It reads a commit message (`--message`), a commit's message with the
+prose the commit adds (`--commit`), or whole files (`--file`). Prose is a
+Markdown or reStructuredText file outside its code blocks, and the
+comments and docstrings of code. By kind:
+
+- Refused: the vocabulary of generated text, the patch or commit as the
+  subject of a sentence, en and em dashes, filler openers and summary
+  headings, a list in a commit body, and, in comments, history words and
+  lines that only name an increment or decrement.
+- Warned: inflated words, connective openers, padding such as a long way
+  of saying "to", and, in comments, openers that restate the code or
+  describe "this function" or a "helper". A warning prints and passes; a
+  maintainer writes these now and then.
+
+Some words stay off the list on purpose: robust, utilize, various and
+properly appear in maintainer commits as often as anywhere else, so
+refusing them would refuse good writing.
+
 ## A second reader
 
-A writer reviewing their own draft cuts less than a second reader does, so
+A pattern cannot tell whether a comment restates its code, or whether a
+body gives the problem before the fix. That takes a reader. A writer
+reviewing their own draft cuts less than a second reader does, so
 for anything longer than a few lines, give the draft to a reader who did
 not write it: a colleague, or a model in a fresh context. Hand it this
 page, the draft, the diff, and this brief:
