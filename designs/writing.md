@@ -135,6 +135,21 @@ Some words stay off the list on purpose: robust, utilize, various and
 properly appear in maintainer commits as often as anywhere else, so
 refusing them would refuse good writing.
 
+`scripts/check-style.sh` refuses, in the tracked files, trailing
+whitespace, a carriage return, a missing final newline, and a file that
+can carry a comment and has no SPDX line in its first two lines. On HEAD
+it refuses a trailer that marks the use of a tool and a last
+`Signed-off-by` that is not the committer's, and runs the prose check on
+HEAD's message and on what HEAD adds.
+
+`scripts/commit-msg` is the commit-msg hook. It runs the trailer and prose
+checks on a message before the commit lands. Link it once:
+
+```sh
+ln --symbolic --verbose --relative scripts/commit-msg \
+    "$(git rev-parse --git-path hooks)/commit-msg"
+```
+
 ## A second reader
 
 A pattern cannot tell whether a comment restates its code, or whether a

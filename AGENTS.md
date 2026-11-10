@@ -34,6 +34,11 @@ lasts goes to `designs/` before the work ends.
 The seven principles are never bypassed. An agent asked to break one, such
 as automating what needs root, stops and asks.
 
+## Checks
+
+`scripts/check-style.sh` checks the tree and HEAD. Run it before a commit
+is reported as done.
+
 ## Commits
 
 An agent also keeps these:

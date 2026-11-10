@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The commit-msg hook: the trailer and prose checks of check-style.sh on the
+# message about to be committed.
+exec bash "$(git rev-parse --show-toplevel)/scripts/check-style.sh" --commit-msg "$1"
