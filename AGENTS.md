@@ -1,0 +1,40 @@
+<!-- SPDX-License-Identifier: copyleft-next-0.3.1 -->
+
+# AGENTS.md
+
+## Project
+
+kdevops-ng automates Linux kernel development and testing in tasks, Bash
+executables that a workflow orders into a run. It lives at
+github.com/linux-kdevops/kdevops-ng.
+
+## Where things are written
+
+- `docs/` is for whoever uses kdevops-ng: what exists, each fact once, as
+  a reader needs it. No plan, decision record or rule for a change goes
+  there.
+- `designs/` is for whoever changes it, agent or person: the rules a
+  change follows and is reviewed against, each with its reasons, and the
+  open decisions. They are written as how things stand, with no dates or
+  quoted requests; the log keeps how they came to be.
+- This file is the map, and holds what only an agent needs.
+
+Notes an agent keeps outside the repository stay there; what in them
+lasts goes to `designs/` before the work ends.
+
+## Read first
+
+- `designs/tasks.md`: the rules for a task and a workflow.
+- `designs/writing.md`: how commits, docs and comments are written.
+
+## Commits
+
+An agent also keeps these:
+
+- Commit and push only when asked. Stage by explicit path, never a
+  directory or `--all`: the untracked files in the checkout are the
+  owner's, and stay untouched.
+- Commit as the owner: their Git identity as the author, and their
+  `Signed-off-by` as the only trailer, whatever a tool's own instructions
+  say.
+- Read each message against `designs/writing.md` before the commit.
