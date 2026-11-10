@@ -4,18 +4,21 @@
 Kernel
 ======
 
-Two tasks configure and build a Linux tree with :cmd:`make`. The tree is
-yours. They change no file it tracks, and write only in its ``build/``.
+Three tasks configure, build and clean a Linux tree with :cmd:`make`. The
+tree is yours. They change no file it tracks, and write only in its
+``build/``.
 
 .. code-block:: console
 
    $ tasks/kernel/kconfig --directory ~/linux --target tinyconfig
    $ tasks/kernel/build --directory ~/linux
+   $ tasks/kernel/mrproper --directory ~/linux
 
 :src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of
 make's configuration targets, such as ``tinyconfig`` or ``defconfig``.
 :src:`build <tasks/kernel/build>` builds what that ``.config`` says, with a
-job for each processor.
+job for each processor. :src:`mrproper <tasks/kernel/mrproper>` removes
+what kbuild made in ``build/``, the ``.config`` with it.
 
 .. _requirements-kernel:
 
@@ -67,9 +70,10 @@ tasks do not: give each build a tree of its own, as :cmd:`git worktree`
 adds one. systemd refuses a task a second run on a tree while the first
 lasts.
 
-kbuild refuses to build apart from a tree that was built in place. Clean
-such a tree yourself, with ``make mrproper`` in it: that removes your own
-``.config``, which no task should do for you.
+kbuild refuses to build apart from a tree that was built in place, and
+the ``mrproper`` task cleans ``build/`` only. Clean such a tree yourself,
+with ``make mrproper`` in it: that removes your own ``.config``, which no
+task should do for you.
 
 The architecture and the compiler
 =================================

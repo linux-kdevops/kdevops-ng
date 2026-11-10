@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/mrproper --directory DIR
+##
+## Remove what kbuild made in build/ of the Linux tree in DIR, its .config
+## included:
+##
+##   tasks/kernel/mrproper --directory ~/linux
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/kbuild"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+mkdir --parents --verbose "$build"
+"${unit[@]}" "${make[@]}" mrproper
+rm --force --verbose "$build/.config.name"
