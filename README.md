@@ -8,8 +8,11 @@ a kernel developer from a tree to test results in a few commands.
 
 A tool such as `make` or `git` does the work. A task, a Bash executable,
 runs the commands a developer would type to reach one goal. A workflow
-orders the tasks, and an engine runs it.
-[designs/tasks.md](designs/tasks.md) draws the lines between the three.
+orders the tasks, in the language of the engine that runs it; the tasks are
+tied to no engine.
+[designs/principles.md](designs/principles.md) holds the seven rules
+everything follows, and [designs/tasks.md](designs/tasks.md) draws the
+lines between a tool, a task and a workflow.
 
 Patches go to <kdevops@lists.linux.dev>, written as
 [designs/writing.md](designs/writing.md) asks. `AGENTS.md` is the map for

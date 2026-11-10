@@ -24,8 +24,15 @@ lasts goes to `designs/` before the work ends.
 
 ## Read first
 
-- `designs/tasks.md`: the rules for a task and a workflow.
+- `designs/principles.md`: the seven rules everything follows, with the
+  reasons.
+- `designs/tasks.md`: the rules for a task, a workflow and an engine.
 - `designs/writing.md`: how commits, docs and comments are written.
+
+## Principles
+
+The seven principles are never bypassed. An agent asked to break one, such
+as automating what needs root, stops and asks.
 
 ## Commits
 
