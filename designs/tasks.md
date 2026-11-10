@@ -20,10 +20,11 @@ The tool works, the task binds, the workflow decides.
   one engine, in that engine's language, and is that engine's own (section
   5).
 
-A run is one execution of a workflow. A place is a directory a task works
-in, such as a worktree or a build directory. A file or a tree that a task
-works on is not a place, whatever its path. An engine's own words name
-only that engine's things, as "DAG" and "step" are Dagu's.
+`docs/terms.rst` defines the words these rules use, and the ones to
+avoid. A place is a directory a task works in, such as a worktree or a
+build directory. A file or a tree that a task works on is not a place,
+whatever its path. An engine's own words name only that engine's things,
+as "DAG" and "step" are Dagu's.
 
 [kdevops] is written in Ansible, whose layers map as:
 

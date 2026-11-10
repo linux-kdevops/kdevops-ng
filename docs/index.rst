@@ -22,4 +22,5 @@ Community
    getting-started/index
    tasks/index
    records
+   terms
    contributing/index

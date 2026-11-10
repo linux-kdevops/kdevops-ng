@@ -28,6 +28,8 @@ lasts goes to `designs/` before the work ends.
   reasons.
 - `designs/tasks.md`: the rules for a task, a workflow and an engine.
 - `designs/writing.md`: how commits, docs and comments are written.
+- `docs/terms.rst`: the glossary. Use its terms, and none of the words it
+  lists to avoid.
 
 ## Principles
 
