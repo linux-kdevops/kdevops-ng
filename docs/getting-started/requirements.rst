@@ -12,8 +12,34 @@ it.
 Distributions
 =============
 
-Three are supported: `Debian`_ testing, `Fedora`_ Rawhide and the
-development release of `Ubuntu`_.
+Four are supported: `Debian`_ testing, `Fedora`_ Rawhide, the development
+release of `Ubuntu`_, and `Nix`_ with nixpkgs' unstable branch. Nix is the
+preferred one, for reproducibility: it pins every tool, so two hosts run
+the same build of each, and a :doc:`record </records>` names that build.
+
+Nix
+---
+
+The flake stands for every package list of these pages. In the checkout,
+one command opens a shell with all the tools:
+
+.. code-block:: console
+
+   $ nix develop
+
+It needs the :cmd:`nix` command and flakes enabled, once:
+
+.. code-block:: console
+
+   $ mkdir --parents --verbose ~/.config/nix
+
+.. code-block:: ini
+   :caption: ~/.config/nix/nix.conf
+
+   experimental-features = nix-command flakes
+
+Debian, Fedora and Ubuntu
+-------------------------
 
 Root installs the packages, once. Nothing in kdevops-ng runs :cmd:`sudo`:
 each list is a command for you to run.
@@ -138,5 +164,6 @@ Each part of kdevops-ng lists its own tools, on its page:
 .. _Debian: https://www.debian.org/releases/testing/
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com
+.. _Nix: https://nixos.org
 .. _systemd: https://systemd.io
 .. _Ubuntu: https://wiki.ubuntu.com/Releases

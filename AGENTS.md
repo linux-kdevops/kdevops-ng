@@ -38,7 +38,9 @@ as automating what needs root, stops and asks.
 
 `scripts/check-style.sh` checks the tree and HEAD, and `scripts/check.py`
 each commit of a range. `scripts/docs` builds the pages of `docs/` with
-their warnings as errors. Run them before a commit is reported as done.
+their warnings as errors. `nix flake check` runs the linters, the tests
+and that build with the flake's pinned tools. Run them before a commit is
+reported as done.
 
 ## Commits
 

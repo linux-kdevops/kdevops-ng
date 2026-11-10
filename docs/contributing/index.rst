@@ -55,7 +55,7 @@ held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
              python3-sphinx-autobuild python3-doc8
 
 None of the three packages pyright. Fedora has no shfmt and no doc8, and
-Ubuntu no ruff.
+Ubuntu no ruff. The Nix shell has them all.
 
 Checks
 ======
@@ -67,6 +67,13 @@ Three scripts hold a change to those rules:
    $ scripts/check-style.sh       # the tree and the last commit
    $ scripts/check.py             # each commit of a range
    $ python3 -m unittest discover --start-directory tests
+
+With Nix, one command runs the linters, the tests and the build of these
+pages, each with the flake's pinned tools:
+
+.. code-block:: console
+
+   $ nix flake check
 
 :src:`scripts/commit-msg` runs the checks of a message as the commit-msg
 hook. Link it once:
