@@ -4,8 +4,8 @@
 
 A change to a task or a workflow is reviewed against these rules, and a
 finding cites one by its number. No workflow exists yet, and of the tasks
-named below only `tasks/kernel/kconfig` does: the other names show the
-form.
+named below only `tasks/kernel/kconfig` and `tasks/kernel/build` do: the
+other names show the form.
 
 ## 1. Three layers
 

@@ -20,10 +20,11 @@ A task runs by hand, and `--help` prints what it takes:
 
 ```sh
 tasks/kernel/kconfig --directory ~/linux --target tinyconfig
+tasks/kernel/build --directory ~/linux
 ```
 
-It configures a Linux tree with the host's `make` and compiler, in
-`build/` of the tree, and changes no file the tree tracks. `ARCH` and
+The two build a Linux tree with the host's `make` and compiler, in
+`build/` of the tree, and change no file the tree tracks. `ARCH` and
 `LLVM` are kbuild's own and come from the environment.
 
 ## Contributing

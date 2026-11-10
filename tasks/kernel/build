@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/build --directory DIR
+##
+## Build the Linux tree in DIR, in its build/, as the .config there says:
+##
+##   tasks/kernel/build --directory ~/linux
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/kbuild"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+mkdir --parents --verbose "$build"
+"${unit[@]}" "${make[@]}"
