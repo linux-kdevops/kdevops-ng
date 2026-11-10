@@ -1,0 +1,11 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The build of the Linux tree in $directory: $build, build/ of the tree,
+# where kbuild keeps what it makes apart from the sources. $make is the
+# make every kernel task runs in the tree, and $variables kbuild's own that
+# say what it builds.
+: "${directory:?}"
+directory=$(realpath "$directory")
+build=$directory/build
+variables=(ARCH LLVM)
+make=(make O=build --jobs="$(nproc)")

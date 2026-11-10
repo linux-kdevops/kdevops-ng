@@ -14,6 +14,20 @@ tied to no engine.
 everything follows, and [designs/tasks.md](designs/tasks.md) draws the
 lines between a tool, a task and a workflow.
 
+## Tasks
+
+A task runs by hand, and `--help` prints what it takes:
+
+```sh
+tasks/kernel/kconfig --directory ~/linux --target tinyconfig
+```
+
+It configures a Linux tree with the host's `make` and compiler, in
+`build/` of the tree, and changes no file the tree tracks. `ARCH` and
+`LLVM` are kbuild's own and come from the environment.
+
+## Contributing
+
 Patches go to <kdevops@lists.linux.dev>, written as
 [designs/writing.md](designs/writing.md) asks. `AGENTS.md` is the map for
 agents.

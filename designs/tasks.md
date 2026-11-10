@@ -3,8 +3,9 @@
 # Tools, tasks and workflows
 
 A change to a task or a workflow is reviewed against these rules, and a
-finding cites one by its number. No task or workflow exists yet: the names
-below show the form.
+finding cites one by its number. No workflow exists yet, and of the tasks
+named below only `tasks/kernel/kconfig` does: the other names show the
+form.
 
 ## 1. Three layers
 
@@ -183,11 +184,71 @@ and any number can be supported at once: the tasks are the same for all.
 The first engine is [Dagu]. Ansible, a Bash script or a CI system can be
 another.
 
-## 6. Review
+## 6. Writing a task
 
-Check each changed task against T1 to T5, I1 to I3 and O1, and each
-changed workflow against W1 to W3 and E1. A finding names the rule, the
-file and line, what fails, and the smaller design.
+`tasks/kernel/kconfig` shows the form: the header, the prelude, the
+inputs and values, then the commands.
+
+- The header is the lines that start with `##`: the usage line, a sentence
+  of what the task does, and the command that runs it by hand. `--help`
+  prints it, and arguments of another form print it on the standard error
+  and exit with status 2 (I1).
+- `tasks/common/task` comes first. It sets Bash's strict mode, gives
+  `transcript`, and reads the usage line as the one form the task takes:
+  each `--option VALUE` of it, in its order, becomes the variable of the
+  option's name. No task tests its arguments or assigns them again.
+- Above `transcript` are the values the commands need, such as a place
+  or an argument array of `tasks/common`. It stays short, and holds
+  nothing a developer would type.
+- Below `transcript` are the commands. The log shows each after a `$`
+  prompt, as it ran. A command that makes or removes a file or a
+  directory, as `mkdir`, `ln` or `rm`, takes `--verbose`, so the log
+  shows what changed. A task that fails ends it with its name and the
+  exit status of the last command shown.
+- A task changes no file that a tree it is given tracks. It writes there
+  only where its tool keeps what it makes apart from the sources, as
+  kbuild's `O=` keeps a build in `build/` of the tree.
+
+## 7. The unit a task runs in
+
+- U1. A task runs its tool as a transient unit of the developer's service
+  manager: `"${unit[@]}"` of `tasks/common/unit`, before the tool's
+  command. `systemd-cat` sends the tool's standard output to the journal
+  as it is and its standard error as warnings, each line under the
+  unit's name as its identifier. `tasks/common/unit` follows that
+  identifier with `journalctl` and shows the lines as they come, and the
+  tool's exit status is the task's. No task captures,
+  times or stores a tool's output itself: the journal does (principle 3).
+- U2. The unit is named for the task and the directory it works in, as
+  `kernel-build@home-user-linux.service`. A task thus runs once on a
+  directory at a time, and `journalctl --user --identifier` with that
+  name finds its lines. A match on the unit misses some: journald reads
+  a line's unit from the cgroup of the process that wrote it, and a
+  process that has exited has none. It trusts the unit a stream names
+  only from root, so a developer's units have no other source.
+- U3. The unit gets none of the caller's environment. `tasks/common/unit`
+  names `PATH` and each of the tool's variables that is set with
+  `--setenv`, which puts them in the log (I2). Nothing of kdevops-ng's
+  own goes through the unit's environment.
+- U4. What does not change from one run to the next is a drop-in under
+  the unit's name in `units/user/`, never an argument a task builds: the
+  directory the unit runs in, which is its instance, what it sees
+  read-only (principle 4) and what it may write. The logged line is then
+  the unit's name and the tool's own command. A developer links the
+  drop-ins once, under `~/.local/share/systemd/user/`, and a task that
+  finds them missing says where the step is written and runs nothing.
+- U5. A limit, a timeout or one more writable path is a drop-in too, the
+  developer's or a workflow's to write under `~/.config/systemd/user/`.
+  No task takes an option or a variable for one.
+- U6. A task that is interrupted stops its unit, with the `systemctl`
+  line in the log. `systemd-run` leaves the unit running when a signal
+  ends it, and the next run of the task would be refused.
+
+## 8. Review
+
+Check each changed task against T1 to T5, I1 to I3, O1 and U1 to U6, and
+each changed workflow against W1 to W3 and E1. A finding names the rule,
+the file and line, what fails, and the smaller design.
 
 [Dagu]: https://github.com/dagucloud/dagu
 [kdevops]: https://github.com/linux-kdevops/kdevops
