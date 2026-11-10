@@ -1,0 +1,200 @@
+<!-- SPDX-License-Identifier: copyleft-next-0.3.1 -->
+
+# Tools, tasks and workflows
+
+A change to a task or a workflow is reviewed against these rules, and a
+finding cites one by its number. No task or workflow exists yet: the names
+below show the form.
+
+## 1. Three layers
+
+The tool works, the task binds, the workflow decides.
+
+- A tool does the work: `make`, `git`, `b4`, a script of the kernel's.
+- A task binds a tool to a goal. It is a Bash executable under `tasks/`
+  that runs the commands a developer would type to reach one goal, with
+  the place, the tool's flags and the project's settings filled in.
+- A workflow decides which tasks run, in what order, for which items of a
+  list, on which earlier result, and how often again. It is written for
+  one engine, in that engine's language, and is that engine's own (section
+  5).
+
+A run is one execution of a workflow. A place is a directory a task works
+in, such as a worktree or a build directory. A file or a tree that a task
+works on is not a place, whatever its path. An engine's own words name
+only that engine's things, as "DAG" and "step" are Dagu's.
+
+[kdevops] is written in Ansible, whose layers map as:
+
+| Ansible                                           | kdevops-ng     |
+| ------------------------------------------------- | -------------- |
+| playbook, and a task's `when`, `loop`, `register` | workflow       |
+| task: a name, a module and its arguments          | task           |
+| module: `community.general.make`                  | tool: `make`   |
+| role defaults and variables                       | `tasks/common` |
+
+An Ansible task carries its own conditions and loops; here those are the
+workflow's (T5). An Ansible module wraps its tool to run it on a managed
+host and to report what changed. A task runs where it is started and its
+tool reports for itself, so nothing stands between the two (T1).
+
+## 2. The rules
+
+### T1. The tool does the work
+
+A task calls the tool built for the job and copies no logic a tool holds.
+It runs the tool by its own command line, and its log is those lines as
+Bash traces them, so a developer can run any of them again. Shell that
+tasks share, under `tasks/common`, gives a task values, such as a place or
+an argument array, and never a function that runs the tool for it.
+
+### T2. A task is named for what a developer asks for
+
+A task is `tasks/<subsystem>/<name>`, the subsystem being what its tasks
+work on. The name is a verb where the tool's name does not say what is
+asked, `tasks/kernel/build`, and the tool's own name where its verdict is
+what is asked, `tasks/kernel/sparse`, with the mode where one tool runs
+two ways, `tasks/kernel/checkpatch_strict`. No directory is made up to
+sort tasks, as `check/` would be.
+
+### T3. A task binds what a developer would have to look up
+
+Its caller says what to work on, never how: no flag of the tool, no place
+to work in, no number of jobs.
+
+### T4. One goal, and it reruns alone
+
+A task is split where a developer would rerun one part and not the other.
+After it fails, a developer fixes the cause and runs that task again,
+alone, so a task reaches its goal from whatever an earlier run of it left.
+A test that makes the second run safe, as adding a worktree only where it
+is missing, is no choice of method (T5).
+
+### T5. The workflow loops, retries and chooses
+
+A task has no loop over work items, no retry and no sleep. It does not
+branch on an input or on another task's result to choose how it works, and
+it never runs another task. Where a choice needs a fact, a task prints the
+fact and the workflow picks the task that runs (O1). Waiting is a task
+that fails until its goal is reached, which the workflow repeats.
+
+A work item is what a developer wants a verdict on and would rerun alone:
+a commit to build, an object file to check. A loop that computes one value
+from data inside a task is not a loop over work items. Nor is a list the
+tool takes on one command line, as `make` takes several targets.
+
+### W1. A workflow holds only control flow
+
+It names the tasks, their order and loops, the conditions and retries, and
+what runs as the run ends. It carries no command or flag of a tool, and no
+place. Everything else about the work is in the tasks, so a workflow
+written for another engine writes the control flow again and nothing more.
+
+### W2. A workflow gives a task its inputs in the task's forms
+
+It passes an option on the task's command line and sets a tool's variable
+in the task's environment (I1, I2), whatever form its own inputs take in
+its engine. An input keeps the name of what it becomes: `ref` for `--ref`,
+`ARCH` for kbuild's.
+
+### W3. A workflow started with only what it works on runs
+
+Each of its inputs but that one has a default that works.
+
+## 3. Why the line is here
+
+### Why not a task for each tool
+
+`tasks/make --directory DIR --jobs N TARGET` would be Ansible's module. It
+adds nothing to the tool, and what a task knows moves into the workflows.
+sparse on one object file is `make C=2 CF=-Wsparse-error init/main.o`:
+with a task for each tool those flags are written once for each engine, in
+its language, and no developer can run them by hand from there.
+
+### Why not a task for each workflow
+
+One task that fetches, configures and builds:
+
+- cannot be rerun in part, so a failed build fetches and configures again;
+- hides its loops and choices from an engine, which cannot retry or
+  resume them;
+- leaves one log for several goals, where a failure names none.
+
+### Why not functions that run the tool
+
+A function in `tasks/common` that runs `make` puts its own call in the
+log, a line no developer can run, and gives the logic T5 keeps out of a
+task somewhere to hide. An argument array, `"${make[@]}"`, shares the
+arguments and prints as the command.
+
+## 4. A task's inputs and results
+
+A workflow's own inputs are its engine's: how they are declared, given and
+checked is that engine's way (section 5).
+
+- I1. A task takes options, `--option VALUE`, each naming what it works
+  on. An option keeps the name its tool gives the argument it becomes, as
+  `--directory` is make's own, so nothing is translated between a task and
+  its tool. Its usage line shows the one form it accepts. `--help` prints
+  the usage, and arguments of any other form print it and fail.
+- I2. A task takes from the environment only what exists without
+  kdevops-ng. One kind is a variable its tool reads that says what to
+  build or check, under the tool's name, as kbuild reads `ARCH` and
+  `LLVM`; the log names each one that is set. The other is what every
+  program is given: `HOME`, `TMPDIR` and XDG's directories.
+- I3. A task takes nothing else: no JSON, no file of settings, no variable
+  of an engine's.
+- O1. A task that reports facts prints them as `name=value` lines, to the
+  file `--output` names or to standard output without it. A workflow reads
+  them there, uses one in a condition or hands it to a later task as an
+  option.
+
+### Why not otherwise
+
+- JSON into a task. A task takes a few strings, so JSON would be a second
+  form to document and test in every task.
+- The environment for a task's own inputs. A variable left set in a shell
+  changes the next task with no trace on its command line. A tool's
+  variable is one a kernel developer already exports, and the log names it
+  (I2).
+- Operands without a name. `--ref v7.3` says in the log what `v7.3` is.
+
+## 5. Engines
+
+An engine runs the workflows written for it. kdevops-ng is tied to none,
+and any number can be supported at once: the tasks are the same for all.
+
+- E1. An engine's workflows are under `engines/<engine>/`, in the engine's
+  own language and layout. Supporting an engine adds that directory and
+  changes no task.
+- E2. A workflow belongs to its engine. No format defines one for every
+  engine: with nothing to translate it into each engine's language, it
+  would be a second copy to keep. A workflow wanted under another engine
+  is written again there, which W1 keeps cheap.
+- E3. An engine can drive the tasks when it can run a command with
+  arguments and an environment, read the `name=value` lines a task prints
+  and branch on one or pass it on, repeat a task for each item of a list,
+  and run a task again until it passes.
+
+The first engine is [Dagu]. Ansible, a Bash script or a CI system can be
+another.
+
+## 6. Review
+
+Check each changed task against T1 to T5, I1 to I3 and O1, and each
+changed workflow against W1 to W3 and E1. A finding names the rule, the
+file and line, what fails, and the smaller design.
+
+## 7. Open decisions
+
+- What a task run by hand does where a tool's variable is unset and a
+  workflow's default differs from the tool's own, as clang differs from
+  kbuild's GCC: the tool's default, or one the task sets. It is decided
+  with the first task whose tool has such a variable.
+- How a task learns which run it records for, when it reads no variable of
+  an engine's (I3).
+- Whether a check takes one object file or the list `make` can take (T5),
+  which sets how many times kbuild starts for a series.
+
+[Dagu]: https://github.com/dagucloud/dagu
+[kdevops]: https://github.com/linux-kdevops/kdevops
