@@ -27,6 +27,15 @@ The two build a Linux tree with the host's `make` and compiler, in
 `build/` of the tree, and change no file the tree tracks. `ARCH` and
 `LLVM` are kbuild's own and come from the environment.
 
+With a lab named once, each task files what its tool reported as a
+[kresults](https://github.com/linux-kdevops/kresults) record under
+`~/.local/state/kdevops-ng/records`:
+
+```sh
+git config --global kresults.origin my-lab
+tasks/kernel/build --directory ~/linux
+```
+
 ## Contributing
 
 Patches go to <kdevops@lists.linux.dev>, written as

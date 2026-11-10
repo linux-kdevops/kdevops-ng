@@ -13,4 +13,6 @@
 
 transcript
 mkdir --parents --verbose "$build"
+rm --force --verbose "$build/.config"
+echo "$target" | tee "$build/.config.name"
 "${unit[@]}" "${make[@]}" "$target"

@@ -244,11 +244,35 @@ inputs and values, then the commands.
   line in the log. `systemd-run` leaves the unit running when a signal
   ends it, and the next run of the task would be refused.
 
-## 8. Review
+## 8. Records
 
-Check each changed task against T1 to T5, I1 to I3, O1 and U1 to U6, and
-each changed workflow against W1 to W3 and E1. A finding names the rule,
-the file and line, what fails, and the smaller design.
+kdevops-ng is a producer of [kresults] records, in version 1 of the
+format: its `validate` accepts every file a task leaves.
+
+- R1. A task that leaves a record has a drop-in `50-record.conf` under
+  its unit's name. It names kresults' `krecord` as the unit's
+  `ExecStopPost=`, with the command as a developer types it at the top
+  of the tree. `krecord` takes the record's name and the variables to
+  record from kresults' `commands.json`, where a command gets its line
+  before a task records it. No shell of a task's builds the record.
+- R2. systemd runs `krecord` as the tool exits, pass or fail, with the
+  exit status. `krecord` reads the unit's warnings from the journal and
+  writes the record. What a record holds, when two runs are equal and
+  how a tree with changes not committed is filed are kresults' to say,
+  and no task repeats them.
+- R3. Records go to `~/.local/state/krecords`, `krecord`'s own default
+  and the unit's `StateDirectory=`, a plain directory. Nothing commits or
+  sends them yet.
+- R4. A run that leaves no record still does its work. `krecord` says why
+  in one line of the log, and a host without `krecord` gets env's line
+  that it is missing. No task tests for either.
+
+## 9. Review
+
+Check each changed task against T1 to T5, I1 to I3, O1, U1 to U6 and R1,
+and each changed workflow against W1 to W3 and E1. A finding names the
+rule, the file and line, what fails, and the smaller design.
 
 [Dagu]: https://github.com/dagucloud/dagu
 [kdevops]: https://github.com/linux-kdevops/kdevops
+[kresults]: https://github.com/linux-kdevops/kresults

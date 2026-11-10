@@ -4,7 +4,7 @@
 # command: a transient unit of the developer's service manager, named for
 # the task and $directory, so the same task is refused a second run there
 # while one lasts. The unit's settings are the drop-ins under its name in
-# units/user: where it runs and what it may write.
+# units/user: where it runs, what it may write, what files its record.
 # systemd-cat sends the tool's standard output to the journal as it is and
 # its standard error as warnings, each line under the unit's name as its
 # identifier. journald names a line's unit only while the process that
