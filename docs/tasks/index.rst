@@ -34,6 +34,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
    :maxdepth: 1
 
    kernel
+   qemu
 
 .. _tasks-unit:
 

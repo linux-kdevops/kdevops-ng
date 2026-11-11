@@ -1,0 +1,10 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The build of the QEMU tree in $directory: $build, build/ of the tree,
+# where QEMU's configure and Meson keep what they make. $make is the make
+# that builds it, and $variables configure's own that name the compilers.
+: "${directory:?}"
+directory=$(realpath "$directory")
+build=$directory/build
+variables=(CC CXX)
+make=(make --directory=build --jobs="$(nproc)")

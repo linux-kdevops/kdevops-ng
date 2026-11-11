@@ -89,6 +89,7 @@ cmd_links = {
     "journalctl": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html",
     "krecord": "https://github.com/linux-kdevops/kresults/blob/main/format/README.md",
     "make": "https://www.gnu.org/software/make/manual/make.html",
+    "pip": "https://pip.pypa.io/en/stable/",
     "nix": "https://nix.dev/manual/nix/latest/command-ref/new-cli/nix",
     "shellcheck": "https://www.shellcheck.net/",
     "shfmt": "https://github.com/mvdan/sh",

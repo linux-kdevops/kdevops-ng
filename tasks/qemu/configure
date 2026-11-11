@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu/configure --directory DIR --target-list LIST
+##
+## Configure build/ of the QEMU tree in DIR for the targets LIST names,
+## with nothing downloaded:
+##
+##   tasks/qemu/configure --directory ~/qemu --target-list x86_64-softmmu
+. "$(dirname "$0")/../common/task"
+: "${target_list:?}"
+. "$(dirname "$0")/../common/qemu"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+mkdir --parents --verbose "$build"
+echo "$target_list" | tee "$build/.target-list"
+# Meson lists the iotests as it configures, and they make their scratch
+# directory where TEST_DIR says: without it, in the sources.
+"${unit[@]}" env --chdir=build TEST_DIR="$build/tests/qemu-iotests/scratch" \
+	../configure --disable-download --target-list="$target_list"

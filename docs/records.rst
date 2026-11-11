@@ -53,6 +53,9 @@ build:
                ├── tinyconfig.json    tasks/kernel/kconfig
                └── all.json           tasks/kernel/build
 
+A QEMU commit has no build below it: ``qemu/<commit>/configure.json`` and
+``qemu/<commit>/make/all.json``.
+
 A :term:`tree <Tree>` with changes not committed is filed apart, under its
 commit's name with ``-dirty``. A run again of the same build, with the same
 tools and the same output, adds to its record rather than writing over it.

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu/subprojects --directory DIR
+##
+## Download, into subprojects/ of the QEMU tree in DIR, the Git
+## subprojects its Meson wrap files pin:
+##
+##   tasks/qemu/subprojects --directory ~/qemu
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/qemu"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" meson subprojects download --types git

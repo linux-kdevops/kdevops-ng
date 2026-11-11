@@ -83,7 +83,7 @@
               cd ${./.}
               shellcheck --external-sources --source-path=SCRIPTDIR \
                 scripts/check-style.sh scripts/commit-msg scripts/docs scripts/serve \
-                tasks/kernel/* tasks/common/*
+                tasks/kernel/* tasks/qemu/* tasks/common/*
               shfmt --diff scripts/check-style.sh scripts/commit-msg scripts/docs \
                 scripts/serve tasks
               black --check scripts tests docs/conf.py

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu/build --directory DIR
+##
+## Build the QEMU tree in DIR, in its build/, as it is configured there:
+##
+##   tasks/qemu/build --directory ~/qemu
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/qemu"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" "${make[@]}"
