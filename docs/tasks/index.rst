@@ -4,9 +4,9 @@
 Tasks
 =====
 
-A task is a Bash executable under :src:`tasks`: the commands a developer
-would type to reach one goal. It runs by hand, and ``--help`` prints the
-one form its arguments take:
+A :term:`task <Task>` is a `Bash`_ executable under :src:`tasks`: the commands a
+:term:`developer <Developer>` would type to reach one goal. It runs by hand, and
+``--help`` prints the one form its arguments take:
 
 .. code-block:: console
 
@@ -17,10 +17,11 @@ one form its arguments take:
 
      tasks/kernel/build --directory ~/linux
 
-A task's log is a transcript: each command after a ``$`` prompt, exactly
-as it ran, then what it printed. A line copied from it does the same in a
-terminal, so a failed run reproduces from its log. An option keeps the
-name its tool gives the argument, as ``--directory`` is make's own.
+A task's log is a :term:`transcript <Transcript>`: each command after a ``$``
+prompt, exactly as it ran, then what it printed. A line copied from it does the
+same in a terminal, so a failed run reproduces from its log. An
+:term:`option <Option>` keeps the name its :term:`tool <Tool>` gives the
+argument, as ``--directory`` is :cmd:`make`'s own.
 
 .. note::
 
@@ -42,11 +43,11 @@ The unit a task runs in
 What a task prints
 ------------------
 
-A task runs its tool as a unit of your service manager, named for the task
-and the directory it works in: ``kernel-build@home-user-linux.service``
-builds ``/home/user/linux``. The task shows what the tool prints as it
-comes, and exits with the tool's status. Your journal keeps it
-(:ref:`requirements-journal`), with the tool's standard error as warnings.
+A task runs its tool as a `unit`_ of your `service manager`_, named for the task
+and the directory it works in: ``kernel-build@home-user-linux.service`` builds
+``/home/user/linux``. The task shows what the tool prints as it comes, and exits
+with the tool's status. Your journal keeps it (:ref:`requirements-journal`),
+with the tool's standard error as warnings.
 
 To follow a run from another terminal:
 
@@ -148,3 +149,7 @@ its unit took. The settings most useful for a build:
        for every unit in it together.
 
 .. _drop-ins: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Description
+
+.. _Bash: https://www.gnu.org/software/bash/
+.. _service manager: https://www.freedesktop.org/software/systemd/man/latest/systemd.html
+.. _unit: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html

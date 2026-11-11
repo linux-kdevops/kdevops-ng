@@ -4,9 +4,10 @@
 kdevops-ng
 ==========
 
-kdevops-ng automates Linux kernel development and testing. A task runs the
-commands a developer would type to reach one goal, with the host's own
-tools, and files what they report.
+kdevops-ng automates `Linux`_ kernel development and testing. A
+:term:`task <Task>` runs the commands a :term:`developer <Developer>` would type
+to reach one goal, with the :term:`host <Host>`'s own :term:`tools <Tool>`, and
+files what they report.
 
 Community
 =========
@@ -24,3 +25,5 @@ Community
    records
    terms
    contributing/index
+
+.. _Linux: https://kernel.org

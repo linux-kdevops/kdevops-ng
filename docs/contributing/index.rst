@@ -4,19 +4,19 @@
 Contributing
 ============
 
-Patches go to ``kdevops@lists.linux.dev``. The rules a change follows and
-is reviewed against are in :src:`designs`: :src:`designs/principles.md`,
-:src:`designs/tasks.md` for a task, and :src:`designs/writing.md` for a
-commit, a page and a comment.
+Patches go to ``kdevops@lists.linux.dev``. The rules a change follows and is
+reviewed against are in :src:`designs`: :src:`designs/principles.md`,
+:src:`designs/tasks.md` for a :term:`task <Task>`, and :src:`designs/writing.md`
+for a commit, a page and a comment.
 
 .. _requirements-contributing:
 
 Requirements
 ============
 
-The checks are Bash and Python 3.11 or later, linted by :cmd:`shellcheck`,
-:cmd:`shfmt`, black, ruff and pyright. The pages are built by Sphinx and
-held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
+The checks are `Bash`_ and `Python`_ 3.11 or later, linted by :cmd:`shellcheck`,
+:cmd:`shfmt`, `black`_, `ruff`_ and `pyright`_. The pages are built by `Sphinx`_
+and held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
 
 .. tab-set::
    :sync-group: distro
@@ -54,8 +54,8 @@ held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
              python3-sphinx-copybutton python3-sphinx-design \
              python3-sphinx-autobuild python3-doc8
 
-None of the three packages pyright. Fedora has no shfmt and no doc8, and
-Ubuntu no ruff. The Nix shell has them all.
+None of the three packages pyright. `Fedora`_ has no shfmt and no doc8, and
+`Ubuntu`_ no ruff. The `Nix`_ shell has them all.
 
 Checks
 ======
@@ -68,8 +68,8 @@ Three scripts hold a change to those rules:
    $ scripts/check.py             # each commit of a range
    $ python3 -m unittest discover --start-directory tests
 
-With Nix, one command runs the linters, the tests and the build of these
-pages, each with the flake's pinned tools:
+With Nix, one command runs the linters, the tests and the build
+of these pages, each with the flake's pinned :term:`tools <Tool>`:
 
 .. code-block:: console
 
@@ -100,3 +100,13 @@ These pages are reStructuredText, built with :cmd:`sphinx-build`:
 .. code-block:: console
 
    $ doc8 docs
+
+.. _Bash: https://www.gnu.org/software/bash/
+.. _black: https://black.readthedocs.io
+.. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
+.. _Nix: https://nixos.org
+.. _pyright: https://microsoft.github.io/pyright/
+.. _Python: https://www.python.org
+.. _ruff: https://docs.astral.sh/ruff/
+.. _Sphinx: https://www.sphinx-doc.org
+.. _Ubuntu: https://wiki.ubuntu.com/Releases

@@ -4,20 +4,21 @@
 Records
 =======
 
-A task files what its tool reported as a record of the `kresults`_ format:
-the tools with their versions, the command, its environment and
-``.config``, the verdict, and the warnings and errors the tool printed. A
-build can then be set against the same build of another commit, whoever
-ran it. kresults' ``validate`` accepts every record a task leaves.
+A :term:`task <Task>` files what its :term:`tool <Tool>` reported as a
+:term:`record <Record>` of the `kresults`_ format: the tools with their
+versions, the command, its environment and ``.config``, the verdict, and the
+warnings and errors the tool printed. A :term:`build <Build>` can then be set
+against the same build of another commit, whoever ran it. kresults' ``validate``
+accepts every record a task leaves.
 
 .. _requirements-records:
 
 Requirements
 ============
 
-kresults' :cmd:`krecord` writes the record. It needs Python 3.11 or
-later, which each distribution's base system has, and a link under its
-name somewhere on your ``PATH``:
+kresults' :cmd:`krecord` writes the record. It needs `Python`_ 3.11 or later,
+which each :term:`distribution <Distribution>`'s base system has, and a link
+under its name somewhere on your ``PATH``:
 
 .. code-block:: console
 
@@ -28,8 +29,8 @@ name somewhere on your ``PATH``:
 :cmd:`krecord` reads what the tool printed from your journal
 (:ref:`requirements-journal`).
 
-Name your lab once, in lowercase letters, digits and ``-``. A record says
-where it was made, and names no host:
+Name your :term:`lab <Lab>` once, in lowercase letters, digits and ``-``. A
+record says where it was made, and names no :term:`host <Host>`:
 
 .. code-block:: console
 
@@ -52,9 +53,9 @@ build:
                ├── tinyconfig.json    tasks/kernel/kconfig
                └── all.json           tasks/kernel/build
 
-A tree with changes not committed is filed apart, under its commit's name
-with ``-dirty``. A run again of the same build, with the same tools and
-the same output, adds to its record rather than writing over it.
+A :term:`tree <Tree>` with changes not committed is filed apart, under its
+commit's name with ``-dirty``. A run again of the same build, with the same
+tools and the same output, adds to its record rather than writing over it.
 
 Reading the records
 ===================
@@ -75,13 +76,13 @@ them once and enable the one that serves:
 When a run leaves a record
 ==========================
 
-A task runs its tool as a unit of your service manager, and systemd starts
-:cmd:`krecord` as the tool exits, pass or fail. The task always does its
+A task runs its tool as a `unit`_ of your `service manager`_, and `systemd`_
+starts :cmd:`krecord` as the tool exits, pass or fail. The task always does its
 work. :cmd:`krecord` leaves a record when the format can file the run, and
 otherwise says why in one line of the log:
 
 - The lab is named (:ref:`requirements-records`).
-- The directory is a Git work tree, since a record names a commit.
+- The directory is a `Git`_ work tree, since a record names a commit.
 - The build holds a ``.config``.
 - The tool exited by itself, and no signal ended it.
 
@@ -92,9 +93,15 @@ A record holds what the tool printed on its standard error, the warnings
 and errors, and none of its progress. A build that compiles nothing again
 prints no warning again, so its record holds none.
 
-A build is filed under the architecture kbuild built for, which its
+A build is filed under the architecture `kbuild`_ built for, which its
 ``.config`` names: ``x86`` on an x86_64 host with no ``ARCH`` set.
 
-A record names the run that made it, which by hand is ``manual``.
+A record names the :term:`run <Run>` that made it, which by hand is ``manual``.
 
+.. _Git: https://git-scm.com
+.. _kbuild: https://docs.kernel.org/kbuild/index.html
 .. _kresults: https://github.com/linux-kdevops/kresults
+.. _Python: https://www.python.org
+.. _service manager: https://www.freedesktop.org/software/systemd/man/latest/systemd.html
+.. _systemd: https://systemd.io
+.. _unit: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html

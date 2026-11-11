@@ -4,9 +4,9 @@
 Kernel
 ======
 
-Three tasks configure, build and clean a Linux tree with :cmd:`make`. The
-tree is yours. They change no file it tracks, and write only in its
-``build/``.
+Three :term:`tasks <Task>` configure, build and clean a `Linux`_
+:term:`tree <Tree>` with :cmd:`make`. The tree is yours. They change no file it
+tracks, and write only in its ``build/``.
 
 .. code-block:: console
 
@@ -14,19 +14,19 @@ tree is yours. They change no file it tracks, and write only in its
    $ tasks/kernel/build --directory ~/linux
    $ tasks/kernel/mrproper --directory ~/linux
 
-:src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of
-make's configuration targets, such as ``tinyconfig`` or ``defconfig``.
-:src:`build <tasks/kernel/build>` builds what that ``.config`` says, with a
-job for each processor. :src:`mrproper <tasks/kernel/mrproper>` removes
-what kbuild made in ``build/``, the ``.config`` with it.
+:src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of make's
+:term:`configuration <Configuration>` targets, such as ``tinyconfig`` or
+``defconfig``. :src:`build <tasks/kernel/build>` builds what that ``.config``
+says, with a job for each processor. :src:`mrproper <tasks/kernel/mrproper>`
+removes what `kbuild`_ made in ``build/``, the ``.config`` with it.
 
 .. _requirements-kernel:
 
 Requirements
 ============
 
-The tasks run :cmd:`make` with GCC; the second line of each list is for
-Clang, under ``LLVM=1`` (:doc:`/getting-started/requirements`):
+The tasks run :cmd:`make` with `GCC`_; the second line of each list is for
+`Clang`_, under ``LLVM=1`` (:doc:`/getting-started/requirements`):
 
 .. tab-set::
    :sync-group: distro
@@ -94,3 +94,8 @@ Each task runs :cmd:`make` in a unit named for the task and the tree:
 (:ref:`tasks-unit`). In the tree the unit may write ``build/`` only. The
 three tasks take make's line and kbuild's variables from
 :src:`tasks/common/kbuild`.
+
+.. _Clang: https://clang.llvm.org
+.. _GCC: https://gcc.gnu.org
+.. _kbuild: https://docs.kernel.org/kbuild/index.html
+.. _Linux: https://kernel.org

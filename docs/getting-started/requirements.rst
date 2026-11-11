@@ -4,24 +4,23 @@
 Requirements
 ============
 
-kdevops-ng needs Linux with `systemd`_ 258 or later, and `Git`_ to clone
-it. A task
-calls every other tool by its name, and the host's distribution provides
-it.
+kdevops-ng needs `Linux`_ with `systemd`_ 258 or later, and `Git`_ to clone it.
+A :term:`task <Task>` calls every other :term:`tool <Tool>` by its name, and the
+:term:`host <Host>`'s :term:`distribution <Distribution>` provides it.
 
 Distributions
 =============
 
 Four are supported: `Debian`_ testing, `Fedora`_ Rawhide, the development
-release of `Ubuntu`_, and `Nix`_ with nixpkgs' unstable branch. Nix is the
-preferred one, for reproducibility: it pins every tool, so two hosts run
-the same build of each, and a :doc:`record </records>` names that build.
+release of `Ubuntu`_, and `Nix`_ with `nixpkgs`_' unstable branch. Nix is the
+preferred one, for reproducibility: it pins every tool, so two hosts run the
+same build of each, and a :doc:`record </records>` names that build.
 
 Nix
 ---
 
-The flake stands for every package list of these pages. In the checkout,
-one command opens a shell with all the tools:
+The flake stands for every package list of these pages. In the
+:term:`checkout <Checkout>`, one command opens a shell with all the tools:
 
 .. code-block:: console
 
@@ -73,10 +72,10 @@ each list is a command for you to run.
 The units' settings
 ===================
 
-A task runs its tool as a unit of your service manager. Where the unit
-runs, what it may write and what files its record are drop-ins kdevops-ng
-ships. Link them once, from the checkout, where your service manager looks
-for a user's units:
+A task runs its tool as a `unit`_ of your `service manager`_. Where the
+unit runs, what it may write and what files its record are drop-ins
+kdevops-ng ships. Link them once, from the checkout, where your service
+manager looks for a user's units:
 
 .. code-block:: console
 
@@ -91,10 +90,10 @@ The journal
 ===========
 
 A task runs its tool as a unit of your service manager, and what the tool
-printed is read back from your own journal. journald keeps a journal for
-each user only while it stores on disk, under ``/var/log/journal``. Every
-distribution here sets that up, so most hosts need nothing. Check that
-yours has the file:
+printed is read back from your own journal. `journald`_ keeps a journal for each
+user only while it stores on disk, under ``/var/log/journal``. Every
+distribution here sets that up, so most hosts need nothing. Check that yours has
+the file:
 
 .. code-block:: console
 
@@ -155,15 +154,22 @@ What each part needs
 
 Each part of kdevops-ng lists its own tools, on its page:
 
-- :ref:`The kernel tasks <requirements-kernel>`: make and a compiler.
-- :ref:`Records <requirements-records>`: kresults' :cmd:`krecord`, and a
-  name for your lab.
-- :ref:`A change to kdevops-ng <requirements-contributing>`: the checks,
-  and Sphinx for these pages.
+- :ref:`The kernel tasks <requirements-kernel>`: :cmd:`make` and a compiler.
+- :ref:`Records <requirements-records>`: `kresults`_' :cmd:`krecord`, and a name
+  for your :term:`lab <Lab>`.
+- :ref:`A change to kdevops-ng <requirements-contributing>`: the checks, and
+  `Sphinx`_ for these pages.
 
 .. _Debian: https://www.debian.org/releases/testing/
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com
+.. _journald: https://www.freedesktop.org/software/systemd/man/latest/systemd-journald.service.html
+.. _kresults: https://github.com/linux-kdevops/kresults
+.. _Linux: https://kernel.org
 .. _Nix: https://nixos.org
+.. _nixpkgs: https://github.com/NixOS/nixpkgs
+.. _service manager: https://www.freedesktop.org/software/systemd/man/latest/systemd.html
+.. _Sphinx: https://www.sphinx-doc.org
 .. _systemd: https://systemd.io
 .. _Ubuntu: https://wiki.ubuntu.com/Releases
+.. _unit: https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html

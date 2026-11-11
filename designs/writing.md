@@ -131,6 +131,13 @@ warning):
   with `:src:`. An unknown command or a missing path fails the build.
 - Another page is linked with `:doc:` and a labelled section with `:ref:`,
   never by its path.
+- The first mention on a page of an upstream project, tool or service is
+  linked to its manual or source, by a named target at the foot of the
+  page. Later mentions stay plain.
+- The first mention on a page of a term of `docs/terms.rst` is linked to
+  it with `:term:`, in whatever form the sentence takes:
+  ``:term:`tasks <Task>` ``. Later mentions stay plain, and a word used in
+  another sense than the glossary's is not linked.
 
 ## The checks
 
