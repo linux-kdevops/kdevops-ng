@@ -123,6 +123,11 @@ warning):
   a literal in double backticks.
 - A command that installs a file or a directory, as `ln`, `mkdir` or `cp`
   does, takes `--verbose`, so its output shows what it installed.
+- A block of commands run on the host carries `:class: cmd-host`, and
+  one run in a guest, or of output a guest printed, `:class: cmd-guest`.
+  The class draws a rail in the kind's colour. Only the first block of
+  each kind on a page is captioned, `host` or `guest`. Where a command
+  runs decides, not its prompt, and a file's content is neither.
 - A file the reader writes is a code block of its content, captioned with
   its path, which a button copies. No command that prints a file or pipes
   text into one stands for it.

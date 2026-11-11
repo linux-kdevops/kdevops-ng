@@ -23,12 +23,15 @@ The flake stands for every package list of these pages. In the
 :term:`checkout <Checkout>`, one command opens a shell with all the tools:
 
 .. code-block:: console
+   :caption: host
+   :class: cmd-host
 
    $ nix develop
 
 It needs the :cmd:`nix` command and flakes enabled, once:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ mkdir --parents --verbose ~/.config/nix
 
@@ -50,6 +53,7 @@ each list is a command for you to run.
       :sync: debian
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo apt install git
 
@@ -57,6 +61,7 @@ each list is a command for you to run.
       :sync: fedora
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo dnf install git
 
@@ -64,6 +69,7 @@ each list is a command for you to run.
       :sync: ubuntu
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo apt install git
 
@@ -78,6 +84,7 @@ kdevops-ng ships. Link them once, from the checkout, where your service
 manager looks for a user's units:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ mkdir --parents --verbose ~/.local/share/systemd/user
    $ ln --symbolic --verbose --target-directory ~/.local/share/systemd/user \
@@ -96,6 +103,7 @@ distribution here sets that up, so most hosts need nothing. Check that yours has
 the file:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ ls /var/log/journal/*/user-"$(id --user)".journal
 
@@ -103,6 +111,7 @@ If it is missing, the journal is still in memory, under ``/run``. Root
 moves it to disk, once there is room on ``/var``:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ sudo mkdir --parents --verbose /var/log/journal
    $ sudo journalctl --flush
@@ -112,6 +121,7 @@ Your own journal needs no group. To read the system's too, as
 in again:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ sudo usermod --append --groups systemd-journal "$(whoami)"
 
@@ -126,6 +136,7 @@ the ``cpu``, ``memory`` and ``pids`` controllers only. Root adds ``io``,
 once, and it holds from your next login:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ sudo mkdir --parents --verbose /etc/systemd/system/user@.service.d
 
@@ -136,12 +147,14 @@ once, and it holds from your next login:
    Delegate=pids memory cpu io
 
 .. code-block:: console
+   :class: cmd-host
 
    $ sudo systemctl daemon-reload
 
 Check that your service manager has it:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ cat "/sys/fs/cgroup/user.slice/user-$UID.slice/user@$UID.service/cgroup.controllers"
    cpu io memory pids

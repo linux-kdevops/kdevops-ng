@@ -21,6 +21,8 @@ which each :term:`distribution <Distribution>`'s base system has, and a link
 under its name somewhere on your ``PATH``:
 
 .. code-block:: console
+   :caption: host
+   :class: cmd-host
 
    $ git clone https://github.com/linux-kdevops/kresults.git
    $ ln --symbolic --verbose "$PWD/kresults/format/record.py" \
@@ -33,6 +35,7 @@ Name your :term:`lab <Lab>` once, in lowercase letters, digits and ``-``. A
 record says where it was made, and names no :term:`host <Host>`:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ git config --global kresults.origin my-lab
 
@@ -70,6 +73,7 @@ serve it on http://127.0.0.1:8002/. From where you cloned kresults, link
 them once and enable the one that serves:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ ln --symbolic --verbose "$PWD/kresults/format/render.py" \
        ~/.local/bin/krender

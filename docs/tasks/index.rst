@@ -9,6 +9,8 @@ A :term:`task <Task>` is a `Bash`_ executable under :src:`tasks`: the commands a
 ``--help`` prints the one form its arguments take:
 
 .. code-block:: console
+   :caption: host
+   :class: cmd-host
 
    $ tasks/kernel/build --help
    Usage: tasks/kernel/build --directory DIR
@@ -48,23 +50,29 @@ A task runs its tool as a `unit`_ of your `service manager`_, named for the task
 and the directory it works in: ``kernel-build@home-user-linux.service`` builds
 ``/home/user/linux``. The task shows what the tool prints as it comes, and exits
 with the tool's status. Your journal keeps it (:ref:`requirements-journal`),
-with the tool's standard error as warnings.
+with the tool's standard error as warnings and every line under the
+unit's name as its identifier.
 
-To follow a run from another terminal:
+To follow a run from another terminal, by the name the task printed:
 
 .. code-block:: console
+   :class: cmd-host
 
-   $ journalctl --user-unit 'kernel-build@*' --follow
+   $ journalctl --user --identifier kernel-build@home-user-linux.service \
+       --follow
 
 Only its warnings and errors:
 
 .. code-block:: console
+   :class: cmd-host
 
-   $ journalctl --user-unit 'kernel-build@*' --priority warning
+   $ journalctl --user --identifier kernel-build@home-user-linux.service \
+       --priority warning
 
 What the unit runs, and the processor time and memory it has taken:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ systemctl --user status 'kernel-build@*'
 
@@ -72,6 +80,13 @@ What the unit runs, and the processor time and memory it has taken:
 
    The same task is refused a second run on a directory while the first
    lasts.
+
+.. note::
+
+   ``journalctl --user-unit`` misses lines. journald names a line's unit
+   only while the process that wrote it lives, so the last errors of a
+   compiler that has exited carry no unit. The identifier is on every
+   line.
 
 The unit's settings
 -------------------
@@ -87,6 +102,7 @@ A drop-in of your own changes or adds a setting. One under the task's name
 holds for every tree, and one under a unit's full name for that tree:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ mkdir --parents --verbose ~/.config/systemd/user/kernel-build@.service.d
 
@@ -98,6 +114,7 @@ holds for every tree, and one under a unit's full name for that tree:
    RuntimeMaxSec=2h
 
 .. code-block:: console
+   :class: cmd-host
 
    $ systemctl --user daemon-reload
 

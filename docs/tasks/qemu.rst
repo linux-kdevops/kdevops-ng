@@ -10,6 +10,8 @@ change no file it tracks, and write only in its ``subprojects/`` and
 ``build/``.
 
 .. code-block:: console
+   :caption: host
+   :class: cmd-host
 
    $ tasks/qemu/subprojects --directory ~/qemu
    $ tasks/qemu/configure --directory ~/qemu --target-list x86_64-softmmu
@@ -34,6 +36,7 @@ Requirements
       :sync: debian
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo apt install build-essential git meson ninja-build pkgconf \
              python3-venv flex bison libglib2.0-dev libpixman-1-dev
@@ -42,6 +45,7 @@ Requirements
       :sync: fedora
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo dnf install gcc make git meson ninja-build pkgconf python3 \
              flex bison glib2-devel pixman-devel
@@ -50,6 +54,7 @@ Requirements
       :sync: ubuntu
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo apt install build-essential git meson ninja-build pkgconf \
              python3-venv flex bison libglib2.0-dev libpixman-1-dev
@@ -64,6 +69,7 @@ The compiler
 that is set:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ CC=clang tasks/qemu/configure --directory ~/qemu --target-list x86_64-softmmu
    $ systemd-run --user --unit=qemu-configure@… … --setenv=CC=clang … ../configure …

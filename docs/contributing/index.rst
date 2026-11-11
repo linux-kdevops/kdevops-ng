@@ -25,6 +25,8 @@ and held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
       :sync: debian
 
       .. code-block:: console
+         :caption: host
+         :class: cmd-host
 
          $ sudo apt install python3 shellcheck shfmt black ruff
          $ sudo apt install python3-sphinx python3-pydata-sphinx-theme \
@@ -35,6 +37,8 @@ and held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
       :sync: fedora
 
       .. code-block:: console
+         :caption: host
+         :class: cmd-host
 
          $ sudo dnf install python3 ShellCheck black ruff
          $ sudo dnf install python3-sphinx python3-pydata-sphinx-theme \
@@ -47,6 +51,8 @@ and held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
       Most of these are in ``universe``:
 
       .. code-block:: console
+         :caption: host
+         :class: cmd-host
 
          $ sudo add-apt-repository universe
          $ sudo apt install python3 shellcheck shfmt black
@@ -63,6 +69,7 @@ Checks
 Three scripts hold a change to those rules:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ scripts/check-style.sh       # the tree and the last commit
    $ scripts/check.py             # each commit of a range
@@ -72,6 +79,7 @@ With Nix, one command runs the linters, the tests and the build
 of these pages, each with the flake's pinned :term:`tools <Tool>`:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ nix flake check
 
@@ -79,6 +87,7 @@ of these pages, each with the flake's pinned :term:`tools <Tool>`:
 hook. Link it once:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ ln --symbolic --verbose --relative scripts/commit-msg \
        "$(git rev-parse --git-path hooks)/commit-msg"
@@ -89,6 +98,7 @@ Documentation
 These pages are reStructuredText, built with :cmd:`sphinx-build`:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ scripts/docs                 # render to docs/_build/html
    $ scripts/serve                # serve on 127.0.0.1:8001, and render on save
@@ -98,6 +108,7 @@ These pages are reStructuredText, built with :cmd:`sphinx-build`:
 80 columns:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ doc8 docs
 

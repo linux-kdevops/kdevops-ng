@@ -8,6 +8,8 @@ Install `Git`_ (:doc:`requirements`) and what the kernel :term:`tasks <Task>`
 run (:ref:`requirements-kernel`), then clone kdevops-ng:
 
 .. code-block:: console
+   :caption: host
+   :class: cmd-host
 
    $ git clone https://github.com/linux-kdevops/kdevops-ng.git
    $ cd kdevops-ng
@@ -16,6 +18,7 @@ Configure and build a `Linux`_ :term:`tree <Tree>` of your own. The two tasks
 write in ``build/`` of the tree and nowhere else in it:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ tasks/kernel/kconfig --directory ~/linux --target tinyconfig
    $ tasks/kernel/build --directory ~/linux

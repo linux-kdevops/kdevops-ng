@@ -9,6 +9,8 @@ Three :term:`tasks <Task>` configure, build and clean a `Linux`_
 tracks, and write only in its ``build/``.
 
 .. code-block:: console
+   :caption: host
+   :class: cmd-host
 
    $ tasks/kernel/kconfig --directory ~/linux --target tinyconfig
    $ tasks/kernel/build --directory ~/linux
@@ -35,6 +37,7 @@ The tasks run :cmd:`make` with `GCC`_; the second line of each list is for
       :sync: debian
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo apt install build-essential bc bison flex libelf-dev libssl-dev
          $ sudo apt install clang lld llvm
@@ -43,6 +46,7 @@ The tasks run :cmd:`make` with `GCC`_; the second line of each list is for
       :sync: fedora
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo dnf install gcc make perl bc bison flex elfutils-libelf-devel \
              openssl-devel
@@ -54,6 +58,7 @@ The tasks run :cmd:`make` with `GCC`_; the second line of each list is for
       Clang is in ``universe``:
 
       .. code-block:: console
+         :class: cmd-host
 
          $ sudo apt install build-essential bc bison flex libelf-dev libssl-dev
          $ sudo add-apt-repository universe
@@ -82,6 +87,7 @@ The architecture and the compiler
 one that is set:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ LLVM=1 tasks/kernel/build --directory ~/linux
    $ systemd-run --user --unit=kernel-build@… … --setenv=LLVM=1 … make O=build --jobs=16

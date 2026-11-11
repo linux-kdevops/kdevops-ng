@@ -18,6 +18,8 @@ as a package, for every user of the host (`On Debian`_).
       :sync: debian
 
       .. code-block:: console
+         :caption: host
+         :class: cmd-host
 
          $ sudo apt install cargo scdoc socat virtiofsd qemu-system-x86
 
@@ -25,6 +27,8 @@ as a package, for every user of the host (`On Debian`_).
       :sync: fedora
 
       .. code-block:: console
+         :caption: host
+         :class: cmd-host
 
          $ sudo dnf install cargo scdoc socat virtiofsd qemu-system-x86
 
@@ -32,6 +36,8 @@ as a package, for every user of the host (`On Debian`_).
       :sync: ubuntu
 
       .. code-block:: console
+         :caption: host
+         :class: cmd-host
 
          $ sudo add-apt-repository universe
          $ sudo apt install cargo scdoc socat virtiofsd qemu-system-x86
@@ -40,6 +46,7 @@ Build it. The generated units call ``qmp-powerdown`` by the path given
 here:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ git clone https://github.com/linux-kdevops/qemu-system-generator
    $ cd qemu-system-generator
@@ -50,6 +57,7 @@ Install the generator, the file its units read and the two units that run
 it for your service manager:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ install -D --verbose --target-directory ~/.local/bin \
        target/release/qemu-system-generator
@@ -80,6 +88,7 @@ so name the generator by its path in the installed service:
 Install the manual pages:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ mkdir --parents --verbose ~/.local/share/man/man5 ~/.local/share/man/man8
    $ scdoc <man/qemu-systemd.unit.5.scd >~/.local/share/man/man5/qemu-systemd.unit.5
@@ -90,6 +99,7 @@ Enable the units. They run the generator at login and whenever
 ``~/.config/qemu/systemd/`` changes:
 
 .. code-block:: console
+   :class: cmd-host
 
    $ systemctl --user daemon-reload
    $ systemctl --user enable --now qemu-system-generator.path \
