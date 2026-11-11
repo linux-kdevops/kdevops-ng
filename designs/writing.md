@@ -126,6 +126,9 @@ warning):
 - A file the reader writes is a code block of its content, captioned with
   its path, which a button copies. No command that prints a file or pipes
   text into one stands for it.
+- A change the reader makes to a file is a `diff` code block of the
+  lines, captioned with the file's path, as `git diff` prints it. No
+  `sed` or other command that edits the file stands for it.
 - A command is linked with the `:cmd:` role, which takes its manual from
   the `cmd_links` table of `docs/conf.py`, and a path of this repository
   with `:src:`. An unknown command or a missing path fails the build.
