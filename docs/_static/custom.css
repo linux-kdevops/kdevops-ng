@@ -9,6 +9,58 @@ div.literal-block-wrapper div.code-block-caption {
     font-size: 0.85rem;
 }
 
+/* Diff blocks. The theme's accessible Pygments style colours a deleted line
+   blue and leaves an inserted one plain, so give both the usual red and green,
+   as ink and a full-width wash. */
+:root {
+    --diff-add-ink: #1a7f37;
+    --diff-add-wash: rgba(46, 160, 67, 0.15);
+    --diff-del-ink: #cf222e;
+    --diff-del-wash: rgba(248, 81, 73, 0.15);
+}
+
+html[data-theme="dark"] {
+    --diff-add-ink: #3fb950;
+    --diff-add-wash: rgba(46, 160, 67, 0.2);
+    --diff-del-ink: #f85149;
+    --diff-del-wash: rgba(248, 81, 73, 0.2);
+}
+
+/* A wash runs to the end of the longest line, not of the visible width:
+   the pre grows to its longest line, and the block scrolls around it. The
+   copy button stays put because it is placed against the wrapper, which
+   does not scroll. */
+.highlight-diff {
+    position: relative;
+}
+
+.highlight-diff div.highlight {
+    position: static;
+    overflow-x: auto;
+}
+
+.highlight-diff div.highlight pre {
+    overflow: visible;
+    width: max-content;
+    min-width: 100%;
+}
+
+.highlight-diff .highlight .gi,
+.highlight-diff .highlight .gd {
+    display: inline-block;
+    min-width: 100%;
+}
+
+html .highlight-diff div.highlight .gi {
+    color: var(--diff-add-ink);
+    background: var(--diff-add-wash);
+}
+
+html .highlight-diff div.highlight .gd {
+    color: var(--diff-del-ink);
+    background: var(--diff-del-wash);
+}
+
 /* The permalink "#" after a caption or heading is not part of its text: a
    path selected from a caption would otherwise copy as "path#". */
 a.headerlink {

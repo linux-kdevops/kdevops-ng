@@ -3,6 +3,9 @@ import os
 import re
 
 from docutils import nodes
+from pygments.lexer import bygroups
+from pygments.lexers.diff import DiffLexer
+from pygments.token import Generic, Whitespace
 
 project = "kdevops-ng"
 copyright = "2026, kdevops-ng authors"
@@ -148,8 +151,25 @@ def _src_role(name, rawtext, text, lineno, inliner, options=None, content=None):
     return [nodes.reference(rawtext, "", code, refuri=uri)], []
 
 
+# A diff block is git's output from the "--- a/<path>" line on. Pygments'
+# diff lexer reads that line as a deletion and "+++ b/<path>" as an
+# insertion, which custom.css paints red and green; read them as the
+# heading they are.
+class _GitDiffLexer(DiffLexer):
+    tokens = {
+        "root": [
+            (
+                r"((?:---|\+\+\+) (?:[ab]/|/dev/null).*)(\n)",
+                bygroups(Generic.Heading, Whitespace),
+            ),
+            *DiffLexer.tokens["root"],
+        ]
+    }
+
+
 def setup(app):
     app.add_config_value("cmd_links", {}, "env")
     app.add_role("cmd", _cmd_role)
     app.add_role("src", _src_role)
+    app.add_lexer("diff", _GitDiffLexer)
     return {"parallel_read_safe": True, "parallel_write_safe": True}

@@ -9,3 +9,4 @@ Getting started
 
    requirements
    quickstart
+   qemu-system-generator
