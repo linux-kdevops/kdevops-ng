@@ -50,12 +50,12 @@ build:
    linux/
    └── v7.3/                          the commit, as git describe names it
        ├── series.json                how the commit came
-       ├── tinyconfig/x86/gcc/        the build: configuration, ARCH, compiler
+       ├── tinyconfig/i386/gcc/       the build: configuration, ARCH, compiler
        │   ├── config                 its .config
        │   └── make/
        │       ├── tinyconfig.json    tasks/kernel/kconfig
        │       └── all.json           tasks/kernel/build
-       └── xfs-filesystem/x86/gcc/    the profiles merge_config merged
+       └── xfs-filesystem/x86_64/gcc/ the profiles merge_config merged
            ├── config                 its .config
            └── merge_config.sh.json   tasks/kernel/merge_config
 
@@ -103,13 +103,13 @@ A record holds what the tool printed on its standard error, the warnings
 and errors, and none of its progress. A build that compiles nothing again
 prints no warning again, so its record holds none.
 
-A build is filed under the architecture `kbuild`_ built for, which its
-``.config`` names: ``x86`` on an x86_64 host with no ``ARCH`` set.
+A build is filed under the machine the kernel built for, which its
+``.config`` names: ``x86_64``, or ``i386`` for a tinyconfig on an x86_64
+host.
 
 A record names the :term:`run <Run>` that made it, which by hand is ``manual``.
 
 .. _Git: https://git-scm.com
-.. _kbuild: https://docs.kernel.org/kbuild/index.html
 .. _kresults: https://github.com/linux-kdevops/kresults
 .. _Python: https://www.python.org
 .. _service manager: https://www.freedesktop.org/software/systemd/man/latest/systemd.html
