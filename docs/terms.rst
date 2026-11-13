@@ -108,12 +108,19 @@ Places
 
       Avoid: *build dir*, *output*, *objects*.
 
-   Configuration
-      A :term:`build <Build>`'s ``.config``, under the name of the make target
-      that made it, as ``tinyconfig``.
+   Profile
+      A file under :src:`tasks/kernel/files/profiles` that lists `kfragments`_
+      fragments, named after the MAINTAINERS entry whose files it configures
+      (:ref:`kernel-configuration`).
 
-      Avoid: *config*, *profile*, and *defconfig* for a target of another
-      name.
+      Avoid: *config* and *defconfig* for one.
+
+   Configuration
+      A :term:`build <Build>`'s ``.config``, under the name of what made it:
+      the make target, as ``tinyconfig``, or the :term:`profiles <Profile>`
+      the merge_config task merged.
+
+      Avoid: *config* and *defconfig* for a target of another name.
 
 Records
 =======
@@ -152,6 +159,7 @@ Records
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com
 .. _kbuild: https://docs.kernel.org/kbuild/index.html
+.. _kfragments: https://github.com/linux-kdevops/kfragments
 .. _kresults: https://github.com/linux-kdevops/kresults
 .. _Nix: https://nixos.org
 .. _Ubuntu: https://wiki.ubuntu.com/Releases

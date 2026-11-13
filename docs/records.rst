@@ -50,11 +50,14 @@ build:
    linux/
    └── v7.3/                          the commit, as git describe names it
        ├── series.json                how the commit came
-       └── tinyconfig/x86/gcc/        the build: configuration, ARCH, compiler
+       ├── tinyconfig/x86/gcc/        the build: configuration, ARCH, compiler
+       │   ├── config                 its .config
+       │   └── make/
+       │       ├── tinyconfig.json    tasks/kernel/kconfig
+       │       └── all.json           tasks/kernel/build
+       └── xfs-filesystem/x86/gcc/    the profiles merge_config merged
            ├── config                 its .config
-           └── make/
-               ├── tinyconfig.json    tasks/kernel/kconfig
-               └── all.json           tasks/kernel/build
+           └── merge_config.sh.json   tasks/kernel/merge_config
 
 A QEMU commit has no build below it: ``qemu/<commit>/configure.json`` and
 ``qemu/<commit>/make/all.json``.

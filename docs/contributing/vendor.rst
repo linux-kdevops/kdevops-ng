@@ -7,7 +7,7 @@ Vendored projects
 :src:`vendor/kfragments` is a copy of `kfragments`_, kept with `git-subrepo`_
 so a fix can be made and tested in this repository, as an ordinary commit,
 before upstream takes it. kfragments holds fragments of a Linux
-configuration, one file per feature. No :term:`task <Task>` reads them yet.
+configuration, one file per feature (:ref:`kernel-configuration`).
 
 ``vendor/<name>/.gitrepo`` records the upstream ``remote``, its ``branch``, the
 ``commit`` the copy was last synced with, and the pull ``method``. A change

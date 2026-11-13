@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/merge_config --directory DIR --profile NAME[+NAME...]
+##
+## Make build/.config of the Linux tree in DIR from the kfragments
+## fragments each tasks/kernel/files/profiles/NAME lists:
+##
+##   tasks/kernel/merge_config --directory ~/linux --profile xfs-filesystem
+##   tasks/kernel/merge_config --directory ~/linux \
+##       --profile block-layer+nvm-express-driver
+. "$(dirname "$0")/../common/task"
+: "${profile:?}"
+. "$(dirname "$0")/../common/kbuild"
+# commands.json lists no argv for merge_config.sh, so --output names the
+# record. merge_config.sh prints the values a .config lost on its standard
+# output, so the record holds none of them: they are in the journal.
+record=(--command "scripts/kconfig/merge_config.sh -n -O build"
+	--arguments-file build/.config.fragments "${config[@]}"
+	--output=merge_config.sh.json --priority warning)
+. "$(dirname "$0")/../common/unit"
+
+# The fragments the listed profiles name, merged once each, in the order
+# tasks/kernel/files/fragments gives them, with ${ARCH} in a name the
+# host's machine as kfragments names it. The merge names them through
+# build/kfragments, a link to the vendored copy, so no line of the log or
+# of the record holds a path of this host (docs/tasks/kernel.rst, "The
+# configuration").
+files=$(dirname "$0")/files
+configs=$(realpath "$(dirname "$0")/../../vendor/kfragments/kernel/configs")
+arch=${ARCH:-$(uname --machine | sed 's/aarch64/arm64/;s/riscv64/riscv/')}
+IFS=+ read -r -a names <<<"$profile"
+lists=$(sed '/^#/d' "${names[@]/#/$files/profiles/}")
+mapfile -t fragments < <(grep --fixed-strings --line-regexp --file=<(echo "$lists") "$files/fragments")
+fragments=("${fragments[@]//\$\{ARCH\}/$arch}")
+fragments=("${fragments[@]/#/build/kfragments/}")
+
+transcript
+mkdir --parents --verbose "$build"
+ln --symbolic --force --no-dereference --verbose "$configs" "$build/kfragments"
+echo "$profile" | tee "$build/.config.name"
+printf '%s\n' "${fragments[@]}" | tee "$build/.config.fragments"
+# No -y, though kfragments' design decisions recommend it for a merge
+# that layers a builtin/ fragment: modules are the default here, and
+# the last-wins merge builds in what a builtin fragment names, listed
+# after the fragment it overrides.
+"${unit[@]}" scripts/kconfig/merge_config.sh -n -O build "${fragments[@]}"
