@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: copyleft-next-0.3.1
+// markdownlint's defaults. vendor/ follows its project's own checks
+// (docs/contributing/vendor.rst).
+{
+  "ignores": ["vendor/**"]
+}

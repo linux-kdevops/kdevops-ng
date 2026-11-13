@@ -86,6 +86,7 @@ cmd_links = {
     "apt": "https://manpages.debian.org/apt",
     "doc8": "https://github.com/PyCQA/doc8",
     "git": "https://git-scm.com/docs/git",
+    "git subrepo": "https://github.com/ingydotnet/git-subrepo",
     "git worktree": "https://git-scm.com/docs/git-worktree",
     "git describe": "https://git-scm.com/docs/git-describe",
     "env": "https://www.gnu.org/software/coreutils/manual/html_node/env-invocation.html",

@@ -255,6 +255,9 @@ def check_commit(rev: str) -> bool:
     message = git("log", "--max-count=1", "--format=%B", rev)
     failed = check_message(f"{rev[:12]} message", message)
     for path, added in added_lines(rev).items():
+        # vendor/ follows its project's own checks (docs/contributing/vendor.rst).
+        if path.startswith("vendor/"):
+            continue
         failed |= check_prose(path, git("show", f"{rev}:{path}"), added)
     return failed
 

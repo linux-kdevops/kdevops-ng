@@ -156,10 +156,12 @@ Each part of kdevops-ng lists its own tools, on its page:
   for your :term:`lab <Lab>`.
 - :ref:`A change to kdevops-ng <requirements-contributing>`: the checks, and
   `Sphinx`_ for these pages.
+- :ref:`Vendored projects <requirements-vendor>`: `git-subrepo`_.
 
 .. _Debian: https://www.debian.org/releases/testing/
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com
+.. _git-subrepo: https://github.com/ingydotnet/git-subrepo
 .. _journald: https://www.freedesktop.org/software/systemd/man/latest/systemd-journald.service.html
 .. _kresults: https://github.com/linux-kdevops/kresults
 .. _Linux: https://kernel.org

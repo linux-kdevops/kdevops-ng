@@ -53,6 +53,9 @@
         # Every tool the pages list by another distribution's packages.
         default = pkgs.mkShell {
           packages = checkers pkgs ++ [
+            # What keeps vendor/ in step with upstream
+            # (docs/contributing/vendor.rst).
+            pkgs.git-subrepo
             pkgs.gnumake
             pkgs.bc
             pkgs.bison

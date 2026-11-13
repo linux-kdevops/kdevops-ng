@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/linux-kdevops/kfragments.git
+	branch = main
+	commit = 283e37503bd9e4adbd8bbd9b22e829f231caf902
+	parent = 38fcf5190626b7ecc73326e615918ae4f064dc33
+	method = merge
+	cmdver = 0.4.9

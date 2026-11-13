@@ -9,6 +9,11 @@ reviewed against are in :src:`designs`: :src:`designs/principles.md`,
 :src:`designs/tasks.md` for a :term:`task <Task>`, and :src:`designs/writing.md`
 for a commit, a page and a comment.
 
+.. toctree::
+   :maxdepth: 1
+
+   vendor
+
 .. _requirements-contributing:
 
 Requirements
@@ -62,6 +67,8 @@ and held to 80 columns by :cmd:`doc8` (:doc:`/getting-started/requirements`):
 
 None of the three packages pyright. `Fedora`_ has no shfmt and no doc8, and
 `Ubuntu`_ no ruff. The `Nix`_ shell has them all.
+
+.. _contributing-checks:
 
 Checks
 ======
