@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: DMA MAPPING & SCATTERLIST API [RUST]
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+rust/rust.config
+rust/rust-sample-dma.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

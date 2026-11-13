@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: RUST
+# Leaves out the vendored crates' files the kernel never compiles:
+# zerocopy's benchmarks, pin-init's examples and alloc.rs, and the
+# optional parts of syn and proc-macro2. Leaves out drm's GEM shmem and
+# GPUVM modules, which only Tyr, an Arm driver, selects, and pwm.rs,
+# which only the T-Head TH1520 PWM driver selects short of COMPILE_TEST.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+rust/rust.config
+rust/rust-doctests.config
+rust/rust-samples-all.config
+rust/drm.config
+rust/abstractions.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

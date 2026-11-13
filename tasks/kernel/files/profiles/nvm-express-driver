@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: NVM EXPRESS DRIVER
+# Leaves out apple.c, the driver of Apple's SoCs, which builds only for
+# them or under COMPILE_TEST.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+test/kunit.config
+builtin/test/kunit.config
+storage/block-layer.config
+storage/zoned.config
+storage/nvme.config
+storage/nvme-fabrics.config
+storage/nvme-tls.config
+debug/fault-injection.config
+debug/tracing.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: NETWORKING [IPSEC]
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+core/compat.config
+security/ebpf.config
+net/xfrm.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

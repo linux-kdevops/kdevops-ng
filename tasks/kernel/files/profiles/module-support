@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: MODULE SUPPORT
+# Leaves out kernel/module/signing.c: steps/kernel/configure/reproducible
+# turns MODULE_SIG off.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+test/kunit.config
+builtin/test/kunit.config
+rust/rust.config
+test/modules-testing.config
+debug/modules-debug.config
+debug/kmemleak.config
+core/modules-extras.config
+rust/rust-samples.config
+rust/gendwarfksyms.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

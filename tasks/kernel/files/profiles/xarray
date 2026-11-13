@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: XARRAY
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+test/xarray.config
+test/region-alloc-benchmark.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

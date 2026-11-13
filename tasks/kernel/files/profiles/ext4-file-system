@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: EXT4 FILE SYSTEM
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+test/kunit.config
+builtin/test/kunit.config
+storage/block-layer.config
+fs/ext4.config
+fs/encryption.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

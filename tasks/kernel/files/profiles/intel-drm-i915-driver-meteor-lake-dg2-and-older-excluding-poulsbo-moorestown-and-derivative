@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: INTEL DRM I915 DRIVER (Meteor Lake, DG2 and older excluding Poulsbo, Moorestown and derivative)
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+gpu/i915.config
+core/compat.config
+gpu/i915-extras.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

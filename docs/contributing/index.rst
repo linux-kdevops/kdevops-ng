@@ -82,6 +82,9 @@ Three scripts hold a change to those rules:
    $ scripts/check.py             # each commit of a range
    $ python3 -m unittest discover --start-directory tests
 
+:src:`scripts/check-profiles.sh` holds the kernel profiles to the catalog,
+and the catalog to the fragments the vendored kfragments carries.
+
 With Nix, one command runs the linters, the tests and the build
 of these pages, each with the flake's pinned :term:`tools <Tool>`:
 

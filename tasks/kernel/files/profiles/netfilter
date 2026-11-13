@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: NETFILTER
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+core/mitigations.config
+security/ebpf.config
+net/lwtunnel.config
+net/netfilter-xtables.config
+net/nftables.config
+net/netfilter-nat.config
+net/netfilter-extras.config
+net/ipvs.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

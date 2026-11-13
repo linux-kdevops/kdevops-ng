@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: NETWORKING [GENERAL]
+# Leaves out net/iucv/, for S390's z/VM, and net/core/hwbm.c, the
+# buffer manager only 32-bit Marvell Armada Ethernet drivers select.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+rust/rust.config
+core/compat.config
+core/mitigations.config
+security/ebpf.config
+net/lwtunnel.config
+net/core-extras.config
+net/inet-extras.config
+net/bridge.config
+net/tc.config
+net/netfilter-xtables.config
+net/nftables.config
+net/netfilter-nat.config
+net/netfilter-extras.config
+net/ipvs.config
+net/xfrm.config
+net/sctp.config
+net/smc.config
+net/protocols.config
+fs/nfs.config
+fs/nfsd-advanced.config
+fs/nfs-rdma.config
+rust/abstractions.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

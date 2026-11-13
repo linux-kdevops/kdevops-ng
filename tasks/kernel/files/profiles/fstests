@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Guest: fstests
+# Joined with the profile of the filesystem under test, as in
+# fstests+xfs-filesystem (docs/tasks/kernel.rst, "The configuration").
+# Beside the guest's own, each fragment builds what a fstests test needs:
+# core/namespaces.config PID namespaces (xfs/667), core/boot-config.config
+# BSD process accounting (generic/596), storage/scsi-debug.config
+# (generic/108), storage/nvdimm.config persistent memory (generic/462),
+# mem/swap.config swap files (generic/493), fs/ext4.config ext2 (xfs/049),
+# fs/overlayfs.config (generic/699), security/selinux.config SELinux
+# (generic/700), storage/scsi-tape.config and storage/iscsi-tcp.config a
+# tape over iSCSI (xfs/035), debug/hung-task.config the hung-task
+# detector the machine panics on, and debug/tracing.config ftrace
+# (xfs/559).
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/namespaces.config
+core/boot-config.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+storage/block-layer.config
+storage/block-test-devices.config
+storage/scsi-debug.config
+storage/dm-targets.config
+storage/nvdimm.config
+storage/nvme.config
+mem/swap.config
+fs/ext4.config
+fs/overlayfs.config
+debug/hung-task.config
+debug/tracing.config
+security/selinux.config
+storage/scsi-tape.config
+storage/iscsi-tcp.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

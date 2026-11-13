@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: COMPUTE EXPRESS LINK (CXL)
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+storage/nvdimm.config
+storage/cxl.config
+debug/tracing.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

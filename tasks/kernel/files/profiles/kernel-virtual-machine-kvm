@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: KERNEL VIRTUAL MACHINE (KVM)
+# For each architecture; arm64 has no virt/kvm/async_pf.c or pfncache.c,
+# and riscv neither those nor guest_memfd.c and vfio.c.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+virt/kvm-${ARCH}.config
+virt/kvm-extras-${ARCH}.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

@@ -86,14 +86,18 @@
               cd ${./.}
               shellcheck --external-sources --source-path=SCRIPTDIR \
                 scripts/check-style.sh scripts/commit-msg scripts/docs scripts/serve \
-                tasks/kernel/* tasks/qemu/* tasks/common/*
+                scripts/check-profiles.sh \
+                $(find tasks -type f ! -path '*/files/*')
               shfmt --diff scripts/check-style.sh scripts/commit-msg scripts/docs \
-                scripts/serve tasks
+                scripts/serve scripts/check-profiles.sh tasks
               black --check scripts tests docs/conf.py
               ruff check --no-cache scripts tests
               HOME=$TMPDIR pyright
               doc8 docs
               markdownlint-cli2 '**/*.md'
+              # Through bash: no build sandbox has the /usr/bin/env of the
+              # script's shebang.
+              bash scripts/check-profiles.sh
               touch $out
             '';
 

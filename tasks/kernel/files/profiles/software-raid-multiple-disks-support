@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: SOFTWARE RAID (Multiple Disks) SUPPORT
+# For each architecture, which builds its own RAID6 and XOR code:
+# x86_64, arm64 and riscv. Leaves out the code of Alpha, 32-bit Arm,
+# LoongArch, PowerPC, S390 and SPARC, and 32-bit x86's MMX and SSE
+# code, lib/raid/raid6/x86/mmx.c and sse1.c and lib/raid/xor/x86/xor-mmx.c.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+storage/block-layer.config
+storage/md-raid.config
+storage/md-extras.config
+builtin/storage/md-raid.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

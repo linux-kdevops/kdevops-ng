@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: UPROBES
+# For each architecture, which builds its own uprobes.c: x86_64, arm64
+# and riscv. Leaves out those of csky, LoongArch, MIPS, PowerPC, S390
+# and SPARC.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+debug/tracing.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

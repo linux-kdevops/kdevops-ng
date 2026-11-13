@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: DEVICE-MAPPER  (LVM)
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+storage/block-layer.config
+storage/dm-targets.config
+storage/dm-extras.config
+builtin/storage/dm-targets.config
+builtin/storage/dm-extras.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

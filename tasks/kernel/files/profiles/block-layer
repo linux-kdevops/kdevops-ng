@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: BLOCK LAYER
+# Leaves out the drivers of other architectures' machines:
+# drivers/block's amiflop.c, ataflop.c, n64cart.c, ps3disk.c, ps3vram.c,
+# sunvdc.c, swim.c, swim_asm.S, swim3.c and z2ram.c, and S390's
+# block/partitions/ibm.c.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+rust/rust.config
+storage/block-layer.config
+storage/iosched.config
+storage/partitions.config
+storage/block-devices.config
+storage/rnull.config
+storage/block-test-devices.config
+storage/zoned.config
+storage/block-drivers.config
+storage/ublk.config
+storage/rnbd.config
+storage/nvme.config
+storage/nvme-fabrics.config
+mem/zram.config
+mem/zram-backends.config
+virt/xen.config
+debug/blktrace.config
+debug/fault-injection.config
+fs/encryption.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config

@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# MAINTAINERS: FILESYSTEMS (VFS and infrastructure)
+# Leaves out fs/binfmt_elf_fdpic.c and fs/binfmt_flat.c, which build
+# for Arm and no-MMU kernels, and init/noinitramfs.c, which builds only
+# without the initramfs the guest boots from.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+test/kunit.config
+builtin/test/kunit.config
+rust/rust.config
+storage/block-layer.config
+storage/block-test-devices.config
+core/compat.config
+fs/ext4.config
+fs/fat.config
+fs/binfmt-misc-bpf.config
+security/ebpf.config
+builtin/storage/block-test-devices.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+builtin/virt/virtio-fs.config
