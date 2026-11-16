@@ -9,6 +9,7 @@
 . "$(dirname "$0")/../common/task"
 : "${target:?}"
 . "$(dirname "$0")/../common/kbuild"
+record=(--command "make {configuration}" "${config[@]}" --priority warning)
 . "$(dirname "$0")/../common/unit"
 
 transcript

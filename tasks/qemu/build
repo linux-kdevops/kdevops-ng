@@ -7,6 +7,7 @@
 ##   tasks/qemu/build --directory ~/qemu
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/qemu"
+record=(--project qemu --command make --priority warning)
 . "$(dirname "$0")/../common/unit"
 
 transcript

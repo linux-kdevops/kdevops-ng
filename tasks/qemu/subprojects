@@ -8,6 +8,7 @@
 ##   tasks/qemu/subprojects --directory ~/qemu
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/qemu"
+settings+=(--property=ReadWritePaths="$directory/subprojects")
 . "$(dirname "$0")/../common/unit"
 
 transcript

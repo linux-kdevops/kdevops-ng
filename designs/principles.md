@@ -34,9 +34,12 @@ takes a tool from a container or from a language's package manager.
 Anything that runs for a while is a [systemd] unit of the developer's
 service manager, so restarts, timeouts, dependencies, logging, scheduling
 and resource limits come from the service manager, not from custom
-daemons, PID files, polling loops or cron jobs. A unit takes its settings
-from environment files, specifiers and drop-ins, and an upstream template
-comes before a new one.
+daemons, PID files, polling loops or cron jobs. A unit a task starts for
+its tool takes its settings on the command line that starts it, so the log
+shows them and nothing is installed for it. A unit that stays, as a timer
+or a server, is a unit file with specifiers and drop-ins, and an upstream
+template comes before a new one. A developer's own limit on either is a
+drop-in of theirs.
 
 ## 4. Everything runs in a sandbox
 

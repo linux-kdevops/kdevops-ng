@@ -25,13 +25,6 @@ same in a terminal, so a failed run reproduces from its log. An
 :term:`option <Option>` keeps the name its :term:`tool <Tool>` gives the
 argument, as ``--directory`` is :cmd:`make`'s own.
 
-.. note::
-
-   The line a task logs for its tool names the unit, not the unit's
-   settings. Where it runs, what it may write and what files its record
-   are the drop-ins under its name (:ref:`tasks-unit`), so the line does
-   the same only on a host that has them linked.
-
 .. toctree::
    :maxdepth: 1
 
@@ -91,14 +84,15 @@ What the unit runs, and the processor time and memory it has taken:
 The unit's settings
 -------------------
 
-A unit's settings are `drop-ins`_ under its name, which
-kdevops-ng ships in :src:`units/user` (:ref:`requirements-units`). They
-have the unit run in the directory it works in, see that directory and
-your home read-only, and write only where the task's tool keeps what it
-makes, as ``build/`` of a Linux tree, and ``~/.local/state``, where
-records go.
+The line a task logs for its tool holds the unit's settings, each an
+option of :cmd:`systemd-run`: the unit runs in the directory it works in,
+sees that directory and your home read-only, and writes only where the
+task's tool keeps what it makes, as ``build/`` of a Linux tree, and
+``~/.local/state``, where records go. The ``ExecStopPost=`` among them
+is the :cmd:`krecord` line that files the run's record
+(:doc:`/records`).
 
-A drop-in of your own changes or adds a setting. One under the task's name
+A `drop-in`_ of your own changes or adds a setting. One under the task's name
 holds for every tree, and one under a unit's full name for that tree:
 
 .. code-block:: console
@@ -166,7 +160,7 @@ its unit took. The settings most useful for a build:
      - Puts the build in a slice of your own, whose limits then hold
        for every unit in it together.
 
-.. _drop-ins: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Description
+.. _drop-in: https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html#Description
 
 .. _Bash: https://www.gnu.org/software/bash/
 .. _service manager: https://www.freedesktop.org/software/systemd/man/latest/systemd.html

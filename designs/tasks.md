@@ -231,16 +231,16 @@ inputs and values, then the commands.
   names `PATH` and each of the tool's variables that is set with
   `--setenv`, which puts them in the log (I2). Nothing of kdevops-ng's
   own goes through the unit's environment.
-- U4. What does not change from one run to the next is a drop-in under
-  the unit's name in `units/user/`, never an argument a task builds: the
-  directory the unit runs in, which is its instance, what it sees
-  read-only (principle 4) and what it may write. The logged line is then
-  the unit's name and the tool's own command. A developer links the
-  drop-ins once, under `~/.local/share/systemd/user/`, and a task that
-  finds them missing says where the step is written and runs nothing.
-- U5. A limit, a timeout or one more writable path is a drop-in too, the
-  developer's or a workflow's to write under `~/.config/systemd/user/`.
-  No task takes an option or a variable for one.
+- U4. The unit's settings are options of `systemd-run` on the logged
+  line: the directory it runs in, what it sees read-only (principle 4),
+  what it may write. `tasks/common/unit` holds the ones every unit takes
+  and a task or its `tasks/common` file adds its own in `settings`.
+  Nothing is installed on the host for a task to run, and the line
+  reproduces the run on any host (principle 5).
+- U5. A limit, a timeout or one more writable path is a drop-in under
+  the unit's name, the developer's or a workflow's to write under
+  `~/.config/systemd/user/`. No task takes an option or a variable for
+  one.
 - U6. A task that is interrupted stops its unit, with the `systemctl`
   line in the log. `systemd-run` leaves the unit running when a signal
   ends it, and the next run of the task would be refused.
@@ -250,12 +250,12 @@ inputs and values, then the commands.
 kdevops-ng is a producer of [kresults] records, in version 1 of the
 format: its `validate` accepts every file a task leaves.
 
-- R1. A task that leaves a record has a drop-in `50-record.conf` under
-  its unit's name. It names kresults' `krecord` as the unit's
-  `ExecStopPost=`, with the command as a developer types it at the top
-  of the tree. `krecord` takes the record's name and the variables to
-  record from kresults' `commands.json`, where a command gets its line
-  before a task records it. No shell of a task's builds the record.
+- R1. A task that leaves a record names `krecord`'s options in
+  `record`, with the command as a developer types it at the top of the
+  tree, and `tasks/common/unit` makes them the unit's `ExecStopPost=`.
+  `krecord` takes the record's name and the variables to record from
+  kresults' `commands.json`, where a command gets its line before a task
+  records it. No shell of a task builds the record.
 - R2. systemd runs `krecord` as the tool exits, pass or fail, with the
   exit status. `krecord` reads the unit's warnings from the journal and
   writes the record. What a record holds, when two runs are equal and

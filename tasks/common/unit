@@ -3,27 +3,40 @@
 # The unit a task runs its tool in, as "${unit[@]}" before the tool's
 # command: a transient unit of the developer's service manager, named for
 # the task and $directory, so the same task is refused a second run there
-# while one lasts. The unit's settings are the drop-ins under its name in
-# units/user: where it runs, what it may write, what files its record.
+# while one lasts. It runs in $directory and sees the developer's home
+# read-only (designs/principles.md, 4). $settings are the options of
+# systemd-run a task or its tasks/common file adds: what of $directory
+# the tool may write.
 # systemd-cat sends the tool's standard output to the journal as it is and
 # its standard error as warnings, each line under the unit's name as its
 # identifier. journald names a line's unit only while the process that
 # wrote it lives, so a compiler's last errors would carry none: the
-# identifier is what finds every line. The tool's exit status is the
-# task's.
+# identifier is what finds every line, krecord's too. The tool's exit
+# status is the task's.
 # The unit gets none of the caller's environment, so each of $variables
 # that is set is named, and the log shows it (designs/tasks.md, I2).
 : "${directory:?} ${variables[*]:?}"
 task=$(basename "$(dirname "$0")")-$(basename "$0")
 name=$(systemd-escape --path "$directory" --template="$task@.service")
-# Without its drop-ins the unit would run in no tree, write anywhere and
-# file nothing, so a task that finds them not linked says so and stops.
-if [ ! -d "$HOME/.local/share/systemd/user/$task@.service.d" ]; then
-	echo "$0: link the units' settings first:" \
-		"docs/getting-started/requirements.rst, \"The units' settings\"" >&2
-	exit 1
+unit=(systemd-run --user --unit="$name" --wait --collect
+	--working-directory="$directory" --property=SyslogIdentifier="$name"
+	--property=PrivateUsers=yes --property=ProtectHome=read-only
+	"${settings[@]}")
+# A task that leaves a record names krecord's options in $record
+# (designs/tasks.md, R1): systemd runs krecord as the tool exits, pass or
+# fail. The "-" has it ignore krecord's exit status and env finds krecord
+# on the unit's PATH, so a host without krecord still does the work. A
+# word with a space is quoted, as systemd reads the line.
+if [ -n "${record[*]-}" ]; then
+	stop="-env krecord"
+	for word in "${record[@]}" --producer kdevops-ng \
+		--producer-tree "$(realpath "$(dirname "$0")")"; do
+		case $word in *' '*) word="\"$word\"" ;; esac
+		stop+=" $word"
+	done
+	unit+=(--property=StateDirectory=krecords --property=ExecStopPost="$stop")
 fi
-unit=(systemd-run --user --unit="$name" --wait --collect --setenv=PATH)
+unit+=(--setenv=PATH)
 for variable in "${variables[@]}"; do
 	if [ -n "${!variable-}" ]; then
 		unit+=(--setenv="$variable=${!variable}")

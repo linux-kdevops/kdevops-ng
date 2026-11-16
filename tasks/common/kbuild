@@ -3,9 +3,14 @@
 # The build of the Linux tree in $directory: $build, build/ of the tree,
 # where kbuild keeps what it makes apart from the sources. $make is the
 # make every kernel task runs in the tree, and $variables kbuild's own that
-# say what it builds.
+# say what it builds. $settings lets the unit write the build and nothing
+# else of the tree, and $config is what krecord files a run under: the
+# build's .config and its name.
 : "${directory:?}"
 directory=$(realpath "$directory")
 build=$directory/build
 variables=(ARCH LLVM)
 make=(make O=build --jobs="$(nproc)")
+settings=(--property=ReadOnlyPaths="$directory"
+	--property=ReadWritePaths="-$build")
+config=(--config build/.config --configuration-file build/.config.name)

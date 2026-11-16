@@ -102,6 +102,7 @@ cmd_links = {
     "systemd.unit": "https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html",
     "systemd.service": "https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html",
     "systemctl": "https://www.freedesktop.org/software/systemd/man/latest/systemctl.html",
+    "systemd-run": "https://www.freedesktop.org/software/systemd/man/latest/systemd-run.html",
     "systemd.resource-control": "https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html",
     "sudo": "https://www.sudo.ws/docs/man/sudo.man/",
 }

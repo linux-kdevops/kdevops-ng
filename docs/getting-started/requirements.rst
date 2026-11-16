@@ -73,24 +73,6 @@ each list is a command for you to run.
 
          $ sudo apt install git
 
-.. _requirements-units:
-
-The units' settings
-===================
-
-A task runs its tool as a `unit`_ of your `service manager`_. Where the
-unit runs, what it may write and what files its record are drop-ins
-kdevops-ng ships. Link them once, from the checkout, where your service
-manager looks for a user's units:
-
-.. code-block:: console
-   :class: cmd-host
-
-   $ mkdir --parents --verbose ~/.local/share/systemd/user
-   $ ln --symbolic --verbose --target-directory ~/.local/share/systemd/user \
-       "$PWD"/units/user/*.d
-   $ systemctl --user daemon-reload
-
 .. _requirements-journal:
 
 The journal
