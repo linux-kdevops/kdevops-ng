@@ -220,6 +220,8 @@ inputs and values, then the commands.
   identifier with `journalctl` and shows the lines as they come, and the
   tool's exit status is the task's. No task captures,
   times or stores a tool's output itself: the journal does (principle 3).
+  A task with no tool to run, only commands on files, as
+  `tasks/smatch/uninstall`'s `rm`, starts no unit.
 - U2. The unit is named for the task and the directory it works in, as
   `kernel-build@home-user-linux.service`. A task thus runs once on a
   directory at a time, and `journalctl --user --identifier` with that

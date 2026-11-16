@@ -1,0 +1,14 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The tool a task builds and installs from the tree in $directory
+# (tasks/common/prefix). Its build system has no build directory, so it
+# builds in the tree, which the developer keeps for it, and $settings lets
+# the unit write there. $make is the make of both tasks, since the build
+# takes the prefix too, and $variables the compiler's.
+: "${directory:?}"
+directory=$(realpath "$directory")
+. "$(dirname "$0")/../common/prefix"
+variables=(CC)
+make=(make --jobs="$(nproc)" PREFIX="$prefix")
+settings=(--property=ReadWritePaths="$directory"
+	--property=ReadWritePaths="-$prefix")

@@ -17,8 +17,8 @@ the run made for itself, tasks act as root over SSH.
 
 ## 2. The host provides the tools
 
-A task runs each tool by its name, from `PATH`, and never fetches or
-installs one. The host's distribution provides the tools, and the
+A task runs each tool by its name, from `PATH`, and never fetches one or
+installs a package. The host's distribution provides the tools, and the
 developer installs them from the list the documentation gives for it.
 [Nix] is one of the distributions and the preferred one, for
 reproducibility: it pins every tool, so two hosts given the same inputs
@@ -28,6 +28,11 @@ others ship what they ship that day.
 What only one distribution can do, such as adding a build to the Nix
 store, is a task of its own, which a workflow runs only there. No host
 takes a tool from a container or from a language's package manager.
+
+A developer who wants a tool newer than the distribution's gives its
+tree to the tasks that build it and install it for that user alone,
+under `~/.local` as [UAPI.9] sorts a user's files. That needs no root,
+and the tool is then one more on `PATH`.
 
 ## 3. systemd first
 
@@ -45,12 +50,16 @@ drop-in of theirs.
 
 A task changes no file that a tree a person works in tracks. In a tree it
 is given, it writes only where its tool keeps what it makes apart from the
-sources, as kbuild keeps a build in `build/`. What tasks share lives in
-the directory of the tool that owns it, under `~/.local/state` or
-`~/.cache` as [UAPI.9] sorts a user's files. Beyond those places a task
-writes only scratch under `$TMPDIR`, never a configuration file of the
-developer's. A task's unit enforces what it can: a kernel task's make
-sees the tree and the developer's home read-only.
+sources, as kbuild keeps a build in `build/`. A tool with no build
+directory, as smatch, builds beside its sources in the files its
+`.gitignore` names, in a clone the developer keeps for the build. What
+tasks share lives in the directory of the tool that owns it, under
+`~/.local/state` or `~/.cache` as [UAPI.9] sorts a user's files, and a
+tool a task installs under `~/.local/lib` and `~/.local/bin`. Beyond
+those places a task writes only scratch under `$TMPDIR`, never a
+configuration file of the developer's. A task's unit enforces what it
+can: a kernel task's make sees the tree and the developer's home
+read-only.
 
 ## 5. Commands a developer can run
 

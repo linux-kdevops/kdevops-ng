@@ -153,8 +153,8 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
          $ sudo apt install clang lld llvm
          $ sudo apt install sparse
 
-Debian and Ubuntu ship no smatch: build it from its source and put it
-where your ``PATH`` finds it.
+Debian and Ubuntu ship no smatch: :doc:`smatch` builds and installs it
+from its tree.
 
 The build directory
 ===================
@@ -200,6 +200,6 @@ tasks take make's line and kbuild's variables from
 .. _kfragments: https://github.com/linux-kdevops/kfragments
 .. _Linux: https://kernel.org
 .. _Perl: https://www.perl.org
-.. _smatch: https://repo.or.cz/smatch.git
+.. _smatch: https://github.com/error27/smatch
 .. _sparse: https://git.kernel.org/pub/scm/devel/sparse/sparse.git
 .. _submitting-patches.rst: https://docs.kernel.org/process/submitting-patches.html

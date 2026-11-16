@@ -1,0 +1,8 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Where a tool a task installs for the developer alone lives: $tool, named
+# for the task's subsystem, under $prefix, a prefix of its own as UAPI.9
+# sorts a user's files, so only $link, in ~/.local/bin, reaches PATH.
+tool=$(basename "$(dirname "$0")")
+prefix=$HOME/.local/lib/$tool
+link=$HOME/.local/bin/$tool

@@ -30,6 +30,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
 
    kernel
    qemu
+   smatch
 
 .. _tasks-unit:
 
