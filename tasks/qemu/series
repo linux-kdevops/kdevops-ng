@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu/series --directory DIR --range RANGE
+##
+## Name the commits of RANGE in the QEMU tree in DIR as the series the
+## tree's records are of, with kresults' kseries:
+##
+##   tasks/qemu/series --directory ~/qemu --range v11.1.0..
+. "$(dirname "$0")/../common/task"
+: "${range:?}"
+. "$(dirname "$0")/../common/qemu"
+# kseries writes the series where krecord files the tree's records.
+settings+=(--property=StateDirectory=krecords)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" kseries --project qemu --range "$range"

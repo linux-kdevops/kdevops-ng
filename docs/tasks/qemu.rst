@@ -4,10 +4,10 @@
 QEMU
 ====
 
-Four :term:`tasks <Task>` download the subprojects of a `QEMU`_
-:term:`tree <Tree>`, configure it, build it and check its commits. The tree
-is yours. They change no file it tracks, and write only in its
-``subprojects/`` and ``build/``.
+The :term:`tasks <Task>` download the subprojects of a `QEMU`_
+:term:`tree <Tree>`, configure it, build it, name its series and check
+its commits. The tree is yours. They change no file it tracks, and
+write only in its ``subprojects/`` and ``build/``.
 
 .. code-block:: console
    :caption: host
@@ -16,6 +16,7 @@ is yours. They change no file it tracks, and write only in its
    $ tasks/qemu/subprojects --directory ~/qemu
    $ tasks/qemu/configure --directory ~/qemu --target-list x86_64-softmmu
    $ tasks/qemu/build --directory ~/qemu
+   $ tasks/qemu/series --directory ~/qemu --range HEAD~3..
    $ tasks/qemu/checkpatch --directory ~/qemu --range HEAD~3..
 
 :src:`subprojects <tasks/qemu/subprojects>` has `Meson`_ download the Git
@@ -24,6 +25,8 @@ runs ``configure`` in ``build/`` for the targets its ``--target-list``
 names, with ``--disable-download``: it fetches nothing, and takes Meson
 from the host or from the wheel the tree ships. :src:`build
 <tasks/qemu/build>` runs :cmd:`make` there, with a job for each processor.
+:src:`series <tasks/qemu/series>` names the commits of a range as the
+series the tree's records are of (:ref:`records-series`).
 :src:`checkpatch <tasks/qemu/checkpatch>` checks each commit of a range
 with the tree's checkpatch.pl, a `Perl`_ program, as `submitting-a-patch.rst`_
 asks before a submission.

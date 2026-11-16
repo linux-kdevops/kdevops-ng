@@ -137,6 +137,7 @@ the range from the base:
    :class: cmd-host
 
    $ tasks/kernel/series --directory ~/linux --range v7.3..
+   $ tasks/qemu/series --directory ~/qemu --range v11.1.0..
 
 :cmd:`kseries` writes ``series.json`` beside the commit's records: the
 base, the commits it lacks, the files they change and the branch the
