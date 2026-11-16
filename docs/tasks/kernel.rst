@@ -17,6 +17,7 @@ tracks, and write only in its ``build/``.
    $ tasks/kernel/mrproper --directory ~/linux
    $ tasks/kernel/series --directory ~/linux --range v7.3..
    $ tasks/kernel/checkpatch --directory ~/linux --range v7.3..
+   $ tasks/kernel/objects --directory ~/linux
    $ tasks/kernel/sparse --directory ~/linux --object init/main.o
    $ tasks/kernel/smatch --directory ~/linux --object init/main.o
 
@@ -40,6 +41,21 @@ kbuild's ``C=2`` with its warnings made errors. :src:`smatch
 its fatal checks, and make silent, so its record holds what smatch said
 and none of make's progress. Each takes one object file at a time, so
 the file has its verdict and is checked again alone.
+
+:src:`objects <tasks/kernel/objects>` lists the object files to check:
+the ones the build compiles from the C files the tree's series changes
+(:ref:`records-series`), each on an ``object:`` line. A C file the
+configuration does not compile is on an ``unbuilt:`` line, so what no
+check covers shows. Run it after the build:
+
+.. code-block:: console
+   :class: cmd-host
+
+   $ tasks/kernel/objects --directory ~/linux
+   …
+   object: block/blk-merge.o
+   object: drivers/nvme/host/core.o
+   unbuilt: drivers/block/swim.c
 
 .. _kernel-configuration:
 

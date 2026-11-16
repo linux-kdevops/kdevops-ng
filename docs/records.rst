@@ -16,10 +16,11 @@ accepts every record a task leaves.
 Requirements
 ============
 
-kresults' :cmd:`krecord` writes the record, and its :cmd:`kseries` what
-series a commit is the tip of (:ref:`records-series`). Each needs `Python`_ 3.11 or later,
-which each :term:`distribution <Distribution>`'s base system has, and a link
-under its name somewhere on your ``PATH``:
+kresults' :cmd:`krecord` writes the record, its :cmd:`kseries` what
+series a commit is the tip of, and its :cmd:`kobjects` what a build
+compiles of the series (:ref:`records-series`). Each needs `Python`_ 3.11
+or later, which each :term:`distribution <Distribution>`'s base system
+has, and a link under its name somewhere on your ``PATH``:
 
 .. code-block:: console
    :caption: host
@@ -30,6 +31,8 @@ under its name somewhere on your ``PATH``:
        ~/.local/bin/krecord
    $ ln --symbolic --verbose "$PWD/kresults/format/series.py" \
        ~/.local/bin/kseries
+   $ ln --symbolic --verbose "$PWD/kresults/format/objects.py" \
+       ~/.local/bin/kobjects
 
 :cmd:`krecord` reads what the tool printed from your journal
 (:ref:`requirements-journal`).
@@ -140,6 +143,11 @@ base, the commits it lacks, the files they change and the branch the
 tree is on, which names the series. The records of the series are then
 set against those of its base, built the same way. Run it again after
 the tree's commits change.
+
+:src:`objects <tasks/kernel/objects>` then says what a build compiles of
+the series: :cmd:`kobjects` writes ``objects.json`` beside the build's
+records, the objects to check and the C files the configuration leaves
+out.
 
 .. _Git: https://git-scm.com
 .. _kresults: https://github.com/linux-kdevops/kresults
