@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/checkpatch --directory DIR --range RANGE
+##
+## Check each commit of RANGE in the Linux tree in DIR with the tree's
+## checkpatch.pl, --strict:
+##
+##   tasks/kernel/checkpatch --directory ~/linux --range HEAD~3..
+. "$(dirname "$0")/../common/task"
+: "${range:?}"
+. "$(dirname "$0")/../common/kbuild"
+# commands.json lists no argv for checkpatch.pl, so --output names the
+# record, and no --priority keeps every line: checkpatch.pl reports on its
+# standard output (designs/tasks.md, R2).
+record=(--command "scripts/checkpatch.pl --strict --git {range}"
+	--range "$range" --output=checkpatch.pl.json)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" scripts/checkpatch.pl --strict --git "$range"

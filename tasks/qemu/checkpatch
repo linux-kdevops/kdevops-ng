@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu/checkpatch --directory DIR --range RANGE
+##
+## Check each commit of RANGE in the QEMU tree in DIR with the tree's
+## checkpatch.pl:
+##
+##   tasks/qemu/checkpatch --directory ~/qemu --range HEAD~3..
+. "$(dirname "$0")/../common/task"
+: "${range:?}"
+. "$(dirname "$0")/../common/qemu"
+# As tasks/kernel/checkpatch files its record. QEMU's checkpatch.pl has no
+# --git, and its --strict adds no check: it only fails a run on warnings.
+record=(--project qemu --command "scripts/checkpatch.pl --branch {range}"
+	--range "$range" --output=checkpatch.pl.json)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" scripts/checkpatch.pl --branch "$range"

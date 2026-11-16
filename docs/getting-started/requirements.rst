@@ -149,9 +149,10 @@ What each part needs
 
 Each part of kdevops-ng lists its own tools, on its page:
 
-- :ref:`The kernel tasks <requirements-kernel>`: :cmd:`make` and a compiler.
-- :ref:`The QEMU tasks <requirements-qemu>`: `Meson`_, :cmd:`make` and a
-  compiler.
+- :ref:`The kernel tasks <requirements-kernel>`: :cmd:`make`, a compiler
+  and `Perl`_.
+- :ref:`The QEMU tasks <requirements-qemu>`: `Meson`_, :cmd:`make`, a
+  compiler and `Perl`_.
 - :ref:`Records <requirements-records>`: `kresults`_' :cmd:`krecord`, and a name
   for your :term:`lab <Lab>`.
 - :ref:`A change to kdevops-ng <requirements-contributing>`: the checks, and
@@ -168,6 +169,7 @@ Each part of kdevops-ng lists its own tools, on its page:
 .. _Meson: https://mesonbuild.com
 .. _Nix: https://nixos.org
 .. _nixpkgs: https://github.com/NixOS/nixpkgs
+.. _Perl: https://www.perl.org
 .. _service manager: https://www.freedesktop.org/software/systemd/man/latest/systemd.html
 .. _Sphinx: https://www.sphinx-doc.org
 .. _systemd: https://systemd.io

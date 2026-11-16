@@ -16,6 +16,7 @@ tracks, and write only in its ``build/``.
    $ tasks/kernel/build --directory ~/linux
    $ tasks/kernel/mrproper --directory ~/linux
    $ tasks/kernel/series --directory ~/linux --range v7.3..
+   $ tasks/kernel/checkpatch --directory ~/linux --range v7.3..
 
 :src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of make's
 :term:`configuration <Configuration>` targets, such as ``tinyconfig`` or
@@ -24,6 +25,9 @@ says, with a job for each processor. :src:`mrproper <tasks/kernel/mrproper>`
 removes what `kbuild`_ made in ``build/``, the ``.config`` with it.
 :src:`series <tasks/kernel/series>` names the commits of a range as the
 series the tree's records are of (:ref:`records-series`).
+:src:`checkpatch <tasks/kernel/checkpatch>` checks each commit of a range
+with the tree's checkpatch.pl, ``--strict``, before a submission, as
+`submitting-patches.rst`_ asks.
 
 .. _kernel-configuration:
 
@@ -79,8 +83,9 @@ journal has them and the record does not (:doc:`/records`):
 Requirements
 ============
 
-The tasks run :cmd:`make` with `GCC`_; the second line of each list is for
-`Clang`_, under ``LLVM=1`` (:doc:`/getting-started/requirements`):
+The tasks that run :cmd:`make` run it with `GCC`_, and checkpatch.pl
+needs `Perl`_. The second line of each list is for `Clang`_, under
+``LLVM=1`` (:doc:`/getting-started/requirements`):
 
 .. tab-set::
    :sync-group: distro
@@ -147,10 +152,10 @@ one that is set:
 The unit
 ========
 
-Each task runs :cmd:`make` in a unit named for the task and the tree:
+Each task runs its tool in a unit named for the task and the tree:
 ``kernel-build@home-user-linux.service`` builds ``/home/user/linux``
 (:ref:`tasks-unit`). In the tree the unit may write ``build/`` only. The
-three tasks take make's line and kbuild's variables from
+tasks take make's line and kbuild's variables from
 :src:`tasks/common/kbuild`.
 
 .. _Clang: https://clang.llvm.org
@@ -159,3 +164,5 @@ three tasks take make's line and kbuild's variables from
 .. _kbuild: https://docs.kernel.org/kbuild/index.html
 .. _kfragments: https://github.com/linux-kdevops/kfragments
 .. _Linux: https://kernel.org
+.. _Perl: https://www.perl.org
+.. _submitting-patches.rst: https://docs.kernel.org/process/submitting-patches.html

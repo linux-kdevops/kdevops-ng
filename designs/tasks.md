@@ -4,8 +4,8 @@
 
 A change to a task or a workflow is reviewed against these rules, and a
 finding cites one by its number. No workflow exists yet, and of the tasks
-named below only `tasks/kernel/kconfig` and `tasks/kernel/build` do: the
-other names show the form.
+named below only `tasks/kernel/kconfig`, `tasks/kernel/build` and
+`tasks/kernel/checkpatch` do: the other names show the form.
 
 ## 1. Three layers
 
@@ -62,7 +62,7 @@ tasks, as `check/` would be.
 
 Its caller says what to work on, never how: no flag of the tool, no place
 to work in, no number of jobs. Where a tool runs two ways the task takes
-one, as `checkpatch.pl` runs with `--strict`.
+one, as `tasks/kernel/checkpatch` runs `checkpatch.pl` with `--strict`.
 
 ### T4. One goal, and it reruns alone
 
@@ -258,9 +258,11 @@ format: its `validate` accepts every file a task leaves.
   records it. No shell of a task builds the record.
 - R2. systemd runs `krecord` as the tool exits, pass or fail, with the
   exit status. `krecord` reads the unit's warnings from the journal and
-  writes the record. What a record holds, when two runs are equal and
-  how a tree with changes not committed is filed are kresults' to say,
-  and no task repeats them.
+  writes the record. A tool whose standard output is its report and
+  holds no progress, as `checkpatch.pl`'s, is recorded whole: its task
+  asks `krecord` for no `--priority`. What else a record holds, when two
+  runs are equal and how a tree with changes not committed is filed are
+  kresults' to say, and no task repeats them.
 - R3. Records go to `~/.local/state/krecords`, `krecord`'s own default
   and the unit's `StateDirectory=`, a plain directory. Nothing commits or
   sends them yet.

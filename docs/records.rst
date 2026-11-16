@@ -65,6 +65,11 @@ build:
 A QEMU commit has no build below it: ``qemu/<commit>/configure.json`` and
 ``qemu/<commit>/make/all.json``.
 
+A checkpatch record lies under the commit alone as well, the last one of
+the range it checked: ``linux/<commit>/checkpatch.pl.json`` and
+``qemu/<commit>/checkpatch.pl.json``. The latest range checked on a commit
+is its record.
+
 A :term:`tree <Tree>` with changes not committed is filed apart, under its
 commit's name with ``-dirty``. A run again of the same build, with the same
 tools and the same output, adds to its record rather than writing over it.
@@ -104,7 +109,8 @@ missing, and the task goes on.
 
 A record holds what the tool printed on its standard error, the warnings
 and errors, and none of its progress. A build that compiles nothing again
-prints no warning again, so its record holds none.
+prints no warning again, so its record holds none. A checkpatch record
+holds every line: checkpatch.pl's standard output is its report.
 
 A build is filed under the machine the kernel built for, which its
 ``.config`` names: ``x86_64``, or ``i386`` for a tinyconfig on an x86_64
