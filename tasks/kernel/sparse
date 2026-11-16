@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/sparse --directory DIR --object OBJECT
+##
+## Check the object file OBJECT of the Linux tree in DIR with sparse, as
+## kbuild's C=2 with its warnings made errors:
+##
+##   tasks/kernel/sparse --directory ~/linux --object init/main.o
+. "$(dirname "$0")/../common/task"
+: "${object:?}"
+. "$(dirname "$0")/../common/kbuild"
+record=(--command "make C=2 CF=-Wsparse-error {file}" --file "$object"
+	"${config[@]}" --output "sparse/{file}.json" --tool sparse
+	--priority warning)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" "${make[@]}" C=2 CF=-Wsparse-error "$object"

@@ -110,7 +110,8 @@ missing, and the task goes on.
 A record holds what the tool printed on its standard error, the warnings
 and errors, and none of its progress. A build that compiles nothing again
 prints no warning again, so its record holds none. A checkpatch record
-holds every line: checkpatch.pl's standard output is its report.
+holds every line: checkpatch.pl's standard output is its report. So does
+smatch's.
 
 A build is filed under the machine the kernel built for, which its
 ``.config`` names: ``x86_64``, or ``i386`` for a tinyconfig on an x86_64

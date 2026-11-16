@@ -259,10 +259,10 @@ format: its `validate` accepts every file a task leaves.
 - R2. systemd runs `krecord` as the tool exits, pass or fail, with the
   exit status. `krecord` reads the unit's warnings from the journal and
   writes the record. A tool whose standard output is its report and
-  holds no progress, as `checkpatch.pl`'s, is recorded whole: its task
-  asks `krecord` for no `--priority`. What else a record holds, when two
-  runs are equal and how a tree with changes not committed is filed are
-  kresults' to say, and no task repeats them.
+  holds no progress of its own, as `checkpatch.pl`'s and smatch's, is
+  recorded whole: its task asks `krecord` for no `--priority`. What else
+  a record holds, when two runs are equal and how a tree with changes
+  not committed is filed are kresults' to say, and no task repeats them.
 - R3. Records go to `~/.local/state/krecords`, `krecord`'s own default
   and the unit's `StateDirectory=`, a plain directory. Nothing commits or
   sends them yet.

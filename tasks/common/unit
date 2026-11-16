@@ -26,12 +26,13 @@ unit=(systemd-run --user --unit="$name" --wait --collect
 # (designs/tasks.md, R1): systemd runs krecord as the tool exits, pass or
 # fail. The "-" has it ignore krecord's exit status and env finds krecord
 # on the unit's PATH, so a host without krecord still does the work. A
-# word with a space is quoted, as systemd reads the line.
+# word with a space is quoted, and a quote in it escaped, as systemd reads
+# the line.
 if [ -n "${record[*]-}" ]; then
 	stop="-env krecord"
 	for word in "${record[@]}" --producer kdevops-ng \
 		--producer-tree "$(realpath "$(dirname "$0")")"; do
-		case $word in *' '*) word="\"$word\"" ;; esac
+		case $word in *' '*) word="\"${word//\"/\\\"}\"" ;; esac
 		stop+=" $word"
 	done
 	unit+=(--property=StateDirectory=krecords --property=ExecStopPost="$stop")

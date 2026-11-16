@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/smatch --directory DIR --object OBJECT
+##
+## Check the object file OBJECT of the Linux tree in DIR with smatch, as
+## kbuild's C=2 with its fatal checks, silent but for what smatch says:
+##
+##   tasks/kernel/smatch --directory ~/linux --object init/main.o
+. "$(dirname "$0")/../common/task"
+: "${object:?}"
+. "$(dirname "$0")/../common/kbuild"
+# No --priority keeps every line: smatch reports on its standard output
+# (designs/tasks.md, R2). make runs silent, so the lines are smatch's
+# alone and none of make's progress.
+record=(--command 'make --silent C=2 CHECK="smatch --project=kernel --fatal-checks" {file}'
+	--file "$object" "${config[@]}" --output "smatch/{file}.json"
+	--tool smatch)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" "${make[@]}" --silent C=2 CHECK="smatch --project=kernel --fatal-checks" "$object"

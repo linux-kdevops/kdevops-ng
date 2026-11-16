@@ -17,6 +17,8 @@ tracks, and write only in its ``build/``.
    $ tasks/kernel/mrproper --directory ~/linux
    $ tasks/kernel/series --directory ~/linux --range v7.3..
    $ tasks/kernel/checkpatch --directory ~/linux --range v7.3..
+   $ tasks/kernel/sparse --directory ~/linux --object init/main.o
+   $ tasks/kernel/smatch --directory ~/linux --object init/main.o
 
 :src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of make's
 :term:`configuration <Configuration>` targets, such as ``tinyconfig`` or
@@ -28,6 +30,16 @@ series the tree's records are of (:ref:`records-series`).
 :src:`checkpatch <tasks/kernel/checkpatch>` checks each commit of a range
 with the tree's checkpatch.pl, ``--strict``, before a submission, as
 `submitting-patches.rst`_ asks.
+
+One object at a time
+====================
+
+:src:`sparse <tasks/kernel/sparse>` checks one object file with `sparse`_,
+kbuild's ``C=2`` with its warnings made errors. :src:`smatch
+<tasks/kernel/smatch>` checks one with `smatch`_, kbuild's ``C=2`` with
+its fatal checks, and make silent, so its record holds what smatch said
+and none of make's progress. Each takes one object file at a time, so
+the file has its verdict and is checked again alone.
 
 .. _kernel-configuration:
 
@@ -85,7 +97,8 @@ Requirements
 
 The tasks that run :cmd:`make` run it with `GCC`_, and checkpatch.pl
 needs `Perl`_. The second line of each list is for `Clang`_, under
-``LLVM=1`` (:doc:`/getting-started/requirements`):
+``LLVM=1``, and the third for the object checks
+(:doc:`/getting-started/requirements`):
 
 .. tab-set::
    :sync-group: distro
@@ -98,6 +111,7 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
 
          $ sudo apt install build-essential bc bison flex libelf-dev libssl-dev
          $ sudo apt install clang lld llvm
+         $ sudo apt install sparse
 
    .. tab-item:: Fedora
       :sync: fedora
@@ -108,11 +122,12 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
          $ sudo dnf install gcc make perl bc bison flex elfutils-libelf-devel \
              openssl-devel
          $ sudo dnf install clang lld llvm
+         $ sudo dnf install sparse smatch
 
    .. tab-item:: Ubuntu
       :sync: ubuntu
 
-      Clang is in ``universe``:
+      Clang and sparse are in ``universe``:
 
       .. code-block:: console
          :class: cmd-host
@@ -120,6 +135,10 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
          $ sudo apt install build-essential bc bison flex libelf-dev libssl-dev
          $ sudo add-apt-repository universe
          $ sudo apt install clang lld llvm
+         $ sudo apt install sparse
+
+Debian and Ubuntu ship no smatch: build it from its source and put it
+where your ``PATH`` finds it.
 
 The build directory
 ===================
@@ -165,4 +184,6 @@ tasks take make's line and kbuild's variables from
 .. _kfragments: https://github.com/linux-kdevops/kfragments
 .. _Linux: https://kernel.org
 .. _Perl: https://www.perl.org
+.. _smatch: https://repo.or.cz/smatch.git
+.. _sparse: https://git.kernel.org/pub/scm/devel/sparse/sparse.git
 .. _submitting-patches.rst: https://docs.kernel.org/process/submitting-patches.html
