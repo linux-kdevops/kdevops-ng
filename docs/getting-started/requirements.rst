@@ -149,6 +149,7 @@ What each part needs
 
 Each part of kdevops-ng lists its own tools, on its page:
 
+- :ref:`The b4 task <requirements-b4>`: `b4`_ and Git.
 - :ref:`The kernel tasks <requirements-kernel>`: :cmd:`make`, a compiler
   and `Perl`_.
 - :ref:`The QEMU tasks <requirements-qemu>`: `Meson`_, :cmd:`make`, a
@@ -163,6 +164,7 @@ Each part of kdevops-ng lists its own tools, on its page:
   `Sphinx`_ for these pages.
 - :ref:`Vendored projects <requirements-vendor>`: `git-subrepo`_.
 
+.. _b4: https://b4.docs.kernel.org
 .. _Debian: https://www.debian.org/releases/testing/
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com

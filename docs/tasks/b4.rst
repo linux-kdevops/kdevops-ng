@@ -1,0 +1,60 @@
+.. SPDX-License-Identifier: copyleft-next-0.3.1
+
+==
+b4
+==
+
+One :term:`task <Task>` takes a series from a mailing list by its
+Message-ID with `b4`_ and applies it in a worktree you add at the
+series' base, the commit its cover letter names as ``base-commit``:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ git -C ~/qemu worktree add --detach ~/wt/qemu 7a34f7b879
+   $ tasks/b4/shazam --directory ~/wt/qemu \
+       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+   $ tasks/qemu/series --directory ~/wt/qemu --range 7a34f7b879..
+
+:src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link``, so each
+commit ends with a ``Link:`` to its message. b4 reads your own
+configuration, the keys it checks attestation against included. The
+base is the commit you checked out, so the range of the series
+(:ref:`records-series`) starts there. A series that does not apply
+leaves ``git am`` stopped in the worktree, and ``git am --abort`` there
+gives the base back.
+
+.. _requirements-b4:
+
+Requirements
+============
+
+.. tab-set::
+   :sync-group: distro
+
+   .. tab-item:: Debian
+      :sync: debian
+
+      .. code-block:: console
+         :class: cmd-host
+
+         $ sudo apt install b4 git
+
+   .. tab-item:: Fedora
+      :sync: fedora
+
+      .. code-block:: console
+         :class: cmd-host
+
+         $ sudo dnf install b4 git
+
+   .. tab-item:: Ubuntu
+      :sync: ubuntu
+
+      .. code-block:: console
+         :class: cmd-host
+
+         $ sudo apt install b4 git
+
+.. _b4: https://b4.docs.kernel.org

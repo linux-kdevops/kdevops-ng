@@ -52,7 +52,9 @@ A task changes no file that a tree a person works in tracks. In a tree it
 is given, it writes only where its tool keeps what it makes apart from the
 sources, as kbuild keeps a build in `build/`. A tool with no build
 directory, as smatch, builds beside its sources in the files its
-`.gitignore` names, in a clone the developer keeps for the build. What
+`.gitignore` names, in a clone the developer keeps for the build. A
+task that applies a series commits it in a worktree the developer adds
+for that series. What
 tasks share lives in the directory of the tool that owns it, under
 `~/.local/state` or `~/.cache` as [UAPI.9] sorts a user's files, and a
 tool a task installs under `~/.local/lib` and `~/.local/bin`. Beyond

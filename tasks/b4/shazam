@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/b4/shazam --directory DIR --message-id ID
+##
+## Apply the series posted as ID onto the commit checked out in DIR, a
+## worktree you add at the series' base, with b4:
+##
+##   tasks/b4/shazam --directory ~/wt/qemu \
+##       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${message_id:?}"
+directory=$(realpath "$directory")
+# Where b4 keeps the thread and what b4 ty reads, if you moved them.
+variables=(XDG_CACHE_HOME XDG_DATA_HOME)
+# git am writes the worktree and the repository it belongs to.
+settings=(--property=ReadWritePaths="$directory"
+	--property=ReadWritePaths="$(git -C "$directory" rev-parse --path-format=absolute --git-common-dir)"
+	--property=CacheDirectory=b4
+	--property=ReadWritePaths="-${XDG_DATA_HOME:-$HOME/.local/share}/b4")
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" b4 --no-stdin shazam --add-link "$message_id"

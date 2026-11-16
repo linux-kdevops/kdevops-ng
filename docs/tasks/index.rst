@@ -28,6 +28,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
 .. toctree::
    :maxdepth: 1
 
+   b4
    kernel
    qemu
    smatch
