@@ -16,7 +16,8 @@ accepts every record a task leaves.
 Requirements
 ============
 
-kresults' :cmd:`krecord` writes the record. It needs `Python`_ 3.11 or later,
+kresults' :cmd:`krecord` writes the record, and its :cmd:`kseries` what
+series a commit is the tip of (:ref:`records-series`). Each needs `Python`_ 3.11 or later,
 which each :term:`distribution <Distribution>`'s base system has, and a link
 under its name somewhere on your ``PATH``:
 
@@ -27,6 +28,8 @@ under its name somewhere on your ``PATH``:
    $ git clone https://github.com/linux-kdevops/kresults.git
    $ ln --symbolic --verbose "$PWD/kresults/format/record.py" \
        ~/.local/bin/krecord
+   $ ln --symbolic --verbose "$PWD/kresults/format/series.py" \
+       ~/.local/bin/kseries
 
 :cmd:`krecord` reads what the tool printed from your journal
 (:ref:`requirements-journal`).
@@ -108,6 +111,28 @@ A build is filed under the machine the kernel built for, which its
 host.
 
 A record names the :term:`run <Run>` that made it, which by hand is ``manual``.
+
+.. _records-series:
+
+The series a commit is of
+=========================
+
+A commit's records say nothing of where it came from, so the first
+record files the commit as a base, one that others are set against. A
+tree that holds patches of yours is a series on a base, and
+:src:`series <tasks/kernel/series>` says which commits those are, as
+the range from the base:
+
+.. code-block:: console
+   :class: cmd-host
+
+   $ tasks/kernel/series --directory ~/linux --range v7.3..
+
+:cmd:`kseries` writes ``series.json`` beside the commit's records: the
+base, the commits it lacks, the files they change and the branch the
+tree is on, which names the series. The records of the series are then
+set against those of its base, built the same way. Run it again after
+the tree's commits change.
 
 .. _Git: https://git-scm.com
 .. _kresults: https://github.com/linux-kdevops/kresults

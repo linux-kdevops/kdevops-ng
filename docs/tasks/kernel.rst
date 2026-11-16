@@ -4,7 +4,7 @@
 Kernel
 ======
 
-Three :term:`tasks <Task>` configure, build and clean a `Linux`_
+The :term:`tasks <Task>` configure, build and clean a `Linux`_
 :term:`tree <Tree>` with :cmd:`make`. The tree is yours. They change no file it
 tracks, and write only in its ``build/``.
 
@@ -15,12 +15,15 @@ tracks, and write only in its ``build/``.
    $ tasks/kernel/kconfig --directory ~/linux --target tinyconfig
    $ tasks/kernel/build --directory ~/linux
    $ tasks/kernel/mrproper --directory ~/linux
+   $ tasks/kernel/series --directory ~/linux --range v7.3..
 
 :src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of make's
 :term:`configuration <Configuration>` targets, such as ``tinyconfig`` or
 ``defconfig``. :src:`build <tasks/kernel/build>` builds what that ``.config``
 says, with a job for each processor. :src:`mrproper <tasks/kernel/mrproper>`
 removes what `kbuild`_ made in ``build/``, the ``.config`` with it.
+:src:`series <tasks/kernel/series>` names the commits of a range as the
+series the tree's records are of (:ref:`records-series`).
 
 .. _kernel-configuration:
 

@@ -92,6 +92,7 @@ cmd_links = {
     "env": "https://www.gnu.org/software/coreutils/manual/html_node/env-invocation.html",
     "journalctl": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html",
     "krecord": "https://github.com/linux-kdevops/kresults/blob/main/format/README.md",
+    "kseries": "https://github.com/linux-kdevops/kresults/blob/main/docs/deploy.rst",
     "make": "https://www.gnu.org/software/make/manual/make.html",
     "pip": "https://pip.pypa.io/en/stable/",
     "nix": "https://nix.dev/manual/nix/latest/command-ref/new-cli/nix",

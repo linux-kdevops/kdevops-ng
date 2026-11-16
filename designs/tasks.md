@@ -268,6 +268,12 @@ format: its `validate` accepts every file a task leaves.
   in one line of the log, and a host without `krecord` gets env's line
   that it is missing. No task tests for either.
 
+- R5. A commit's records are a base's until kresults' `kseries` says
+  what series the commit is the tip of. A task gives it the range and
+  nothing else: the base, the commits and the files they change are
+  `kseries`'s to read from the tree. Nothing guesses the range from the
+  tree's remotes, which keep a base such as a `for-next` for a day.
+
 ## 9. Review
 
 Check each changed task against T1 to T5, I1 to I3, O1, U1 to U6 and R1,

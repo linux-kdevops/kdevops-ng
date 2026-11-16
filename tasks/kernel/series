@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/series --directory DIR --range RANGE
+##
+## Name the commits of RANGE in the Linux tree in DIR as the series the
+## tree's records are of, with kresults' kseries:
+##
+##   tasks/kernel/series --directory ~/linux --range v7.3..
+. "$(dirname "$0")/../common/task"
+: "${range:?}"
+. "$(dirname "$0")/../common/kbuild"
+# kseries writes the series where krecord files the tree's records.
+settings+=(--property=StateDirectory=krecords)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" kseries --range "$range"
