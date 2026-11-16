@@ -46,7 +46,8 @@ done
 unit+=(systemd-cat --identifier="$name" --stderr-priority=warning)
 # The unit's lines, shown as they come: journalctl follows the identifier
 # from where the journal ends now, and keeps its place in $cursor. As the
-# task ends, settle stops it and shows what it had not reached.
+# task ends, settle stops it and shows what it had not reached, with no
+# pager: on a terminal journalctl pages what is longer than the screen.
 cursor=$(mktemp)
 journalctl --user --lines=0 --quiet --show-cursor |
 	sed --quiet 's/^-- cursor: //p' >"$cursor"
@@ -55,7 +56,8 @@ journalctl --user --follow --output=cat --identifier="$name" \
 settle() {
 	journalctl --sync
 	kill %% && wait
-	journalctl --user --output=cat --identifier="$name" --cursor-file="$cursor"
+	journalctl --user --no-pager --output=cat --identifier="$name" \
+		--cursor-file="$cursor"
 	rm "$cursor"
 }
 # systemd-run leaves its unit running when it is interrupted, and the next
