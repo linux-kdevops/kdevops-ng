@@ -145,11 +145,18 @@ tree is on, which names the series. The records of the series are then
 set against those of its base, built the same way. Run it again after
 the tree's commits change.
 
+On a branch made with `b4`_ ``prep`` the first commit is the cover
+letter, an empty commit. Give the range from the base as before:
+:cmd:`kseries` takes the cover from that commit and leaves it out of the
+patches. A check of the patches, as checkpatch, takes its range from
+the cover commit, so it reads no patch in it.
+
 :src:`objects <tasks/kernel/objects>` then says what a build compiles of
 the series: :cmd:`kobjects` writes ``objects.json`` beside the build's
 records, the objects to check and the C files the configuration leaves
 out.
 
+.. _b4: https://b4.docs.kernel.org
 .. _Git: https://git-scm.com
 .. _kresults: https://github.com/linux-kdevops/kresults
 .. _Python: https://www.python.org
