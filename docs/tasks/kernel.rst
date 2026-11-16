@@ -154,7 +154,7 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
          $ sudo apt install sparse
 
 Debian and Ubuntu ship no smatch: :doc:`smatch` builds and installs it
-from its tree.
+from its tree, and :doc:`sparse` a sparse newer than the distribution's.
 
 The build directory
 ===================

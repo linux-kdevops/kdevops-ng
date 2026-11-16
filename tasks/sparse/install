@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/sparse/install --directory DIR
+##
+## Install the sparse built in its tree in DIR for you alone, under
+## ~/.local/lib/sparse with a link in ~/.local/bin:
+##
+##   tasks/sparse/install --directory ~/sparse
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/tool"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+mkdir --parents --verbose "$prefix" "$(dirname "$link")"
+"${unit[@]}" "${make[@]}" install
+ln --symbolic --force --no-dereference --verbose "$prefix/bin/$tool" "$link"

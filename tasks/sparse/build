@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/sparse/build --directory DIR
+##
+## Build sparse in its tree in DIR, a clone you keep for the build:
+##
+##   tasks/sparse/build --directory ~/sparse
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/tool"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" "${make[@]}"

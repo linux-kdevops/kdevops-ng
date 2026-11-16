@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/sparse/uninstall
+##
+## Remove the sparse that tasks/sparse/install installed for you: its
+## link in ~/.local/bin and ~/.local/lib/sparse:
+##
+##   tasks/sparse/uninstall
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/prefix"
+
+transcript
+rm --force --verbose "$link"
+rm --recursive --force --verbose "$prefix"

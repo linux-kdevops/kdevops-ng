@@ -153,8 +153,10 @@ Each part of kdevops-ng lists its own tools, on its page:
   and `Perl`_.
 - :ref:`The QEMU tasks <requirements-qemu>`: `Meson`_, :cmd:`make`, a
   compiler and `Perl`_.
-- :ref:`The smatch task <requirements-smatch>`: :cmd:`make`, a compiler
+- :ref:`The smatch tasks <requirements-smatch>`: :cmd:`make`, a compiler
   and two libraries.
+- :ref:`The sparse tasks <requirements-sparse>`: :cmd:`make` and a
+  compiler.
 - :ref:`Records <requirements-records>`: `kresults`_' :cmd:`krecord`, and a name
   for your :term:`lab <Lab>`.
 - :ref:`A change to kdevops-ng <requirements-contributing>`: the checks, and

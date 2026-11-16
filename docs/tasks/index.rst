@@ -31,6 +31,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
    kernel
    qemu
    smatch
+   sparse
 
 .. _tasks-unit:
 
