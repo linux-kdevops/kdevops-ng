@@ -92,6 +92,8 @@ gpu/i915.config
 builtin/gpu/i915.config
 core/compat.config
 core/boot-config.config
+core/ikconfig.config
+builtin/core/ikconfig.config
 core/localversion.config
 core/localversion-noauto.config
 core/crash.config

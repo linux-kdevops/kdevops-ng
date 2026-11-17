@@ -90,7 +90,9 @@ for BLOCK LAYER, and its second line names the entry. ``fstests`` names
 none: it configures the guest `fstests`_ runs in, and goes with a
 filesystem's profile. ``guest`` names none either: it configures a
 kernel that boots a distribution's userspace under QEMU, and goes with
-the profile of what is under test, as ``guest+block-layer``. The
+the profile of what is under test, as ``guest+block-layer``.
+``blktests`` builds what `blktests`_ asks of a kernel, and joins both:
+``guest+blktests+block-layer``. The
 fragments come from the vendored kfragments copy
 (:doc:`/contributing/vendor`).
 
@@ -236,4 +238,5 @@ variables from :src:`tasks/common/kbuild`.
 .. _smatch: https://github.com/error27/smatch
 .. _sparse: https://git.kernel.org/pub/scm/devel/sparse/sparse.git
 .. _reproducible-builds.rst: https://docs.kernel.org/kbuild/reproducible-builds.html
+.. _blktests: https://github.com/linux-blktests/blktests
 .. _submitting-patches.rst: https://docs.kernel.org/process/submitting-patches.html

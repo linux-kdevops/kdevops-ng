@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Guest: blktests
+# Joined with the guest's profile and that of what is under test, as in
+# guest+blktests+block-layer. core/ikconfig.config builds the module
+# that puts the kernel's .config at /proc/config.gz: a test asks it
+# which options the kernel has, and is not run where it cannot. The
+# guest loads the module at boot, as its blktests profile says
+# (tasks/libguestfs/files/profiles). storage/block-test-devices.config
+# builds null_blk and the loop devices, and storage/scsi-debug.config
+# scsi_debug, which the block and scsi groups make their devices from.
+# storage/dm-targets.config builds device mapper and its multipath
+# target, for the dm group and for multipathd, which the guest's
+# multipath-tools starts at boot and which fails with no dm_multipath.
+# storage/md-raid.config builds the MD personalities of the md group,
+# storage/srp-target.config the SRP initiator and target with the SCSI
+# device handlers of the srp group, and fs/f2fs.config the file system
+# a few block tests make.
+# Three debug fragments are in it, though they slow every test: a few
+# tests show their bug only as a report of KASAN (nvme/069, nvme/075)
+# or of DEBUG_VM (block/050, block/051), and are not run on a kernel
+# without. Under GCC, KASAN leaves Rust out, which Kconfig allows with
+# it only under Clang: build with LLVM=1 to keep both.
+core/ikconfig.config
+storage/block-test-devices.config
+storage/scsi-debug.config
+storage/dm-targets.config
+storage/md-raid.config
+storage/srp-target.config
+fs/f2fs.config
+debug/kasan.config
+debug/debug-heavy.config
