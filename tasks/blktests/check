@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/blktests/check --directory DIR --group GROUP
+##
+## Run the blktests group GROUP, or one test of it, on this machine,
+## which runs the kernel of the Linux tree in DIR, and keep what
+## blktests writes of each test in build/blktests/GROUP/ of DIR. Run it
+## as root where blktests is installed, in a guest:
+##
+##   tasks/blktests/check --directory ~/linux --group nvme
+##   tasks/blktests/check --directory ~/linux --group block/001
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${group:?}"
+output=$(realpath "$directory")/build/blktests/$group
+
+transcript
+# What an earlier run left would pass for this one's.
+rm --recursive --force "$output"
+mkdir --parents "$output"
+# check runs from its own directory.
+# shellcheck disable=SC2164 # errexit ends the task where cd fails
+cd /usr/lib/blktests
+./check --output="$output" "$group"

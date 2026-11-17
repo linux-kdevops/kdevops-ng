@@ -143,7 +143,46 @@ tested before it is merged. Running a suite straight from the home
 share would save the copy, but it would write the suite's results and
 its built files into the developer's tree.
 
-## 8. The console is a log
+## 8. A suite's task runs where the suite is
+
+`tasks/blktests/check` runs the suite's own command on the machine it
+is started on, and opens no connection. How it gets started in the
+guest is the developer's, or a workflow's (T5): ssh today, an engine's
+own transport later. The home share makes that one command: the
+checkout and the Linux tree are in the guest at their host paths, so
+the task and its arguments are the same on both sides.
+
+The suite writes its results under `build/` of the Linux tree whose
+kernel the guest runs. Nothing is copied out, and the results lie with
+the build they are of, where a record of them is made from.
+
+A task that ran ssh itself could not run it in a unit. A unit of the
+developer's service manager that is sandboxed at all runs in a user
+namespace, where the files root owns are nobody's, and ssh refuses a
+configuration that neither root nor the developer owns.
+
+## 9. Where a suite's files go in the guest
+
+The guest's paths follow the UAPI group's file hierarchy
+specification, which gives a package these: `/usr/lib/<package>/` for
+what is its alone, private programs included, `/etc/<package>/` for
+the machine's configuration of it, and `/var/lib/<package>/` for its
+persistent data. It does not name `/usr/local`, and advises against
+`/opt`.
+
+- blktests is one directory of scripts, tests and helpers that run
+  from where they lie, so it is installed as `/usr/lib/blktests`, with
+  `prefix=/usr/lib` in place of its Makefile's `/usr/local`.
+- Its configuration, where a machine has one, is
+  `/etc/blktests/config`, given to `check` with `--config`: its own
+  default is a `config` file inside its directory, which `/usr` is not
+  the place for.
+- Its results go to the tree's `build/blktests/`, given with
+  `--output`, and not to `/var/lib/blktests`: they are of one build of
+  one tree, and are read on the host. Its own default is `results/`
+  inside its directory.
+
+## 10. The console is a log
 
 A machine's serial console is its unit's log. `TERM=dumb` on the
 kernel's command line has systemd write it as plain text. Without it a
@@ -151,7 +190,7 @@ boot writes about 570 colour sequences and a handful of queries a
 terminal answers: journald stores such lines as binary, and shown
 whole they make the reader's terminal type the answers into its shell.
 
-## 9. The image
+## 11. The image
 
 A distribution is a file under `tasks/libguestfs/files/images`, sourced
 by the task: the URLs, and the commands that import the distribution's
