@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# guest.qemu with a second card on a segment the guests of this host
+# share, for a test two guests take part in, as an NFS server and its
+# client. Copy it once for each guest to ~/.config/qemu/systemd/NAME.qemu
+# and change the lines marked CHANGE. Each guest reaches the others as
+# NAME.local.
+
+[VM]
+# The key root's ssh takes, which tasks/libguestfs/customize put in the
+# guest: the unit powers the guest off with it.
+SSHPrivateKey=%h/.ssh/guests
+# The QEMU a tree of yours built, in place of the host's:
+#QEMUBinary=%h/qemu/build/qemu-system-x86_64
+
+[QEMU]
+machine=q35
+nodefaults=
+accel=kvm
+cpu=host
+m=2G
+smp=4
+nographic=
+serial=mon:stdio
+# The guest's disk, in its state directory.
+drive=file=work.qcow2,if=virtio,format=qcow2
+# CHANGE: your Linux tree, here and in the modules share below.
+kernel=%h/linux/build/arch/x86_64/boot/bzImage
+initrd=%h/linux/build/initrd
+# root= is the image's root partition: the first on Debian and Ubuntu.
+append=console=ttyS0 root=/dev/vda1 rw TERM=dumb
+netdev=user,id=net0
+device=virtio-net-pci-non-transitional,netdev=net0
+# CHANGE: a vsock number no other machine of this host has.
+device=vhost-vsock-pci-non-transitional,guest-cid=100
+# The segment: every QEMU that names this group and port is on it, and
+# it stays on the host's loopback.
+netdev=dgram,id=lan,remote.type=inet,remote.host=239.255.0.1,remote.port=5555,local.type=inet,local.host=127.0.0.1,local.port=0
+# CHANGE: a MAC address no other guest on the segment has.
+device=virtio-net-pci-non-transitional,netdev=lan,mac=52:54:00:00:00:64
+
+[virtiofsd]
+shared-dir=%h/linux/build/mod-install/lib/modules
+tag=modules
+cache=always
+sandbox=namespace
+uid-map=:0:%U:1:
+gid-map=:0:%G:1:
+
+[virtiofsd]
+shared-dir=%h
+tag=home
+sandbox=namespace
+uid-map=:0:%U:1:
+gid-map=:0:%G:1:
+
+[Install]
+WantedBy=machines.target

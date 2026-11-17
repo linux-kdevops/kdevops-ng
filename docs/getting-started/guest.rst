@@ -77,8 +77,8 @@ from your own configuration:
 The disk
 ========
 
-Make the guest's disk in its state directory, with the public key of
-`ssh`_ below (:doc:`/tasks/libguestfs`):
+Make the guest's disk in its state directory, with the public half of
+that key (:doc:`/tasks/libguestfs`):
 
 .. code-block:: console
    :caption: host
@@ -96,74 +96,42 @@ The machine
 ===========
 
 The machine is a ``.qemu`` file of yours, named for the guest;
-qemu-system-generator documents its keys. Its unit runs in the guest's
-state directory, so the disk is named by its file alone:
+qemu-system-generator documents its keys.
+:src:`tasks/qemu-system/files/machines` has machines that are ready but
+for what only you know. Copy one and change the lines it marks
+``CHANGE``: your Linux tree, and a vsock number no other machine of the
+host has:
 
-.. code-block:: ini
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ cp --verbose tasks/qemu-system/files/machines/guest.qemu \
+       ~/.config/qemu/systemd/guest.qemu
+
+.. literalinclude:: ../../tasks/qemu-system/files/machines/guest.qemu
+   :language: ini
    :caption: ~/.config/qemu/systemd/guest.qemu
+   :lines: 6-
 
-   [VM]
-   SSHPrivateKey=%h/.ssh/guests
-
-   [QEMU]
-   machine=q35
-   nodefaults=
-   accel=kvm
-   cpu=host
-   m=2G
-   smp=4
-   nographic=
-   serial=mon:stdio
-   drive=file=work.qcow2,if=virtio,format=qcow2
-   kernel=%h/linux/build/arch/x86_64/boot/bzImage
-   initrd=%h/linux/build/initrd
-   append=console=ttyS0 root=/dev/vda1 rw TERM=dumb
-   netdev=user,id=net0
-   device=virtio-net-pci-non-transitional,netdev=net0
-   device=vhost-vsock-pci-non-transitional,guest-cid=100
-
-   [virtiofsd]
-   shared-dir=%h/linux/build/mod-install/lib/modules
-   tag=modules
-   cache=always
-   sandbox=namespace
-   uid-map=:0:%U:1:
-   gid-map=:0:%G:1:
-
-   [virtiofsd]
-   shared-dir=%h
-   tag=home
-   sandbox=namespace
-   uid-map=:0:%U:1:
-   gid-map=:0:%G:1:
-
-   [Install]
-   WantedBy=machines.target
-
-``root=`` names the root partition of the image: the first on Debian
-and Ubuntu. ``TERM=dumb`` has the guest write its console as plain
+The unit runs in the guest's state directory, so the disk is named by
+its file alone. ``TERM=dumb`` has the guest write its console as plain
 text: the console is the unit's log, and colours and the queries a
 terminal answers do not belong in one. The ``user`` network gives the
 guest an address and a way out through the host, with no setup on it.
-``guest-cid`` is the guest's
-vsock address, a number no other machine of the host has. The two
-shares carry the tags the initrd and the guest's ``/etc/fstab`` mount.
-``SSHPrivateKey=`` lets the unit power the guest off over :cmd:`ssh`
-when it stops.
+The two shares carry the tags the guest's ``/etc/fstab`` mounts.
 
-To run the QEMU a tree of yours built, name it:
+``guest.qemu``
+   The guest alone.
 
-.. code-block:: diff
-   :caption: ~/.config/qemu/systemd/guest.qemu
+``guest-nvme.qemu``
+   With an NVMe controller and one namespace, for a test of the NVMe
+   driver or of the block layer on it. The file says how to make the
+   namespace's file.
 
-   --- a/.config/qemu/systemd/guest.qemu
-   +++ b/.config/qemu/systemd/guest.qemu
-   @@ -1,4 +1,5 @@
-    [VM]
-   +QEMUBinary=%h/qemu/build/qemu-system-x86_64
-    SSHPrivateKey=%h/.ssh/guests
-
-    [QEMU]
+``guest-lan.qemu``
+   With a second card on a segment the guests share, for a test two
+   guests take part in (`Two guests that reach each other`_).
 
 Boot
 ====
@@ -214,21 +182,19 @@ Two guests that reach each other
 
 The ``user`` network is each machine's own, so two guests do not see
 each other on it. A second card on a segment the machines share joins
-them, as an NFS server and its client need. Each machine takes the same
-``netdev=`` line and a card with a MAC address of its own, here from its
-vsock number:
+them, as an NFS server and its client need.
+:src:`guest-lan.qemu <tasks/qemu-system/files/machines/guest-lan.qemu>`
+has it. Copy it once for each guest, and give each a name, a state
+directory, a vsock number and a MAC address of its own:
 
-.. code-block:: diff
-   :caption: ~/.config/qemu/systemd/guest-server.qemu
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
 
-   --- a/.config/qemu/systemd/guest-server.qemu
-   +++ b/.config/qemu/systemd/guest-server.qemu
-   @@ -15,4 +15,6 @@
-    netdev=user,id=net0
-    device=virtio-net-pci-non-transitional,netdev=net0
-   +netdev=dgram,id=lan,remote.type=inet,remote.host=239.255.0.1,remote.port=5555,local.type=inet,local.host=127.0.0.1,local.port=0
-   +device=virtio-net-pci-non-transitional,netdev=lan,mac=52:54:00:00:00:65
-    device=vhost-vsock-pci-non-transitional,guest-cid=101
+   $ cp --verbose tasks/qemu-system/files/machines/guest-lan.qemu \
+       ~/.config/qemu/systemd/guest-server.qemu
+   $ cp --verbose tasks/qemu-system/files/machines/guest-lan.qemu \
+       ~/.config/qemu/systemd/guest-client.qemu
 
 Every QEMU that names the same multicast group and port is on the
 segment, which stays on the host's loopback and needs no root, as
@@ -242,9 +208,6 @@ its name with ``.local`` after it:
 
    $ ssh guest-client ping -c 2 guest-server.local
    2 packets transmitted, 2 received, 0% packet loss, time 1001ms
-
-Give each guest a name, a state directory, a ``guest-cid`` and a MAC
-address of its own.
 
 .. _network page: https://github.com/linux-kdevops/qemu-system-generator/blob/main/docs/bootstrap/network.rst
 .. _QEMU: https://www.qemu.org

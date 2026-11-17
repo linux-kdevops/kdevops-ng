@@ -35,6 +35,11 @@ since the machine last started.
 :src:`kill <tasks/qemu-system/kill>` ends a machine whose guest does not
 stop, and clears the failure that leaves its unit in.
 
+:src:`tasks/qemu-system/files/machines` has machines to copy and
+change: a guest that boots a tree's kernel, the same with an NVMe
+namespace, and the same with a card on a segment guests share
+(:doc:`/getting-started/guest`).
+
 qemu-system-generator's `usage pages`_ have the rest: freezing a
 machine, starting machines at login, and removing one.
 
