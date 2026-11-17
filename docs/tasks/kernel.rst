@@ -83,8 +83,11 @@ A profile is a file under :src:`tasks/kernel/files/profiles`, named
 after the MAINTAINERS entry whose files it configures, ``block-layer``
 for BLOCK LAYER, and its second line names the entry. ``fstests`` names
 none: it configures the guest `fstests`_ runs in, and goes with a
-filesystem's profile. The fragments come from the vendored kfragments
-copy (:doc:`/contributing/vendor`).
+filesystem's profile. ``guest`` names none either: it configures a
+kernel that boots a distribution's userspace under QEMU, and goes with
+the profile of what is under test, as ``guest+block-layer``. The
+fragments come from the vendored kfragments copy
+(:doc:`/contributing/vendor`).
 
 Names joined by ``+`` merge each named profile's fragments, each once,
 in the order :src:`tasks/kernel/files/fragments` gives them: the base

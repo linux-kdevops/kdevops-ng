@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Guest: a distribution's userspace on a kernel built here
+# Joined with the profile of the subsystem under test, as in
+# guest+xfs-filesystem. The core fragments and arch/${ARCH} build a
+# systemd guest that boots; the virt fragments build virtiofs,
+# virtio-net and vsock. The fs fragments build the root file systems of
+# the distributions and the EFI partition's vfat as modules, so a guest
+# boots its own disk, which virtio-blk, built by core, carries. The
+# builtin fragment builds virtiofs in: a guest mounts the share that
+# holds its modules before it can load one.
+core/64bit.config
+core/modules.config
+core/core.config
+core/systemd.config
+core/initrd.config
+core/acpi-poweroff.config
+arch/${ARCH}.config
+fs/btrfs.config
+fs/ext4.config
+fs/fat.config
+virt/virtio-fs.config
+virt/virtio-net.config
+virt/vsock.config
+virt/virtio-extras.config
+builtin/virt/virtio-fs.config
