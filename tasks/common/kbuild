@@ -10,7 +10,15 @@
 directory=$(realpath "$directory")
 build=$directory/build
 variables=(ARCH LLVM)
-make=(make O=build --jobs="$(nproc)")
+# What Documentation/kbuild/reproducible-builds.rst asks of a build, so
+# the same commit, configuration and tools give the same files on any
+# host: the commit's date for the build's, no user or host of this one,
+# no count of the builds made here, and no path of the tree.
+make=(make O=build --jobs="$(nproc)"
+	KBUILD_BUILD_TIMESTAMP="$(git -C "$directory" log --max-count=1 --format=%cI)"
+	KBUILD_BUILD_USER=kdevops-ng KBUILD_BUILD_HOST=kdevops-ng KBUILD_BUILD_VERSION=1
+	KCFLAGS="-fdebug-prefix-map=$directory/=" KAFLAGS="-fdebug-prefix-map=$directory/="
+	KRUSTFLAGS="--remap-path-prefix=$directory/=")
 settings=(--property=ReadOnlyPaths="$directory"
 	--property=ReadWritePaths="-$build")
 config=(--config build/.config --configuration-file build/.config.name)

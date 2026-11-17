@@ -186,6 +186,26 @@ the ``mrproper`` task cleans ``build/`` only. Clean such a tree yourself,
 with ``make mrproper`` in it: that removes your own ``.config``, which no
 task should do for you.
 
+A build that comes out the same
+===============================
+
+The same commit, configuration and tools give the same files on any
+host, as the kernel's `reproducible-builds.rst`_ describes. Every
+task's :cmd:`make` takes the commit's date for the build's, the name
+``kdevops-ng`` for the user and the host, 1 for the count of builds,
+and maps the tree's path out of what the compilers write:
+
+.. code-block:: console
+   :class: cmd-host
+
+   $ cat /proc/version
+   Linux version 7.3.0-rc5-00135-g0123456789ab (kdevops-ng@kdevops-ng) … #1 SMP PREEMPT 2026-09-29T13:16:20+02:00
+
+Two builds of one commit with the ``guest`` profile gave the same
+``vmlinux``, ``bzImage``, ``System.map`` and modules. A Rust toolchain
+under your home still leaves the paths of its own library in
+``vmlinux``.
+
 The architecture and the compiler
 =================================
 
@@ -215,4 +235,5 @@ variables from :src:`tasks/common/kbuild`.
 .. _Perl: https://www.perl.org
 .. _smatch: https://github.com/error27/smatch
 .. _sparse: https://git.kernel.org/pub/scm/devel/sparse/sparse.git
+.. _reproducible-builds.rst: https://docs.kernel.org/kbuild/reproducible-builds.html
 .. _submitting-patches.rst: https://docs.kernel.org/process/submitting-patches.html
