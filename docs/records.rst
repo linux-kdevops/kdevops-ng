@@ -17,8 +17,10 @@ Requirements
 ============
 
 kresults' :cmd:`krecord` writes the record, its :cmd:`kseries` what
-series a commit is the tip of, and its :cmd:`kobjects` what a build
-compiles of the series (:ref:`records-series`). Each needs `Python`_ 3.11
+series a commit is the tip of, its :cmd:`kobjects` what a build
+compiles of the series (:ref:`records-series`), and its
+:cmd:`kblktests` the records of a blktests run
+(:doc:`/tasks/blktests`). Each needs `Python`_ 3.11
 or later, which each :term:`distribution <Distribution>`'s base system
 has, and a link under its name somewhere on your ``PATH``:
 
@@ -33,6 +35,8 @@ has, and a link under its name somewhere on your ``PATH``:
        ~/.local/bin/kseries
    $ ln --symbolic --verbose "$PWD/kresults/format/objects.py" \
        ~/.local/bin/kobjects
+   $ ln --symbolic --verbose "$PWD/kresults/format/blktests.py" \
+       ~/.local/bin/kblktests
 
 :cmd:`krecord` reads what the tool printed from the files the task's
 unit wrote (:ref:`tasks-unit`).

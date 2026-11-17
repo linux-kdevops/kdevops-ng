@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/blktests/record --directory DIR --machine NAME
+##
+## File what blktests left of each test in the guest of the machine
+## NAME, on the kernel the Linux tree in DIR built, as records of that
+## build, with kresults' kblktests:
+##
+##   tasks/blktests/record --directory ~/linux --machine guest
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/blktests-record/ of DIR.
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/kbuild"
+: "${machine:?}"
+# kblktests writes the records where krecord files the build's.
+settings+=(--property=StateDirectory=krecords)
+. "$(dirname "$0")/../common/unit"
+# The results lie in the machine's state directory, under the release of
+# the kernel that ran: the one this build made.
+results=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/blktests
+results+=/$(<"$build/include/config/kernel.release")
+producer=$(realpath "$(dirname "$0")")
+
+transcript
+"${unit[@]}" kblktests --results "$results" "${config[@]}" \
+	--producer kdevops-ng --producer-tree "$producer"

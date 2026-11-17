@@ -98,6 +98,7 @@ cmd_links = {
     "git describe": "https://git-scm.com/docs/git-describe",
     "env": "https://www.gnu.org/software/coreutils/manual/html_node/env-invocation.html",
     "krecord": "https://github.com/linux-kdevops/kresults/blob/main/format/README.md",
+    "kblktests": "https://github.com/linux-kdevops/kresults/blob/main/format/README.md",
     "kobjects": "https://github.com/linux-kdevops/kresults/blob/main/docs/deploy.rst",
     "kseries": "https://github.com/linux-kdevops/kresults/blob/main/docs/deploy.rst",
     "make": "https://www.gnu.org/software/make/manual/make.html",

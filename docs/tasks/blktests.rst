@@ -34,6 +34,7 @@ under the release of the kernel the guest ran:
    ~/.local/state/qemu-system/guest/blktests/
    ├── config                           what blktests' check sources
    └── 7.3.0-rc5-00135-gc8c68c8ed043/   the kernel's release
+       ├── machine/                     the guest's processors and memory, and blktests' commit
        └── block/003/                   the group or test asked for
            └── nvme0n1/                 the device, or nodev for a test that makes its own
                └── block/
@@ -120,6 +121,37 @@ under the name it has on the host:
 ``/usr/lib/blktests`` and exits with its status, which is not zero
 where a test failed. How the command reaches the guest is yours, or a
 :term:`workflow <Workflow>`'s: the task opens no connection.
+
+The records
+===========
+
+A :term:`record <Record>` of a test lies under the build of the kernel
+it ran on, so a series' tests are set against its base's as its build
+is (:doc:`/records`). One task on the host files what the guest left,
+with kresults' :cmd:`kblktests`:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ tasks/blktests/record --directory ~/linux --machine guest
+
+:src:`record <tasks/blktests/record>` takes the results under the
+release of the kernel the tree built, so the guest has to have run
+that build. Each test that passed or failed gets a record, named for
+the device it ran on:
+
+.. code-block:: text
+
+   ~/.local/state/krecords/linux/v7.3/blktests/block-layer/guest/x86_64/gcc/
+   └── blktests/
+       ├── nodev/loop/001.json
+       └── nvme0n1/block/003.json
+
+The record names the machine under test and the commit of blktests,
+from ``machine/`` of the results. A test that did not run leaves no
+record: blktests prints why and keeps it in no file. Run the task
+again after another group: what is filed already is left as it is.
 
 .. _blktests: https://github.com/linux-blktests/blktests
 .. _blktests' own page: https://github.com/linux-blktests/blktests/blob/master/Documentation/running-tests.md

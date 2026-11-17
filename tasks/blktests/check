@@ -12,11 +12,17 @@
 ##   tasks/blktests/check --group block/001
 . "$(dirname "$0")/../common/task"
 : "${group:?}"
-output=/var/lib/blktests/$(uname --kernel-release)/$group
+release=/var/lib/blktests/$(uname --kernel-release)
+output=$release/$group
 
 transcript
 # The host's share, which holds the config and takes the results.
 systemctl start var-lib-blktests.mount
+# What a record of a test names and the results lack: the machine it
+# ran on and the blktests that ran it.
+mkdir --parents --verbose "$release/machine"
+cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
+	/usr/lib/blktests/version "$release/machine"
 # What an earlier run left would pass for this one's.
 rm --recursive --force "$output"
 # check runs from its own directory.

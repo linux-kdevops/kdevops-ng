@@ -193,6 +193,16 @@ of the kernel. They go to the guest's state directory on the host,
   no run leaves results in the disk by mistake.
 - The directory is not in a tree's `build/`, so `mrproper` leaves the
   machine able to start.
+- `machine/` under the release holds what a record of a test names
+  and the suite's results lack: the guest's `/proc/cpuinfo`,
+  `/proc/meminfo` and arch, and the commit of the suite, which the
+  install wrote into the disk. They are copied as they are, with `cp`,
+  before each run. The reader on the host takes what it needs, so the
+  guest runs no code of the project and needs none of its tools.
+- The records are made on the host, by a task that takes the tree: the
+  commit, the `.config` and the profiles are there, and the release
+  names which results are that build's. A test's date is the guest's
+  local time, which a cloud image keeps in UTC.
 - The suite's config is a file of the same directory, read as
   `/var/lib/blktests/config`. It names devices the machine's file
   defines, so the two are kept on the host side by side, and a change
