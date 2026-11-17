@@ -110,7 +110,24 @@ boot.
   which mount ignores, so a second run finds and removes the lines of
   the first.
 
-## 6. The console is a log
+## 6. What a test needs is a profile
+
+A guest that tests a subsystem needs that subsystem's tools. They are
+listed where the kernel's options for it are: a profile of the same
+name, under `tasks/libguestfs/files/profiles`, joined with `+` as the
+kernel's are. The file holds virt-customize's own commands, which
+`--commands-from-file` reads, so the task adds no format of its own
+and a profile can do whatever virt-customize can. libguestfs has no
+name for such a file; "profile" is this project's.
+
+A package's name is its distribution's, and one tool may have three.
+The profiles are thus kept for each family, `debian`, `fedora` and
+`ubuntu`, and the task picks the directory from the distribution's
+name, the part before its release. A profile is repeated where the
+three agree: a file that reads the same is clearer than a rule for
+when they share one.
+
+## 7. The console is a log
 
 A machine's serial console is its unit's log. `TERM=dumb` on the
 kernel's command line has systemd write it as plain text. Without it a
@@ -118,7 +135,7 @@ boot writes about 570 colour sequences and a handful of queries a
 terminal answers: journald stores such lines as binary, and shown
 whole they make the reader's terminal type the answers into its shell.
 
-## 7. The image
+## 8. The image
 
 A distribution is a file under `tasks/libguestfs/files/images`, sourced
 by the task: the URLs, and the commands that import the distribution's

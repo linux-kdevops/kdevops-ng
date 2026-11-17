@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What a guest that tests the NVMe driver runs: nvme-cli reads what a
+# controller and its namespaces report.
+install nvme-cli

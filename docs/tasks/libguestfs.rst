@@ -22,7 +22,7 @@ boot, and one installs packages in it:
    $ tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
        --hostname guest --ssh-inject ~/.ssh/guests.pub
    $ tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
-       --install nvme-cli,fio,blktrace
+       --distribution debian-13 --profile block-layer+nvm-express-driver
 
 :src:`download_image <tasks/libguestfs/download_image>` takes the image and
 its checksums with :cmd:`curl`, checks the one against the other, and
@@ -83,10 +83,18 @@ The machine that boots the disk is in :doc:`/getting-started/guest`.
 Run the task again after a change: it takes its earlier lines and key out
 first.
 
-:src:`install <tasks/libguestfs/install>` installs the packages named
-with ``virt-customize --install``, which runs the guest's own package
-manager in the disk, so the names are the distribution's. The guest
-must be stopped, and what a test needs is in the disk before it boots.
+:src:`install <tasks/libguestfs/install>` puts what a test needs in the
+disk before the guest boots. A profile is a file named as the kernel
+:term:`profile <Profile>` of what it tests, and holds
+:cmd:`virt-customize` commands, one a line, as ``--commands-from-file``
+reads them: ``block-layer`` installs fio and blktrace, and
+``nvm-express-driver`` nvme-cli. ``install`` runs the guest's own
+package manager in the disk, and a package's name is its
+distribution's, so the profiles are kept for each family of
+distributions, under :src:`tasks/libguestfs/files/profiles`:
+``debian``, ``fedora`` and ``ubuntu``. ``--distribution`` takes the name
+``download_image`` took and picks the family. Names joined by ``+`` run
+each profile in turn. The guest must be stopped.
 
 .. _requirements-libguestfs:
 

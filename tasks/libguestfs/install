@@ -1,15 +1,28 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: tasks/libguestfs/install --directory DIR --install PACKAGE[,PACKAGE...]
+## Usage: tasks/libguestfs/install --directory DIR --distribution NAME --profile PROFILE[+PROFILE...]
 ##
-## Install the packages named, with the guest's own package manager,
-## into work.qcow2, the disk of the guest whose state directory is DIR.
-## The guest must be stopped:
+## Run the virt-customize commands of each profile named on work.qcow2,
+## the disk of the guest whose state directory is DIR: the packages a
+## test of that name needs, installed with the guest's own package
+## manager. NAME is the guest's distribution, as download_image takes
+## it, and the profiles are those of its family,
+## tasks/libguestfs/files/profiles/debian/PROFILE for debian-13. The
+## guest must be stopped:
 ##
 ##   tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
-##       --install nvme-cli,fio,blktrace
+##       --distribution debian-13 --profile block-layer+nvm-express-driver
 . "$(dirname "$0")/../common/task"
-: "${directory:?} ${install:?}"
+: "${directory:?} ${distribution:?} ${profile:?}"
+# One --commands-from-file for each profile named, in the order given,
+# from the directory of the distribution's family: a package's name is
+# the distribution's.
+files=$(realpath "$(dirname "$0")/files/profiles/${distribution%%-*}")
+IFS=+ read -r -a names <<<"$profile"
+commands=()
+for name in "${names[@]}"; do
+	commands+=(--commands-from-file "$files/$name")
+done
 
 transcript
-virt-customize --format qcow2 --add "$directory/work.qcow2" --install "$install"
+virt-customize --format qcow2 --add "$directory/work.qcow2" "${commands[@]}"
