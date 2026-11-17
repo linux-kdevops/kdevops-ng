@@ -144,11 +144,12 @@ Boot
    $ tasks/qemu-system/start --machine guest
    $ ssh guest uname --kernel-release
    7.4.0-rc2-00003-g0123456789ab
-   $ ssh guest systemctl is-system-running
+   $ systemctl --host guest is-system-running
    running
 
-A guest answers about 12 seconds after its start. Its console is the
-unit's log:
+A guest answers about 12 seconds after its start. :cmd:`systemctl`
+``--host`` takes the same name as :cmd:`ssh`, and runs in the guest. Its
+console is the unit's log:
 
 .. code-block:: console
    :caption: host
