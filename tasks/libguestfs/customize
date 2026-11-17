@@ -8,7 +8,7 @@
 ## at the path it has here. The guest must be stopped:
 ##
 ##   tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
-##       --hostname guest --ssh-inject ~/.ssh/guest.pub
+##       --hostname guest --ssh-inject ~/.ssh/guests.pub
 . "$(dirname "$0")/../common/task"
 : "${directory:?} ${hostname:?} ${ssh_inject:?}"
 ssh_inject=$(realpath "$ssh_inject")

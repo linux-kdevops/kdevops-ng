@@ -7,8 +7,8 @@ libguestfs
 These :term:`tasks <Task>` make a guest that runs a distribution's
 cloud image, set up with `libguestfs`_. They work in the guest's state
 directory, which you make first: one downloads the image there, one
-makes the guest's disk from it, and one sets the disk up for its first
-boot:
+makes the guest's disk from it, one sets the disk up for its first
+boot, and one installs packages in it:
 
 .. code-block:: console
    :caption: host
@@ -20,7 +20,9 @@ boot:
    $ tasks/libguestfs/overlay --directory ~/.local/state/qemu-system/guest \
        --backing-file debian-13-genericcloud-amd64.qcow2
    $ tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
-       --hostname guest --ssh-inject ~/.ssh/guest.pub
+       --hostname guest --ssh-inject ~/.ssh/guests.pub
+   $ tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
+       --install nvme-cli,fio,blktrace
 
 :src:`download_image <tasks/libguestfs/download_image>` takes the image and
 its checksums with :cmd:`curl`, checks the one against the other, and
@@ -76,6 +78,11 @@ over. Stop the guest first.
 The machine that boots the disk is in :doc:`/getting-started/guest`.
 Run the task again after a change: it takes its earlier lines and key out
 first.
+
+:src:`install <tasks/libguestfs/install>` installs the packages named
+with ``virt-customize --install``, which runs the guest's own package
+manager in the disk, so the names are the distribution's. The guest
+must be stopped, and what a test needs is in the disk before it boots.
 
 .. _requirements-libguestfs:
 
