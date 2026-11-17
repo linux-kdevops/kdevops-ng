@@ -27,6 +27,8 @@ lasts goes to `designs/` before the work ends.
 - `designs/principles.md`: the seven rules everything follows, with the
   reasons.
 - `designs/tasks.md`: the rules for a task, a workflow and an engine.
+- `designs/guests.md`: how a guest boots a tree's kernel, and why dracut
+  makes its initrd.
 - `designs/output.md`: where a tool's output goes and why, with the
   measurements.
 - `designs/writing.md`: how commits, docs and comments are written.
