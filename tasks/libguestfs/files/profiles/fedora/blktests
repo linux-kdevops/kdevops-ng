@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What blktests builds with and runs, as its README lists them: a
+# compiler and liburing for its helpers, and the tools its test groups
+# call.
+install gcc,gcc-c++,make,liburing-devel
+install gawk,fio,blktrace,parted,nvme-cli,sg3_utils
+install e2fsprogs,xfsprogs,f2fs-tools,btrfs-progs
+install device-mapper-multipath,device-mapper,nbd
+install python3,ethtool,iproute
+install cryptsetup,lvm2,mdadm,bcache-tools,ktls-utils,fscrypt,expect,bc
+# blktests asks /proc/config.gz which options the kernel has, and loads
+# no module for it: the guest loads configs at boot.
+write /etc/modules-load.d/blktests.conf:configs

@@ -127,7 +127,23 @@ name, the part before its release. A profile is repeated where the
 three agree: a file that reads the same is clearer than a rule for
 when they share one.
 
-## 7. The console is a log
+## 7. A suite is built in the disk, from the developer's tree
+
+A test suite the distribution does not package, as blktests, is
+installed the way libguestfs installs anything built from source: one
+`virt-customize` run that installs the build's packages, copies the
+tree in, builds and installs it with the guest's own compiler, and
+deletes the copy. The suite is thus built against the guest's
+libraries, on any of the three distributions, and the host needs none
+of them.
+
+The tree is the developer's, given to the task, so the guest runs the
+tests of the commit they have checked out, and a test under review is
+tested before it is merged. Running a suite straight from the home
+share would save the copy, but it would write the suite's results and
+its built files into the developer's tree.
+
+## 8. The console is a log
 
 A machine's serial console is its unit's log. `TERM=dumb` on the
 kernel's command line has systemd write it as plain text. Without it a
@@ -135,7 +151,7 @@ boot writes about 570 colour sequences and a handful of queries a
 terminal answers: journald stores such lines as binary, and shown
 whole they make the reader's terminal type the answers into its shell.
 
-## 8. The image
+## 9. The image
 
 A distribution is a file under `tasks/libguestfs/files/images`, sourced
 by the task: the URLs, and the commands that import the distribution's

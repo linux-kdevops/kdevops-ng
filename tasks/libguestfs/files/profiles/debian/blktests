@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What blktests builds with and runs, as its README lists them: a
+# compiler and liburing for its helpers, and the tools its test groups
+# call.
+install gcc,g++,make,liburing-dev
+install gawk,fio,blktrace,parted,nvme-cli,sg3-utils
+install e2fsprogs,xfsprogs,f2fs-tools,btrfs-progs
+install multipath-tools,dmsetup,nbd-client,nbd-server
+install python3,ethtool,iproute2
+install cryptsetup,lvm2,mdadm,bcache-tools,ktls-utils,fscrypt,expect,bc
+# Debian starts nbd-server as it is installed, and with no export in its
+# configuration the unit fails at each boot. The nbd tests start a
+# server of their own.
+run-command systemctl disable nbd-server.service
+# blktests asks /proc/config.gz which options the kernel has, and loads
+# no module for it: the guest loads configs at boot.
+write /etc/modules-load.d/blktests.conf:configs
