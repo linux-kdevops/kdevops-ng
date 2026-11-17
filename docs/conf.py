@@ -91,6 +91,7 @@ cmd_links = {
     "virt-customize": "https://libguestfs.org/virt-customize.1.html",
     "ssh": "https://man.openbsd.org/ssh",
     "journalctl": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html",
+    "systemd-ssh-proxy": "https://www.freedesktop.org/software/systemd/man/latest/systemd-ssh-proxy.html",
     "git": "https://git-scm.com/docs/git",
     "git subrepo": "https://github.com/ingydotnet/git-subrepo",
     "git worktree": "https://git-scm.com/docs/git-worktree",

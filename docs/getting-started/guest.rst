@@ -31,17 +31,59 @@ test, build, and install the modules and the initrd in ``build/``
    $ tasks/kernel/modules_install --directory ~/linux
    $ tasks/dracut/initrd --directory ~/linux
 
-The disk
-========
+ssh
+===
 
-Make a key for your guests, then the guest's disk in its state
-directory (:doc:`/tasks/libguestfs`):
+The guests take one key for root, so make one for them alone:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
    $ ssh-keygen -t ed25519 -N '' -C guests -f ~/.ssh/guests
+
+One file tells :cmd:`ssh` how to reach every guest by its machine's
+name, with that key:
+
+.. code-block:: text
+   :caption: ~/.ssh/guests.conf
+
+   Host guest guest-*
+       ProxyCommand /usr/lib/systemd/systemd-ssh-proxy machine/%n %p
+       ProxyUseFdpass yes
+       User root
+       IdentityFile ~/.ssh/guests
+       IdentitiesOnly yes
+       CheckHostIP no
+       StrictHostKeyChecking no
+       UserKnownHostsFile /dev/null
+
+:cmd:`systemd-ssh-proxy` asks your service manager for the machine of
+that name and connects to it over vsock, so the host opens no port and
+the file names no address. The host keys are not kept: a guest gets new
+ones each time its disk is made. Name your guests ``guest`` or
+``guest-...``, or add their names to the ``Host`` line. Include the file
+from your own configuration:
+
+.. code-block:: diff
+   :caption: ~/.ssh/config
+
+   --- a/.ssh/config
+   +++ b/.ssh/config
+   @@ -1 +1,2 @@
+   +Include ~/.ssh/guests.conf
+    Host *
+
+The disk
+========
+
+Make the guest's disk in its state directory, with the public key of
+`ssh`_ below (:doc:`/tasks/libguestfs`):
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
    $ mkdir --parents --verbose ~/.local/state/qemu-system/guest
    $ tasks/libguestfs/download_image \
        --directory ~/.local/state/qemu-system/guest --distribution debian-13
@@ -129,16 +171,14 @@ Boot
 
    $ systemctl --user start qemu-system-generator.service
    $ systemctl --user start qemu-system@guest.service
-   $ ssh -i ~/.ssh/guests root@machine/guest uname --kernel-release
+   $ ssh guest uname --kernel-release
    7.4.0-rc2-00003-g0123456789ab
-   $ ssh -i ~/.ssh/guests root@machine/guest systemctl is-system-running
+   $ ssh guest systemctl is-system-running
    running
 
-:cmd:`ssh` reaches the guest over vsock, by the name of its machine, so
-the host opens no port. A guest answers about 12 seconds after its
-start. Its console is the unit's log, where ``--all`` shows the lines
-that hold the console's control characters, which :cmd:`journalctl`
-otherwise prints as blobs:
+A guest answers about 12 seconds after its start. Its console is the
+unit's log, where ``--all`` shows the lines that hold the console's
+control characters, which :cmd:`journalctl` otherwise prints as blobs:
 
 .. code-block:: console
    :caption: host
@@ -164,6 +204,44 @@ again:
 To start the guest over, stop it and make its disk again with
 ``overlay`` and ``customize``.
 
+Two guests that reach each other
+================================
+
+The ``user`` network is each machine's own, so two guests do not see
+each other on it. A second card on a segment the machines share joins
+them, as an NFS server and its client need. Each machine takes the same
+``netdev=`` line and a card with a MAC address of its own, here from its
+vsock number:
+
+.. code-block:: diff
+   :caption: ~/.config/qemu/systemd/guest-server.qemu
+
+   --- a/.config/qemu/systemd/guest-server.qemu
+   +++ b/.config/qemu/systemd/guest-server.qemu
+   @@ -15,4 +15,6 @@
+    netdev=user,id=net0
+    device=virtio-net-pci-non-transitional,netdev=net0
+   +netdev=dgram,id=lan,remote.type=inet,remote.host=239.255.0.1,remote.port=5555,local.type=inet,local.host=127.0.0.1,local.port=0
+   +device=virtio-net-pci-non-transitional,netdev=lan,mac=52:54:00:00:00:65
+    device=vhost-vsock-pci-non-transitional,guest-cid=101
+
+Every QEMU that names the same multicast group and port is on the
+segment, which stays on the host's loopback and needs no root, as
+qemu-system-generator's `network page`_ explains. Nothing on it hands
+out addresses: each card takes a link-local one, and a guest answers to
+its name with ``.local`` after it:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ ssh guest-client ping -c 2 guest-server.local
+   2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+
+Give each guest a name, a state directory, a ``guest-cid`` and a MAC
+address of its own.
+
+.. _network page: https://github.com/linux-kdevops/qemu-system-generator/blob/main/docs/bootstrap/network.rst
 .. _QEMU: https://www.qemu.org
 .. _qemu-system-generator: https://github.com/linux-kdevops/qemu-system-generator
 .. _virtiofs: https://virtio-fs.gitlab.io
