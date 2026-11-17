@@ -53,9 +53,9 @@ check covers shows. Run it after the build:
 
    $ tasks/kernel/objects --directory ~/linux
    …
-   object: block/blk-merge.o
-   object: drivers/nvme/host/core.o
-   unbuilt: drivers/block/swim.c
+   object: init/main.o
+   object: kernel/fork.o
+   unbuilt: arch/arm64/kernel/setup.c
 
 .. _kernel-configuration:
 

@@ -56,7 +56,7 @@ the :term:`tree <Tree>`, in a directory named for the task:
    │   ├── stdout                what make printed
    │   └── stderr                its warnings and errors
    ├── kernel-sparse/
-   │   └── block/blk-merge.o/    a task that checks one object
+   │   └── init/main.o/          a task that checks one object
    │       ├── stdout
    │       └── stderr
    └── kernel-checkpatch/

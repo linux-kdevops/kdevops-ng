@@ -6,7 +6,7 @@
 ## worktree you add at the series' base, with b4:
 ##
 ##   tasks/b4/shazam --directory ~/wt/qemu \
-##       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+##       --message-id 20260101-topic-v1-0-0123456789ab@example.org
 ##
 ## Its tool's output goes to stdout and stderr in
 ## build/logs/b4-shazam/ of DIR.

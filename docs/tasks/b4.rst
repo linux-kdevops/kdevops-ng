@@ -6,19 +6,19 @@ b4
 
 Two :term:`tasks <Task>` take a series from a mailing list by its
 Message-ID with `b4`_. One applies it in a worktree you add at the
-series' base, the commit its cover letter names as ``base-commit``, and
-one keeps the thread there:
+series' base, and one keeps the thread there. With ``ID`` the
+Message-ID the series was posted as, ``BASE`` the commit its cover
+letter names as ``base-commit`` and ``BRANCH`` a name of yours for the
+series:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
-   $ git -C ~/qemu worktree add -b b4/nvme-mam ~/wt/qemu 7a34f7b879
-   $ tasks/b4/shazam --directory ~/wt/qemu \
-       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
-   $ tasks/b4/mbox --directory ~/wt/qemu \
-       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
-   $ tasks/qemu/series --directory ~/wt/qemu --range 7a34f7b879..
+   $ git -C ~/qemu worktree add -b BRANCH ~/wt/qemu BASE
+   $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID
+   $ tasks/b4/mbox --directory ~/wt/qemu --message-id ID
+   $ tasks/qemu/series --directory ~/wt/qemu --range BASE..
 
 :src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link``, so each
 commit ends with a ``Link:`` to its message. b4 reads your own
@@ -26,9 +26,9 @@ configuration, the keys it checks attestation against included. The
 base is the commit you checked out, so the range of the series
 (:ref:`records-series`) starts there. b4 names no branch for what it
 applies: the commits land on the branch the worktree is on, which
-``-b`` made here, and that branch is what you push to publish them. A series that does not apply
-leaves ``git am`` stopped in the worktree, and ``git am --abort`` there
-gives the base back.
+``-b`` made here, and that branch is what you push to publish them. A
+series that does not apply leaves ``git am`` stopped in the worktree,
+and ``git am --abort`` there gives the base back.
 
 :src:`mbox <tasks/b4/mbox>` runs ``b4 mbox`` and keeps the thread as
 ``build/logs/b4-mbox/thread.mbx`` of the worktree. The series task hands

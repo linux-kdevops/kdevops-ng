@@ -6,7 +6,7 @@
 ## tree's series task to name the series by:
 ##
 ##   tasks/b4/mbox --directory ~/wt/qemu \
-##       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+##       --message-id 20260101-topic-v1-0-0123456789ab@example.org
 ##
 ## The thread goes to build/logs/b4-mbox/thread.mbx of DIR, and its tool's
 ## output to stdout and stderr beside it.
