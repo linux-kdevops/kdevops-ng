@@ -1,19 +1,18 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: tasks/libguestfs/blktests --directory DIR --distribution NAME --copy-in TREE
+## Usage: tasks/libguestfs/blktests --directory DIR --copy-in TREE
 ##
 ## Install blktests from your tree TREE into work.qcow2, the disk of the
-## guest whose state directory is DIR, as /usr/lib/blktests: the
-## packages of the blktests profile of NAME's family, then the tree,
-## copied in, built and installed in the disk. The guest must be
-## stopped:
+## guest whose state directory is DIR, as /usr/lib/blktests: the tree,
+## copied in, built and installed in the disk. The disk has what
+## blktests builds with once tasks/libguestfs/install has run its
+## blktests profile. The guest must be stopped:
 ##
 ##   tasks/libguestfs/blktests --directory ~/.local/state/qemu-system/guest \
-##       --distribution debian-13 --copy-in ~/blktests
+##       --copy-in ~/blktests
 . "$(dirname "$0")/../common/task"
-: "${directory:?} ${distribution:?} ${copy_in:?}"
+: "${directory:?} ${copy_in:?}"
 copy_in=$(realpath "$copy_in")
-profile=$(realpath "$(dirname "$0")/files/profiles/${distribution%%-*}/blktests")
 tree=/work/$(basename "$copy_in")
 jobs=$(nproc)
 
@@ -24,7 +23,6 @@ transcript
 # the Makefile's /usr/local. The copy goes when it is installed.
 virt-customize --format qcow2 --add "$directory/work.qcow2" \
 	--memsize 4096 --smp "$jobs" \
-	--commands-from-file "$profile" \
 	--mkdir /work --copy-in "$copy_in:/work" \
 	--run-command "make --directory=$tree --jobs=$jobs" \
 	--run-command "make --directory=$tree prefix=/usr/lib install" \

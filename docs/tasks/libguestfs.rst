@@ -23,8 +23,10 @@ boot, and one installs packages in it:
        --hostname guest --ssh-inject ~/.ssh/guests.pub
    $ tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
        --distribution debian-13 --profile block-layer+nvm-express-driver
+   $ tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
+       --distribution debian-13 --profile blktests
    $ tasks/libguestfs/blktests --directory ~/.local/state/qemu-system/guest \
-       --distribution debian-13 --copy-in ~/blktests
+       --copy-in ~/blktests
 
 :src:`download_image <tasks/libguestfs/download_image>` takes the image and
 its checksums with :cmd:`curl`, checks the one against the other, and
@@ -99,13 +101,13 @@ distributions, under :src:`tasks/libguestfs/files/profiles`:
 each profile in turn. The guest must be stopped.
 
 :src:`blktests <tasks/libguestfs/blktests>` installs `blktests`_ from a
-tree of yours, so the guest runs the tests you have checked out. One
-:cmd:`virt-customize` run installs the packages of the ``blktests``
-profile, what the suite builds with and what its test groups call,
-copies the tree into the disk, builds it there with the guest's own
-compiler, and installs it as ``/usr/lib/blktests``. The copy goes
-when it is installed, and the packages stay for the next build. A
-Debian 13 disk takes 42 seconds.
+tree of yours, so the guest runs the tests you have checked out. The
+``blktests`` profile of ``install`` comes first, once: it holds what the
+suite builds with and what its test groups call. The task then copies
+the tree into the disk, builds it there with the guest's own compiler,
+installs it as ``/usr/lib/blktests``, and deletes the copy. Run it alone
+to take a newer blktests, which takes 6 seconds on a Debian 13 disk:
+the packages are in the disk already.
 
 .. _requirements-libguestfs:
 

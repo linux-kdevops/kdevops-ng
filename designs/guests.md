@@ -130,10 +130,12 @@ when they share one.
 ## 7. A suite is built in the disk, from the developer's tree
 
 A test suite the distribution does not package, as blktests, is
-installed the way libguestfs installs anything built from source: one
-`virt-customize` run that installs the build's packages, copies the
-tree in, builds and installs it with the guest's own compiler, and
-deletes the copy. The suite is thus built against the guest's
+installed the way libguestfs installs anything built from source:
+`virt-customize` installs the build's packages, copies the tree in,
+builds and installs it with the guest's own compiler, and deletes the
+copy. The packages are a profile of the install task and the build a
+task of its own, so a newer tree of the suite is taken without the
+package manager running again. The suite is thus built against the guest's
 libraries, on any of the three distributions, and the host needs none
 of them.
 

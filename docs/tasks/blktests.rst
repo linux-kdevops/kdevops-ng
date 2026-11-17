@@ -15,8 +15,10 @@ its disk:
 
    $ tasks/kernel/merge_config --directory ~/linux \
        --profile guest+blktests+block-layer
+   $ tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
+       --distribution debian-13 --profile blktests
    $ tasks/libguestfs/blktests --directory ~/.local/state/qemu-system/guest \
-       --distribution debian-13 --copy-in ~/blktests
+       --copy-in ~/blktests
 
 One :term:`task <Task>` runs a group of its tests, or one test, on the
 machine it is started on. Start it in the guest, as root: the guest has
