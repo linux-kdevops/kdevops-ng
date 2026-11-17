@@ -5,7 +5,7 @@
 ## Make build/initrd of the Linux tree in DIR with dracut, from the
 ## modules tasks/kernel/modules_install put in build/mod-install/, for a
 ## guest that boots the tree's kernel. The initrd mounts the guest's
-## root, and over its /usr/lib/modules the share tagged modules:
+## root, and what the root's /etc/fstab marks x-initrd.mount:
 ##
 ##   tasks/dracut/initrd --directory ~/linux
 ##
@@ -19,10 +19,6 @@ release=$(cat "$build/include/config/kernel.release")
 transcript
 # --no-hostonly builds for any machine, not for this host, and a guest
 # reached over a serial console and ssh needs none of this host's
-# keyboard and font, which dracut cannot set up without root. The share
-# mounts at /usr/lib/modules, since /lib is a link on a merged-usr root
-# and systemd refuses a mount whose path runs through one.
+# keyboard and font, which dracut cannot set up without root.
 "${unit[@]}" dracut --force --no-hostonly --omit "i18n console-setup" --kver "$release" \
-	--kmoddir "build/mod-install/lib/modules/$release" \
-	--mount "modules /sysroot/usr/lib/modules virtiofs defaults 0 0" \
-	build/initrd
+	--kmoddir "build/mod-install/lib/modules/$release" build/initrd

@@ -4,14 +4,19 @@
 ##
 ## Set up work.qcow2, the disk of the guest whose state directory is DIR,
 ## before its first boot: its name, its host keys, the public key FILE
-## for root, its network, and your home, which the host shares, mounted
-## at the path it has here. The guest must be stopped:
+## for root, its network, and the two shares of the host: the modules
+## of the kernel it boots, and your home at the path it has here. The
+## guest must be stopped:
 ##
 ##   tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
 ##       --hostname guest --ssh-inject ~/.ssh/guests.pub
 . "$(dirname "$0")/../common/task"
 : "${directory:?} ${hostname:?} ${ssh_inject:?}"
 ssh_inject=$(realpath "$ssh_inject")
+# The modules line is marked x-initrd.mount: the initrd mounts the share
+# before the guest's own systemd starts and asks for a module. The path
+# is /usr/lib/modules, since /lib is a link on a merged-usr root and
+# systemd refuses a mount whose path runs through one.
 # Each fstab line carries this option, which mount ignores, so a second
 # run takes the lines of the first out before it adds its own. Root's
 # keys go the same way: FILE is the one key that opens the guest.
@@ -50,6 +55,7 @@ virt-customize --add "$directory/work.qcow2" \
 	--write "/etc/systemd/resolved.conf.d/80-kdevops-ng.conf:$resolve" \
 	--mkdir "$HOME" \
 	--edit "/etc/fstab:\$_ = '' if /$mark/" \
+	--append-line "/etc/fstab:modules /usr/lib/modules virtiofs x-initrd.mount,$mark 0 0" \
 	--append-line "/etc/fstab:home $HOME virtiofs $mark 0 0" \
 	--append-line "/etc/fstab:tmpfs $HOME/.ssh tmpfs ro,nosuid,nodev,mode=0555,$mark 0 0" \
 	--append-line "/etc/fstab:tmpfs $HOME/.config/systemd tmpfs ro,nosuid,nodev,mode=0555,$mark 0 0" \

@@ -68,6 +68,10 @@ over. Stop the guest first.
   Debian and Ubuntu run. Fedora's NetworkManager asks by itself. A card
   no server answers takes a link-local address, and multicast DNS
   names the guest ``NAME.local`` to the others on its segment;
+- an ``/etc/fstab`` line that mounts the modules of the kernel the
+  guest boots, a share of the host, over ``/usr/lib/modules``. It is
+  marked ``x-initrd.mount``, so the initrd mounts it before the guest's
+  own systemd starts;
 - ``/etc/fstab`` lines that mount your home, which the host shares, at
   the path it has on the host, so a tree is at the same path on both
   sides. Three more lines put a read-only tmpfs over ``~/.ssh``,
