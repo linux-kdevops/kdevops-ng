@@ -1,25 +1,28 @@
 # SPDX-License-Identifier: copyleft-next-0.3.1
 # blktests@GROUP.service runs the blktests group GROUP on this machine,
 # and blktests@GROUP-NNN.service its test GROUP/NNN: the instance is the
-# name as systemd-escape writes it. check runs from its own
-# directory, and a run starts with nothing an earlier one left. The
-# results go to the host's share, which the unit has mounted first,
-# under the release of the kernel that runs (%v), and the share holds
-# the machine's config for blktests. A record of a test names the
-# machine it ran on and the blktests that ran it, which the results do
-# not: machine/ keeps them, as the kernel and the install gave them.
+# name as systemd-escape writes it. check runs from its own directory,
+# and a run starts with nothing an earlier one left.
+#
+# The results go to the host's share, under the release of the kernel
+# that runs (%v), and the share holds the machine's config for
+# blktests. What check prints goes there too, to GROUP.stdout and
+# GROUP.stderr: blktests says why a test did not run nowhere else, and
+# the journal drops lines of a unit that prints fast. systemd opens the
+# two files before it runs a command of this unit, so the directory is
+# blktests-machine.service's to make.
 
 [Unit]
 Description=blktests %I
 Documentation=https://github.com/linux-blktests/blktests
-RequiresMountsFor=/var/lib/blktests
+Requires=blktests-machine.service
+After=blktests-machine.service
 
 [Service]
 Type=oneshot
 WorkingDirectory=/usr/lib/blktests
-ExecStartPre=mkdir --parents --verbose /var/lib/blktests/%v/machine
-ExecStartPre=cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
-	/usr/lib/blktests/version /var/lib/blktests/%v/machine
-ExecStartPre=rm --recursive --force --verbose /var/lib/blktests/%v/%I
+StandardOutput=truncate:/var/lib/blktests/%v/%i.stdout
+StandardError=truncate:/var/lib/blktests/%v/%i.stderr
+ExecStartPre=rm --recursive --force /var/lib/blktests/%v/%I
 ExecStart=/usr/lib/blktests/check --config=/var/lib/blktests/config \
 	--output=/var/lib/blktests/%v/%I %I

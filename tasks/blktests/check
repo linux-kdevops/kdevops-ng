@@ -5,8 +5,9 @@
 ## Run the blktests group GROUP, or one test of it, on this machine,
 ## and keep what blktests writes of each test in
 ## /var/lib/blktests/RELEASE/GROUP/, RELEASE being the kernel's that
-## runs. blktests reads the machine's /var/lib/blktests/config. Run it
-## as root where blktests is installed, in a guest:
+## runs, with what it prints beside it as GROUP.stdout. blktests reads
+## the machine's /var/lib/blktests/config. Run it as root where
+## blktests is installed, in a guest:
 ##
 ##   tasks/blktests/check --group nvme
 ##   tasks/blktests/check --group block/001
@@ -14,6 +15,7 @@
 : "${group:?}"
 release=/var/lib/blktests/$(uname --kernel-release)
 output=$release/$group
+printed=$release/${group//\//-}.stdout
 
 transcript
 # The host's share, which holds the config and takes the results.
@@ -28,4 +30,7 @@ rm --recursive --force "$output"
 # check runs from its own directory.
 # shellcheck disable=SC2164 # errexit ends the task where cd fails
 cd /usr/lib/blktests
-./check --config=/var/lib/blktests/config --output="$output" "$group"
+# blktests says why a test did not run in what it prints, and nowhere
+# else: a record of the test reads it from this file.
+./check --config=/var/lib/blktests/config --output="$output" "$group" 2>&1 |
+	tee "$printed"

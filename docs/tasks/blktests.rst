@@ -35,6 +35,7 @@ under the release of the kernel the guest ran:
    ├── config                           what blktests' check sources
    └── 7.3.0-rc5-00135-gc8c68c8ed043/   the kernel's release
        ├── machine/                     the guest's processors and memory, and blktests' commit
+       ├── block-003.stdout             what check printed, and block-003.stderr
        └── block/003/                   the group or test asked for
            └── nvme0n1/                 the device, or nodev for a test that makes its own
                └── block/
@@ -91,7 +92,8 @@ the slash:
    $ systemctl --host guest start blktests@loop.service
    $ systemctl --host guest start blktests@block-001.service
    $ systemctl --host guest status blktests@loop.service
-   $ ssh guest journalctl --unit=blktests@loop.service
+   $ tail --follow \
+       ~/.local/state/qemu-system/guest/blktests/*/loop.stdout
 
 ``start`` returns when the group is done, and fails where a test
 failed. With ``--no-block`` it returns at once, the group runs on with
@@ -100,13 +102,18 @@ the terminal closed, and ``is-active`` says how it stands:
 ``failed`` otherwise. In the guest the lines are the same without
 ``--host guest``.
 
+What blktests prints goes to ``loop.stdout`` and ``loop.stderr`` under
+the release, on the host as it comes, and not to the guest's journal:
+it is where blktests says why a test did not run, and a
+:term:`record <Record>` reads it there.
+
 The task
 ========
 
 One :term:`task <Task>` does the same on the machine it is started on,
-with blktests' lines on your terminal. Start it in the guest, as root:
-the guest has your home at its host path, so the checkout is there
-under the name it has on the host:
+with blktests' lines on your terminal as well as in the file. Start it
+in the guest, as root: the guest has your home at its host path, so
+the checkout is there under the name it has on the host:
 
 .. code-block:: console
    :caption: host
@@ -138,8 +145,8 @@ with kresults' :cmd:`kblktests`:
 
 :src:`record <tasks/blktests/record>` takes the results under the
 release of the kernel the tree built, so the guest has to have run
-that build. Each test that passed or failed gets a record, named for
-the device it ran on:
+that build, and the machine has to be running: the record names its
+QEMU. Each test gets a record, named for the device it ran on:
 
 .. code-block:: text
 
@@ -149,9 +156,10 @@ the device it ran on:
        └── nvme0n1/block/003.json
 
 The record names the machine under test and the commit of blktests,
-from ``machine/`` of the results. A test that did not run leaves no
-record: blktests prints why and keeps it in no file. Run the task
-again after another group: what is filed already is left as it is.
+from ``machine/`` of the results, and the QEMU the machine runs. A test
+that did not run is a skip, with the reason blktests printed. Run the
+task again after another group: what is filed already is left as it
+is.
 
 .. _blktests: https://github.com/linux-blktests/blktests
 .. _blktests' own page: https://github.com/linux-blktests/blktests/blob/master/Documentation/running-tests.md

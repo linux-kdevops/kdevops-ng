@@ -199,6 +199,21 @@ of the kernel. They go to the guest's state directory on the host,
   install wrote into the disk. They are copied as they are, with `cp`,
   before each run. The reader on the host takes what it needs, so the
   guest runs no code of the project and needs none of its tools.
+- What the suite prints goes to two files under the release, named for
+  what was asked, as a task's output goes to files (`designs/output.md`):
+  blktests says why a test did not run nowhere else, and the journal
+  drops lines. The unit's settings write them, the task's `tee`. The
+  files are on the host as they grow, so a run is followed there.
+- A unit of its own, `blktests-machine.service`, makes `machine/` and
+  copies the facts. systemd opens a unit's output files before it runs
+  any of its commands, and before it makes a `StateDirectory=`: a unit
+  whose output lies in a directory it makes itself fails with status
+  209. The service requires that unit, which does not stay active and
+  so runs again before each group.
+- The machine's QEMU is named on the host, by the record task, from
+  the machine's running process: nothing in the guest names the build
+  of the QEMU it runs on. A record made after the machine has started
+  again on another QEMU would name the wrong one.
 - The records are made on the host, by a task that takes the tree: the
   commit, the `.config` and the profiles are there, and the release
   names which results are that build's. A test's date is the guest's

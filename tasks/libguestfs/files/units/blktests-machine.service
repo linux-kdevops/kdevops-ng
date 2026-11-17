@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# A record of a test names the machine it ran on and the blktests that
+# ran it, which blktests' results do not. This unit keeps them in
+# machine/ of the results, as the kernel and the install gave them,
+# before each run of blktests@.service: it does not stay active, so
+# each start of that unit starts it again.
+
+[Unit]
+Description=blktests machine under test
+RequiresMountsFor=/var/lib/blktests
+
+[Service]
+Type=oneshot
+ExecStart=mkdir --parents --verbose /var/lib/blktests/%v/machine
+ExecStart=cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
+	/usr/lib/blktests/version /var/lib/blktests/%v/machine

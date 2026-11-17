@@ -111,8 +111,9 @@ the packages are in the disk already.
 
 With blktests the task installs
 :src:`blktests@.service <tasks/libguestfs/files/units/blktests@.service>`
-in the disk, the unit that runs a group of its tests, and the mount
-unit of the share it keeps their results in (:doc:`/tasks/blktests`).
+in the disk, the unit that runs a group of its tests, with the two it
+needs: the mount of the share for the results, and the one that keeps
+what a record names of the machine (:doc:`/tasks/blktests`).
 
 .. _requirements-libguestfs:
 

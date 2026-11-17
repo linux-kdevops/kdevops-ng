@@ -4,7 +4,8 @@
 ##
 ## File what blktests left of each test in the guest of the machine
 ## NAME, on the kernel the Linux tree in DIR built, as records of that
-## build, with kresults' kblktests:
+## build, with kresults' kblktests. The machine is running: its QEMU
+## is the one a record names.
 ##
 ##   tasks/blktests/record --directory ~/linux --machine guest
 ##
@@ -21,7 +22,11 @@ settings+=(--property=StateDirectory=krecords)
 results=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/blktests
 results+=/$(<"$build/include/config/kernel.release")
 producer=$(realpath "$(dirname "$0")")
+# The QEMU the machine runs, by the process itself: the file its unit
+# names may have been built again since.
+pid=$(systemctl --user show --property=MainPID --value "qemu-system@$machine.service")
+qemu=$(readlink "/proc/$pid/exe")
 
 transcript
-"${unit[@]}" kblktests --results "$results" "${config[@]}" \
+"${unit[@]}" kblktests --results "$results" "${config[@]}" --qemu "$qemu" \
 	--producer kdevops-ng --producer-tree "$producer"
