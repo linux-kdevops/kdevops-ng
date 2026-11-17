@@ -87,6 +87,7 @@ cmd_links = {
     "doc8": "https://github.com/PyCQA/doc8",
     "gpg": "https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html",
     "curl": "https://curl.se/docs/manpage.html",
+    "qemu-img": "https://www.qemu.org/docs/master/tools/qemu-img.html",
     "git": "https://git-scm.com/docs/git",
     "git subrepo": "https://github.com/ingydotnet/git-subrepo",
     "git worktree": "https://git-scm.com/docs/git-worktree",

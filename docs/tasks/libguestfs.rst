@@ -6,7 +6,8 @@ libguestfs
 
 These :term:`tasks <Task>` make a guest that runs a distribution's
 cloud image, set up with `libguestfs`_. They work in the guest's state
-directory, which you make first. One downloads the image there:
+directory, which you make first: one downloads the image there and one
+makes the guest's disk from it:
 
 .. code-block:: console
    :caption: host
@@ -15,6 +16,8 @@ directory, which you make first. One downloads the image there:
    $ mkdir --parents --verbose ~/.local/state/qemu-system/guest
    $ tasks/libguestfs/download_image \
        --directory ~/.local/state/qemu-system/guest --distribution debian-13
+   $ tasks/libguestfs/overlay --directory ~/.local/state/qemu-system/guest \
+       --backing-file debian-13-genericcloud-amd64.qcow2
 
 :src:`download_image <tasks/libguestfs/download_image>` takes the image and
 its checksums with :cmd:`curl`, checks the one against the other, and
@@ -44,6 +47,11 @@ checksums, and how they are checked:
 The key goes into a :cmd:`gpg` home made for the run, which holds no
 other, so a good signature is that key's.
 
+:src:`overlay <tasks/libguestfs/overlay>` makes ``work.qcow2`` with
+:cmd:`qemu-img`, an overlay of the image: what the guest writes stays in
+it and the image stays as downloaded. Making it again starts the guest
+over. Stop the guest first.
+
 .. _requirements-libguestfs:
 
 Requirements
@@ -58,7 +66,8 @@ Requirements
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo apt install curl gnupg ubuntu-keyring distribution-gpg-keys
+         $ sudo apt install curl gnupg ubuntu-keyring distribution-gpg-keys \
+             qemu-utils
 
    .. tab-item:: Fedora
       :sync: fedora
@@ -66,7 +75,8 @@ Requirements
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo dnf install curl gnupg2 ubu-keyring distribution-gpg-keys
+         $ sudo dnf install curl gnupg2 ubu-keyring distribution-gpg-keys \
+             qemu-img
 
    .. tab-item:: Ubuntu
       :sync: ubuntu
@@ -74,6 +84,7 @@ Requirements
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo apt install curl gnupg ubuntu-keyring distribution-gpg-keys
+         $ sudo apt install curl gnupg ubuntu-keyring distribution-gpg-keys \
+             qemu-utils
 
 .. _libguestfs: https://libguestfs.org
