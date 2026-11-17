@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/libguestfs/download_image --directory DIR --distribution NAME
+##
+## Download the cloud image tasks/libguestfs/files/images/NAME names for this
+## host's machine into DIR, a guest's state directory, once it passes
+## its distribution's checksums, and those their signature where the
+## distribution signs them:
+##
+##   tasks/libguestfs/download_image \
+##       --directory ~/.local/state/qemu-system/guest --distribution debian-13
+##
+## The download lies in download/ of DIR until the image has passed.
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${distribution:?}"
+# gpg's home for this run alone: it holds the one key the distribution's
+# file imports, so a good signature is that key's. It goes with the task.
+home=$(mktemp --directory)
+settle() { rm --recursive --force "$home"; }
+# shellcheck disable=SC2034 # the distribution's file reads it
+gpg=(gpg --homedir "$home" --batch --no-autostart)
+# The distribution's file: $urls, the image first, and the commands that
+# $import its key, $verify the checksums' signature and $check the image.
+# A distribution that signs nothing leaves the first two empty, and they
+# run nothing.
+# shellcheck source=tasks/libguestfs/files/images/debian-13
+. "$(dirname "$0")/files/images/$distribution"
+image=$(basename "${urls[0]}")
+
+transcript
+mkdir --parents --verbose "$directory/download"
+# shellcheck disable=SC2164 # errexit ends the task where cd fails
+cd "$directory/download"
+# A run that was cut goes on from what it has when the task runs again.
+curl --fail --fail-early --location --continue-at - --remote-name-all "${urls[@]}"
+"${import[@]}"
+"${verify[@]}"
+"${check[@]}"
+mv --verbose "$image" "$directory"
+rm --recursive --verbose "$directory/download"

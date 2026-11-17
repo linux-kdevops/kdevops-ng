@@ -222,9 +222,10 @@ inputs and values, then the commands.
   from the journal, which drops lines of a unit that prints fast. A task
   that needs what a tool printed reads the file. A task with no tool to
   run, only commands on files, as `tasks/smatch/uninstall`'s `rm`, starts
-  no unit. Nor does one whose tool is done in a moment, writes nothing
-  and leaves no record, as `tasks/pgpkeys/verify`'s `git verify-commit`:
-  a unit would give it nothing to limit, keep or measure.
+  no unit. Nor does one that leaves no record and runs nothing a tree
+  holds, as `tasks/pgpkeys/verify`'s `git verify-commit` or
+  `tasks/libguestfs/download_image`'s `curl`: a unit would give it nothing to
+  limit, keep or measure.
 - U2. The unit is named for the task and the task's process, as
   `kernel-build-12345.service`, so a drop-in for `kernel-build-.service`
   reaches every run of the task. Whether two runs may work on one

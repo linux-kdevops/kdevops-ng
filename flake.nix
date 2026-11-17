@@ -58,6 +58,8 @@
             pkgs.git-subrepo
             pkgs.gnumake
             pkgs.bc
+            # What tasks/libguestfs/download_image fetches an image with.
+            pkgs.curl
             pkgs.bison
             pkgs.flex
             # depmod, for modules_install.

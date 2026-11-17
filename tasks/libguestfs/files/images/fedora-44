@@ -1,0 +1,13 @@
+# shellcheck shell=bash disable=SC2034 # tasks/libguestfs/download_image reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Fedora 44, the generic cloud image. Fedora signs the checksums, in the
+# file itself, with the release's key, which the distribution-gpg-keys
+# package holds.
+machine=$(uname --machine)
+site=https://dl.fedoraproject.org/pub/fedora/linux/releases/44/Cloud/$machine/images
+urls=("$site/Fedora-Cloud-Base-Generic-44-1.7.$machine.qcow2"
+	"$site/Fedora-Cloud-44-1.7-$machine-CHECKSUM")
+import=("${gpg[@]}" --quiet --import
+	/usr/share/distribution-gpg-keys/fedora/RPM-GPG-KEY-fedora-44-primary)
+verify=("${gpg[@]}" --verify "Fedora-Cloud-44-1.7-$machine-CHECKSUM")
+check=(sha256sum --check --ignore-missing "Fedora-Cloud-44-1.7-$machine-CHECKSUM")

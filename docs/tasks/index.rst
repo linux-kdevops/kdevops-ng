@@ -30,6 +30,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
 
    b4
    kernel
+   libguestfs
    qemu
    smatch
    sparse

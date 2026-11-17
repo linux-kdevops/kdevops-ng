@@ -1,0 +1,11 @@
+# shellcheck shell=bash disable=SC2034 # tasks/libguestfs/download_image reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Ubuntu 26.04, the server cloud image. Ubuntu signs the checksums with
+# the key its ubuntu-keyring package holds.
+declare -A arch=([x86_64]=amd64 [aarch64]=arm64)
+site=https://cloud-images.ubuntu.com/resolute/current
+urls=("$site/resolute-server-cloudimg-${arch[$(uname --machine)]}.img" "$site/SHA256SUMS"
+	"$site/SHA256SUMS.gpg")
+import=("${gpg[@]}" --quiet --import /usr/share/keyrings/ubuntu-cloudimage-keyring.gpg)
+verify=("${gpg[@]}" --verify SHA256SUMS.gpg SHA256SUMS)
+check=(sha256sum --check --ignore-missing SHA256SUMS)
