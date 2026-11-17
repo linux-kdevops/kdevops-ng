@@ -4,9 +4,10 @@
 b4
 ==
 
-One :term:`task <Task>` takes a series from a mailing list by its
-Message-ID with `b4`_ and applies it in a worktree you add at the
-series' base, the commit its cover letter names as ``base-commit``:
+Two :term:`tasks <Task>` take a series from a mailing list by its
+Message-ID with `b4`_. One applies it in a worktree you add at the
+series' base, the commit its cover letter names as ``base-commit``, and
+one keeps the thread there:
 
 .. code-block:: console
    :caption: host
@@ -14,6 +15,8 @@ series' base, the commit its cover letter names as ``base-commit``:
 
    $ git -C ~/qemu worktree add --detach ~/wt/qemu 7a34f7b879
    $ tasks/b4/shazam --directory ~/wt/qemu \
+       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+   $ tasks/b4/mbox --directory ~/wt/qemu \
        --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
    $ tasks/qemu/series --directory ~/wt/qemu --range 7a34f7b879..
 
@@ -24,6 +27,13 @@ base is the commit you checked out, so the range of the series
 (:ref:`records-series`) starts there. A series that does not apply
 leaves ``git am`` stopped in the worktree, and ``git am --abort`` there
 gives the base back.
+
+:src:`mbox <tasks/b4/mbox>` runs ``b4 mbox`` and keeps the thread as
+``build/logs/b4-mbox/thread.mbx`` of the worktree. The series task hands
+that file to :cmd:`kseries`, which names the series by its Message-ID
+and takes the cover letter from it. A thread left from another series
+is not used: :cmd:`kseries` takes it only when its patches are the
+commits of the range.
 
 .. _requirements-b4:
 

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/b4/mbox --directory DIR --message-id ID
+##
+## Keep the thread of the series posted as ID in the tree in DIR, for the
+## tree's series task to name the series by:
+##
+##   tasks/b4/mbox --directory ~/wt/qemu \
+##       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+##
+## The thread goes to build/logs/b4-mbox/thread.mbx of DIR, and its tool's
+## output to stdout and stderr beside it.
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${message_id:?}"
+directory=$(realpath "$directory")
+# Where b4 keeps what it fetched, if you moved it.
+variables=(XDG_CACHE_HOME)
+settings=(--property=ReadOnlyPaths="$directory" --property=CacheDirectory=b4)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" b4 --no-stdin mbox --outdir "$log" --mbox-name thread.mbx \
+	"$message_id"

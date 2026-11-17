@@ -16,5 +16,10 @@
 settings+=(--property=StateDirectory=krecords)
 . "$(dirname "$0")/../common/unit"
 
+# A series applied from a mailing list has its thread where
+# tasks/b4/mbox keeps it, and a tree that came from no mail has none.
+# kseries leaves aside a thread whose patches are not the range's.
+mbox=build/logs/b4-mbox/thread.mbx
+
 transcript
-"${unit[@]}" kseries --project qemu --range "$range"
+"${unit[@]}" kseries --project qemu --range "$range" --mbox "$mbox"
