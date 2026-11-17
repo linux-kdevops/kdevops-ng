@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The share of the host that blktests keeps its results in: blktests/
+# of the machine's state directory, which the machine's file shares
+# under the tag blktests. Nothing mounts it at boot, so a machine
+# without the share boots as before.
+
+[Unit]
+Description=blktests results, in the machine's state directory
+
+[Mount]
+What=blktests
+Where=/var/lib/blktests
+Type=virtiofs

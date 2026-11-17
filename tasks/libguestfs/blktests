@@ -4,10 +4,11 @@
 ##
 ## Install blktests from your tree TREE into work.qcow2, the disk of the
 ## guest whose state directory is DIR, as /usr/lib/blktests: the tree,
-## copied in, built and installed in the disk, and with it the unit
-## blktests@.service, which runs a group of its tests. The disk has
-## what blktests builds with once tasks/libguestfs/install has run its
-## blktests profile. The guest must be stopped:
+## copied in, built and installed in the disk, and with it the units
+## that run a group of its tests and mount the host's share for their
+## results. The disk has what blktests builds with once
+## tasks/libguestfs/install has run its blktests profile. The guest
+## must be stopped:
 ##
 ##   tasks/libguestfs/blktests --directory ~/.local/state/qemu-system/guest \
 ##       --copy-in ~/blktests
@@ -16,14 +17,15 @@
 copy_in=$(realpath "$copy_in")
 tree=/work/$(basename "$copy_in")
 jobs=$(nproc)
-unit=$(realpath "$(dirname "$0")/files/units/blktests@.service")
+units=$(realpath "$(dirname "$0")/files/units")
+system=/usr/lib/systemd/system
 
 transcript
 # The build runs in virt-customize's appliance, which --memsize and
 # --smp size. blktests installs as one directory of its own, which goes
 # under /usr/lib, where a package keeps what is its alone, in place of
 # the Makefile's /usr/local. The copy goes when it is installed. The
-# unit is uploaded with the developer's owner and mode, which a file
+# units are uploaded with the developer's owner and mode, which a file
 # of /usr/lib does not keep.
 virt-customize --format qcow2 --add "$directory/work.qcow2" \
 	--memsize 4096 --smp "$jobs" \
@@ -31,6 +33,9 @@ virt-customize --format qcow2 --add "$directory/work.qcow2" \
 	--run-command "make --directory=$tree --jobs=$jobs" \
 	--run-command "make --directory=$tree prefix=/usr/lib install" \
 	--delete /work \
-	--upload "$unit:/usr/lib/systemd/system/blktests@.service" \
-	--chown 0:0:/usr/lib/systemd/system/blktests@.service \
-	--chmod 0644:/usr/lib/systemd/system/blktests@.service
+	--upload "$units/blktests@.service:$system/blktests@.service" \
+	--chown "0:0:$system/blktests@.service" \
+	--chmod "0644:$system/blktests@.service" \
+	--upload "$units/var-lib-blktests.mount:$system/var-lib-blktests.mount" \
+	--chown "0:0:$system/var-lib-blktests.mount" \
+	--chmod "0644:$system/var-lib-blktests.mount"

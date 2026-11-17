@@ -151,12 +151,7 @@ its built files into the developer's tree.
 is started on, and opens no connection. How it gets started in the
 guest is the developer's, or a workflow's (T5): ssh today, an engine's
 own transport later. The home share makes that one command: the
-checkout and the Linux tree are in the guest at their host paths, so
-the task and its arguments are the same on both sides.
-
-The suite writes its results under `build/` of the Linux tree whose
-kernel the guest runs. Nothing is copied out, and the results lie with
-the build they are of, where a record of them is made from.
+checkout is in the guest at its host path.
 
 The guest's systemd is the second way to start a group:
 `blktests@.service`, a unit file of the guest, since it stays there
@@ -165,18 +160,41 @@ guest or from the host with `--host`, which is systemctl's own option,
 so nothing of the project carries the transport here either. The unit
 is one-shot: `start` returns the group's verdict, and with `--no-block`
 the group outlives the session that started it, which a command over
-ssh does not.
-
-An instance holds one name, the group, and no tree. The unit thus
-writes to `/var/lib/blktests`, where a package keeps its data (section
-9), and its results are read in the guest.
+ssh does not. Blocking or not is the caller's to choose on that line.
 
 A task that ran ssh itself could not run it in a unit. A unit of the
 developer's service manager that is sandboxed at all runs in a user
 namespace, where the files root owns are nobody's, and ssh refuses a
 configuration that neither root nor the developer owns.
 
-## 9. Where a suite's files go in the guest
+## 9. A suite's results lie with the guest
+
+A kernel task works in a tree, on its sources and its build, and its
+output goes to that tree's `build/`. A suite works in a guest: its
+results are of that machine, its devices and its userspace as much as
+of the kernel. They go to the guest's state directory on the host,
+`blktests/` there, which the machine's file shares under the tag
+`blktests` and the guest mounts at `/var/lib/blktests`.
+
+- The kernel's release is the first directory inside, `%v` in the
+  unit. The guest boots whatever kernel its machine file names, so the
+  release is what ties a result to a build, and one tree's results
+  outlast the boot of another's.
+- Neither the unit nor the task takes a tree. A template's instance
+  holds one name, the group, and the task needs nothing more.
+- The share is its own, not a path of the home share, which would put
+  the host's layout in a unit file of the guest.
+- A mount unit, not a line of fstab. It is the suite's file, installed
+  and replaced with it, where a line would have each run of the
+  install edit a file `customize` owns.
+- Nothing mounts it at boot: the service asks for it with
+  `RequiresMountsFor=` and the task starts it. A machine without the
+  share boots as before, and both fail there before a test runs, so
+  no run leaves results in the disk by mistake.
+- The directory is not in a tree's `build/`, so `mrproper` leaves the
+  machine able to start.
+
+## 10. Where a suite's files go in the guest
 
 The guest's paths follow the UAPI group's file hierarchy
 specification, which gives a package these: `/usr/lib/<package>/` for
@@ -192,13 +210,10 @@ persistent data. It does not name `/usr/local`, and advises against
   `/etc/blktests/config`, given to `check` with `--config`: its own
   default is a `config` file inside its directory, which `/usr` is not
   the place for.
-- Its results go to the tree's `build/blktests/` when the task runs
-  it, given with `--output`: they are of one build of one tree, and
-  are read on the host. The guest's unit knows no tree and keeps them
-  in `/var/lib/blktests`. blktests' own default is `results/` inside
-  its directory.
+- Its results go to `/var/lib/blktests`, given with `--output`
+  (section 9). Its own default is `results/` inside its directory.
 
-## 10. The console is a log
+## 11. The console is a log
 
 A machine's serial console is its unit's log. `TERM=dumb` on the
 kernel's command line has systemd write it as plain text. Without it a
@@ -206,7 +221,7 @@ boot writes about 570 colour sequences and a handful of queries a
 terminal answers: journald stores such lines as binary, and shown
 whole they make the reader's terminal type the answers into its shell.
 
-## 11. The image
+## 12. The image
 
 A distribution is a file under `tasks/libguestfs/files/images`, sourced
 by the task: the URLs, and the commands that import the distribution's

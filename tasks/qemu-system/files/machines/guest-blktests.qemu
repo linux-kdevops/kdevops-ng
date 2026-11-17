@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# guest-nvme.qemu with the share blktests keeps its results in,
+# blktests/ of the guest's state directory. Copy it to
+# ~/.config/qemu/systemd/NAME.qemu, change the lines marked CHANGE, and
+# make the namespace's file and the shared directory in the guest's
+# state directory:
+#
+#   qemu-img create -f qcow2 ~/.local/state/qemu-system/NAME/nvme0.qcow2 1G
+#   mkdir --verbose ~/.local/state/qemu-system/NAME/blktests
+
+[VM]
+# The key root's ssh takes, which tasks/libguestfs/customize put in the
+# guest: the unit powers the guest off with it.
+SSHPrivateKey=%h/.ssh/guests
+# The QEMU a tree of yours built, in place of the host's:
+#QEMUBinary=%h/qemu/build/qemu-system-x86_64
+
+[QEMU]
+machine=q35
+nodefaults=
+accel=kvm
+cpu=host
+m=2G
+smp=4
+nographic=
+serial=mon:stdio
+# The guest's disk, in its state directory.
+drive=file=work.qcow2,if=virtio,format=qcow2
+# CHANGE: your Linux tree, here and in the modules share below.
+kernel=%h/linux/build/arch/x86_64/boot/bzImage
+initrd=%h/linux/build/initrd
+# root= is the image's root partition: the first on Debian and Ubuntu.
+append=console=ttyS0 root=/dev/vda1 rw TERM=dumb
+netdev=user,id=net0
+device=virtio-net-pci-non-transitional,netdev=net0
+# CHANGE: a vsock number no other machine of this host has.
+device=vhost-vsock-pci-non-transitional,guest-cid=100
+device=nvme,serial=nvme0,id=nvme0
+drive=file=nvme0.qcow2,if=none,format=qcow2,id=nvme0-ns0
+# CHANGE: the namespace's options, after bus=nvme0, as the test needs.
+device=nvme-ns,drive=nvme0-ns0,bus=nvme0,logical_block_size=4096,physical_block_size=4096
+
+[virtiofsd]
+shared-dir=%h/linux/build/mod-install/lib/modules
+tag=modules
+cache=always
+sandbox=namespace
+uid-map=:0:%U:1:
+gid-map=:0:%G:1:
+
+# CHANGE: the machine's name. virtiofsd does not start without the
+# directory.
+[virtiofsd]
+shared-dir=%S/qemu-system/guest/blktests
+tag=blktests
+sandbox=namespace
+uid-map=:0:%U:1:
+gid-map=:0:%G:1:
+
+[virtiofsd]
+shared-dir=%h
+tag=home
+sandbox=namespace
+uid-map=:0:%U:1:
+gid-map=:0:%G:1:
+
+[Install]
+WantedBy=machines.target

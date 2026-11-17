@@ -129,6 +129,10 @@ The two shares carry the tags the guest's ``/etc/fstab`` mounts.
    driver or of the block layer on it. The file says how to make the
    namespace's file.
 
+``guest-blktests.qemu``
+   ``guest-nvme.qemu`` with the share blktests keeps its results in
+   (:doc:`/tasks/blktests`).
+
 ``guest-lan.qemu``
    With a second card on a segment the guests share, for a test two
    guests take part in (`Two guests that reach each other`_).
