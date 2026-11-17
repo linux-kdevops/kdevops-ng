@@ -1,12 +1,14 @@
 # SPDX-License-Identifier: copyleft-next-0.3.1
-# guest-nvme.qemu with the share blktests keeps its results in,
-# blktests/ of the guest's state directory. Copy it to
+# guest-nvme.qemu with the share that holds blktests' config and takes
+# its results, blktests/ of the guest's state directory. Copy it to
 # ~/.config/qemu/systemd/NAME.qemu, change the lines marked CHANGE, and
-# make the namespace's file and the shared directory in the guest's
-# state directory:
+# make the namespace's file and the shared directory, with the config,
+# in the guest's state directory:
 #
 #   qemu-img create -f qcow2 ~/.local/state/qemu-system/NAME/nvme0.qcow2 1G
 #   mkdir --verbose ~/.local/state/qemu-system/NAME/blktests
+#   cp --verbose tasks/blktests/files/config \
+#       ~/.local/state/qemu-system/NAME/blktests/
 
 [VM]
 # The key root's ssh takes, which tasks/libguestfs/customize put in the

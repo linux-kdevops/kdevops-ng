@@ -167,7 +167,7 @@ developer's service manager that is sandboxed at all runs in a user
 namespace, where the files root owns are nobody's, and ssh refuses a
 configuration that neither root nor the developer owns.
 
-## 9. A suite's results lie with the guest
+## 9. A suite's config and results lie with the guest
 
 A kernel task works in a tree, on its sources and its build, and its
 output goes to that tree's `build/`. A suite works in a guest: its
@@ -193,6 +193,13 @@ of the kernel. They go to the guest's state directory on the host,
   no run leaves results in the disk by mistake.
 - The directory is not in a tree's `build/`, so `mrproper` leaves the
   machine able to start.
+- The suite's config is a file of the same directory, read as
+  `/var/lib/blktests/config`. It names devices the machine's file
+  defines, so the two are kept on the host side by side, and a change
+  to it needs no stop of the guest and no write to its disk. The
+  project's file is one to copy and change, as a machine's is. The
+  unit and the task always name it: a machine has a config, though it
+  may set nothing.
 
 ## 10. Where a suite's files go in the guest
 
@@ -206,10 +213,10 @@ persistent data. It does not name `/usr/local`, and advises against
 - blktests is one directory of scripts, tests and helpers that run
   from where they lie, so it is installed as `/usr/lib/blktests`, with
   `prefix=/usr/lib` in place of its Makefile's `/usr/local`.
-- Its configuration, where a machine has one, is
-  `/etc/blktests/config`, given to `check` with `--config`: its own
+- Its configuration is given to `check` with `--config`: its own
   default is a `config` file inside its directory, which `/usr` is not
-  the place for.
+  the place for. `/etc/blktests/config` would be the specification's
+  place, in the guest's disk. It is in the share instead (section 9).
 - Its results go to `/var/lib/blktests`, given with `--output`
   (section 9). Its own default is `results/` inside its directory.
 
