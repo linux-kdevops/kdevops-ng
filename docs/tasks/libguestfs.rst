@@ -6,8 +6,9 @@ libguestfs
 
 These :term:`tasks <Task>` make a guest that runs a distribution's
 cloud image, set up with `libguestfs`_. They work in the guest's state
-directory, which you make first: one downloads the image there and one
-makes the guest's disk from it:
+directory, which you make first: one downloads the image there, one
+makes the guest's disk from it, and one sets the disk up for its first
+boot:
 
 .. code-block:: console
    :caption: host
@@ -18,6 +19,8 @@ makes the guest's disk from it:
        --directory ~/.local/state/qemu-system/guest --distribution debian-13
    $ tasks/libguestfs/overlay --directory ~/.local/state/qemu-system/guest \
        --backing-file debian-13-genericcloud-amd64.qcow2
+   $ tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
+       --hostname guest --ssh-inject ~/.ssh/guest.pub
 
 :src:`download_image <tasks/libguestfs/download_image>` takes the image and
 its checksums with :cmd:`curl`, checks the one against the other, and
@@ -52,6 +55,23 @@ other, so a good signature is that key's.
 it and the image stays as downloaded. Making it again starts the guest
 over. Stop the guest first.
 
+:src:`customize <tasks/libguestfs/customize>` changes the disk with
+:cmd:`virt-customize`, which takes seconds and needs the guest stopped:
+
+- the guest's name, new host keys, and the public key that opens root
+  over :cmd:`ssh`, the only one;
+- cloud-init off, which would write its own name, keys and network over
+  these at the first boot;
+- ``/etc/fstab`` lines that mount your home, which the host shares, at
+  the path it has on the host, so a tree is at the same path on both
+  sides. Three more lines put a read-only tmpfs over ``~/.ssh``,
+  ``~/.config/systemd`` and ``~/.local/share/systemd`` in the guest: its
+  root could otherwise add a key your :cmd:`ssh` trusts, or a unit your
+  service manager starts.
+
+Run it again after a change: it takes its earlier lines and key out
+first.
+
 .. _requirements-libguestfs:
 
 Requirements
@@ -67,7 +87,7 @@ Requirements
          :class: cmd-host
 
          $ sudo apt install curl gnupg ubuntu-keyring distribution-gpg-keys \
-             qemu-utils
+             qemu-utils guestfs-tools openssh-client
 
    .. tab-item:: Fedora
       :sync: fedora
@@ -76,7 +96,7 @@ Requirements
          :class: cmd-host
 
          $ sudo dnf install curl gnupg2 ubu-keyring distribution-gpg-keys \
-             qemu-img
+             qemu-img guestfs-tools openssh-clients
 
    .. tab-item:: Ubuntu
       :sync: ubuntu
@@ -85,6 +105,6 @@ Requirements
          :class: cmd-host
 
          $ sudo apt install curl gnupg ubuntu-keyring distribution-gpg-keys \
-             qemu-utils
+             qemu-utils guestfs-tools openssh-client
 
 .. _libguestfs: https://libguestfs.org

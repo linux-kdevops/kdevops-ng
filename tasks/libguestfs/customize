@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/libguestfs/customize --directory DIR --hostname NAME --ssh-inject FILE
+##
+## Set up work.qcow2, the disk of the guest whose state directory is DIR,
+## before its first boot: its name, its host keys, the public key FILE
+## for root, and your home, which the host shares, mounted at the path
+## it has here. The guest must be stopped:
+##
+##   tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
+##       --hostname guest --ssh-inject ~/.ssh/guest.pub
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${hostname:?} ${ssh_inject:?}"
+ssh_inject=$(realpath "$ssh_inject")
+# Each fstab line carries this option, which mount ignores, so a second
+# run takes the lines of the first out before it adds its own. Root's
+# keys go the same way: FILE is the one key that opens the guest.
+mark=x-kdevops-ng
+
+transcript
+# cloud-init would write the network, the host keys and the machine's
+# name over these at the first boot. The tmpfs lines mask what of your
+# home a guest's root must not write: the keys ssh trusts, and the units
+# your service manager starts.
+virt-customize --add "$directory/work.qcow2" \
+	--hostname "$hostname" \
+	--run-command 'ssh-keygen -A' \
+	--touch /etc/cloud/cloud-init.disabled \
+	--delete /root/.ssh/authorized_keys \
+	--ssh-inject "root:file:$ssh_inject" \
+	--mkdir "$HOME" \
+	--edit "/etc/fstab:\$_ = '' if /$mark/" \
+	--append-line "/etc/fstab:home $HOME virtiofs $mark 0 0" \
+	--append-line "/etc/fstab:tmpfs $HOME/.ssh tmpfs ro,nosuid,nodev,mode=0555,$mark 0 0" \
+	--append-line "/etc/fstab:tmpfs $HOME/.config/systemd tmpfs ro,nosuid,nodev,mode=0555,$mark 0 0" \
+	--append-line "/etc/fstab:tmpfs $HOME/.local/share/systemd tmpfs ro,nosuid,nodev,mode=0555,$mark 0 0"
