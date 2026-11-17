@@ -30,9 +30,7 @@ guest takes a rebuilt kernel with.
 :src:`status <tasks/qemu-system/status>` shows the unit, the command it
 runs, and the processor time and memory it has taken.
 :src:`journal <tasks/qemu-system/journal>` shows the guest's console
-since the machine last started, with the lines that hold the console's
-control characters, which :cmd:`journalctl` prints as blobs without
-``--all``.
+since the machine last started.
 
 :src:`kill <tasks/qemu-system/kill>` ends a machine whose guest does not
 stop, and clears the failure that leaves its unit in.

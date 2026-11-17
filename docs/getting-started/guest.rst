@@ -117,7 +117,7 @@ state directory, so the disk is named by its file alone:
    drive=file=work.qcow2,if=virtio,format=qcow2
    kernel=%h/linux/build/arch/x86_64/boot/bzImage
    initrd=%h/linux/build/initrd
-   append=console=ttyS0 root=/dev/vda1 rw
+   append=console=ttyS0 root=/dev/vda1 rw TERM=dumb
    netdev=user,id=net0
    device=virtio-net-pci-non-transitional,netdev=net0
    device=vhost-vsock-pci-non-transitional,guest-cid=100
@@ -141,8 +141,11 @@ state directory, so the disk is named by its file alone:
    WantedBy=machines.target
 
 ``root=`` names the root partition of the image: the first on Debian
-and Ubuntu. The ``user`` network gives the guest an address and a way
-out through the host, with no setup on it. ``guest-cid`` is the guest's
+and Ubuntu. ``TERM=dumb`` has the guest write its console as plain
+text: the console is the unit's log, and colours and the queries a
+terminal answers do not belong in one. The ``user`` network gives the
+guest an address and a way out through the host, with no setup on it.
+``guest-cid`` is the guest's
 vsock address, a number no other machine of the host has. The two
 shares carry the tags the initrd and the guest's ``/etc/fstab`` mount.
 ``SSHPrivateKey=`` lets the unit power the guest off over :cmd:`ssh`

@@ -40,6 +40,14 @@ The kernel builds its root file system's driver as a module, so it
 cannot mount the guest's root itself. An initrd made for that kernel
 loads the driver and mounts the root, then the modules share.
 
+The share is a line of the guest's own `/etc/fstab`, marked
+`x-initrd.mount`, which the initrd's systemd reads from the root it
+has mounted. A `dracut --mount` line in the initrd's own fstab did the
+same on most boots and hung some: systemd found an ordering cycle
+between that mount and `local-fs.target`, broke it by dropping a job,
+and at times the job it dropped was the root's mount. With the line in
+the guest's fstab no cycle is reported.
+
 `dracut` makes it on every distribution the project supports, Debian
 included, where the distribution's own tool is `mkinitramfs` of
 initramfs-tools. That one cannot do it:
@@ -52,8 +60,8 @@ initramfs-tools. That one cannot do it:
 - It has no option for a mount of its own. The modules share would
   need a hook under `/etc/initramfs-tools`, again the host's.
 
-`dracut --kmoddir` reads the modules where the build put them, and
-`--mount` adds the share. It runs without root. Its keyboard and font
+`dracut --kmoddir` reads the modules where the build put them, and it
+runs without root. Its keyboard and font
 modules, `i18n` and `console-setup`, write under `/var/lib` and fail
 without root, and a guest on a serial console and ssh needs neither, so
 the task leaves them out.
@@ -102,7 +110,15 @@ boot.
   which mount ignores, so a second run finds and removes the lines of
   the first.
 
-## 6. The image
+## 6. The console is a log
+
+A machine's serial console is its unit's log. `TERM=dumb` on the
+kernel's command line has systemd write it as plain text. Without it a
+boot writes about 570 colour sequences and a handful of queries a
+terminal answers: journald stores such lines as binary, and shown
+whole they make the reader's terminal type the answers into its shell.
+
+## 7. The image
 
 A distribution is a file under `tasks/libguestfs/files/images`, sourced
 by the task: the URLs, and the commands that import the distribution's
