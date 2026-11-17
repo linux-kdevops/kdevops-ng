@@ -37,6 +37,30 @@ and takes the cover letter from it. A thread left from another series
 is not used: :cmd:`kseries` takes it only when its patches are the
 commits of the range.
 
+The keyring
+===========
+
+b4 checks each patch's signature with `patatt`_, against the keyrings
+your Git configuration lists. The red marks of a run with none mean no
+key was found, and the series applies all the same. `pgpkeys`_ is the
+kernel.org developers' keyring:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ git clone https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git \
+       ~/.cache/b4/pgpkeys
+   $ tasks/pgpkeys/verify --directory ~/.cache/b4/pgpkeys
+   $ git config --global --add patatt.keyringsrc ~/.cache/b4/pgpkeys/.keyring
+
+:src:`verify <tasks/pgpkeys/verify>` checks that the clone's commit is
+signed by the key of its maintainer, Konstantin Ryabitsev. The task
+names the key, and :cmd:`gpg` trusts nothing but it, in a home of its
+own that goes with the task. Run it after each pull. The keyring holds
+OpenPGP keys: a patch signed with a patatt ed25519 key shows no key
+until a keyring of yours holds it.
+
 .. _requirements-b4:
 
 Requirements
@@ -51,7 +75,7 @@ Requirements
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo apt install b4 git
+         $ sudo apt install b4 git gnupg
 
    .. tab-item:: Fedora
       :sync: fedora
@@ -59,7 +83,7 @@ Requirements
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo dnf install b4 git
+         $ sudo dnf install b4 git gnupg2
 
    .. tab-item:: Ubuntu
       :sync: ubuntu
@@ -67,6 +91,8 @@ Requirements
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo apt install b4 git
+         $ sudo apt install b4 git gnupg
 
 .. _b4: https://b4.docs.kernel.org
+.. _patatt: https://pypi.org/project/patatt/
+.. _pgpkeys: https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git

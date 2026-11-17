@@ -85,6 +85,7 @@ cmd_links = {
     "TasksMax=": "https://www.freedesktop.org/software/systemd/man/latest/systemd.resource-control.html#TasksMax=N",
     "apt": "https://manpages.debian.org/apt",
     "doc8": "https://github.com/PyCQA/doc8",
+    "gpg": "https://www.gnupg.org/documentation/manuals/gnupg/Invoking-GPG.html",
     "git": "https://git-scm.com/docs/git",
     "git subrepo": "https://github.com/ingydotnet/git-subrepo",
     "git worktree": "https://git-scm.com/docs/git-worktree",
