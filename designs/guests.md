@@ -88,6 +88,11 @@ boot.
   owns every file of the share, and could otherwise add a key ssh
   trusts on the host, or a unit the developer's service manager starts
   at the next login.
+- A file for systemd-networkd asks for DHCP on every Ethernet card.
+  Debian's and Ubuntu's images run networkd with no configuration once
+  cloud-init is off. Fedora's runs NetworkManager, which asks by itself,
+  and its networkd is off, so the one file serves all three and the
+  task has no branch for a distribution.
 - Each fstab line the task adds carries the option `x-kdevops-ng`,
   which mount ignores, so a second run finds and removes the lines of
   the first.

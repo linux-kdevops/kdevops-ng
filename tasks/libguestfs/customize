@@ -4,8 +4,8 @@
 ##
 ## Set up work.qcow2, the disk of the guest whose state directory is DIR,
 ## before its first boot: its name, its host keys, the public key FILE
-## for root, and your home, which the host shares, mounted at the path
-## it has here. The guest must be stopped:
+## for root, DHCP on its network cards, and your home, which the host
+## shares, mounted at the path it has here. The guest must be stopped:
 ##
 ##   tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
 ##       --hostname guest --ssh-inject ~/.ssh/guest.pub
@@ -16,6 +16,16 @@ ssh_inject=$(realpath "$ssh_inject")
 # run takes the lines of the first out before it adds its own. Root's
 # keys go the same way: FILE is the one key that opens the guest.
 mark=x-kdevops-ng
+# DHCP on every Ethernet card, for systemd-networkd, which Debian and
+# Ubuntu run with no configuration once cloud-init is off. Fedora's
+# NetworkManager asks by itself, and its networkd, which is off, reads
+# no file.
+network='[Match]
+Type=ether
+
+[Network]
+DHCP=yes
+'
 
 transcript
 # cloud-init would write the network, the host keys and the machine's
@@ -28,6 +38,7 @@ virt-customize --add "$directory/work.qcow2" \
 	--touch /etc/cloud/cloud-init.disabled \
 	--delete /root/.ssh/authorized_keys \
 	--ssh-inject "root:file:$ssh_inject" \
+	--write "/etc/systemd/network/80-kdevops-ng.network:$network" \
 	--mkdir "$HOME" \
 	--edit "/etc/fstab:\$_ = '' if /$mark/" \
 	--append-line "/etc/fstab:home $HOME virtiofs $mark 0 0" \
