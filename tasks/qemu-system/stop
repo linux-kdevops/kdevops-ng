@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/stop --machine NAME
+##
+## Stop the machine NAME. Its unit powers the guest off over ssh where
+## the machine names a key, and presses its power button otherwise:
+##
+##   tasks/qemu-system/stop --machine guest
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+
+transcript
+systemctl --user stop "qemu-system@$machine.service"

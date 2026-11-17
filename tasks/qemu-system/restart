@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/restart --machine NAME
+##
+## Stop the machine NAME and start it again, as after a kernel rebuild:
+##
+##   tasks/qemu-system/restart --machine guest
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+
+transcript
+systemctl --user restart "qemu-system@$machine.service"

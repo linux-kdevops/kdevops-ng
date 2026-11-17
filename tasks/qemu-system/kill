@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/kill --machine NAME
+##
+## Kill the machine NAME, whose guest does not stop, and clear the
+## failure its unit is left in:
+##
+##   tasks/qemu-system/kill --machine guest
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+
+transcript
+systemctl --user kill --signal=SIGKILL "qemu-system@$machine.service"
+systemctl --user reset-failed "qemu-system@$machine.service"

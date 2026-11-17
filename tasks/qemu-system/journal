@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/journal --machine NAME
+##
+## Show the console of the machine NAME since it last started, with the
+## lines that hold control characters, which journalctl otherwise prints
+## as blobs:
+##
+##   tasks/qemu-system/journal --machine guest
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+
+transcript
+journalctl --all --no-pager --user-unit="qemu-system@$machine.service" --invocation=0

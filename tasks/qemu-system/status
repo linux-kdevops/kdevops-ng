@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/status --machine NAME
+##
+## Show the state of the machine NAME: its unit, what it runs, and the
+## processor time and memory it has taken:
+##
+##   tasks/qemu-system/status --machine guest
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+
+transcript
+systemctl --user --no-pager status "qemu-system@$machine.service"

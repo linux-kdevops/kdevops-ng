@@ -170,21 +170,23 @@ Boot
    :class: cmd-host
 
    $ systemctl --user start qemu-system-generator.service
-   $ systemctl --user start qemu-system@guest.service
+   $ tasks/qemu-system/start --machine guest
    $ ssh guest uname --kernel-release
    7.4.0-rc2-00003-g0123456789ab
    $ ssh guest systemctl is-system-running
    running
 
 A guest answers about 12 seconds after its start. Its console is the
-unit's log, where ``--all`` shows the lines that hold the console's
-control characters, which :cmd:`journalctl` otherwise prints as blobs:
+unit's log:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
-   $ journalctl --all --user-unit=qemu-system@guest.service
+   $ tasks/qemu-system/journal --machine guest
+
+:doc:`/tasks/qemu-system` has the tasks that stop, restart and kill a
+machine.
 
 After a rebuild
 ===============
@@ -199,7 +201,7 @@ again:
    $ tasks/kernel/build --directory ~/linux
    $ tasks/kernel/modules_install --directory ~/linux
    $ tasks/dracut/initrd --directory ~/linux
-   $ systemctl --user restart qemu-system@guest.service
+   $ tasks/qemu-system/restart --machine guest
 
 To start the guest over, stop it and make its disk again with
 ``overlay`` and ``customize``.
