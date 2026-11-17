@@ -63,7 +63,9 @@ over. Stop the guest first.
 - cloud-init off, which would write its own name, keys and network over
   these at the first boot;
 - DHCP on every Ethernet card, in a file for systemd-networkd, which
-  Debian and Ubuntu run. Fedora's NetworkManager asks by itself;
+  Debian and Ubuntu run. Fedora's NetworkManager asks by itself. A card
+  no server answers takes a link-local address, and multicast DNS
+  names the guest ``NAME.local`` to the others on its segment;
 - ``/etc/fstab`` lines that mount your home, which the host shares, at
   the path it has on the host, so a tree is at the same path on both
   sides. Three more lines put a read-only tmpfs over ``~/.ssh``,

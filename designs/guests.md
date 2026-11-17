@@ -93,6 +93,11 @@ boot.
   cloud-init is off. Fedora's runs NetworkManager, which asks by itself,
   and its networkd is off, so the one file serves all three and the
   task has no branch for a distribution.
+- A card no DHCP server answers, as one on a segment guests share,
+  takes a link-local address, and multicast DNS, which
+  systemd-resolved leaves off, names each guest `NAME.local`. Guests
+  thus reach each other by name with no address written for any of
+  them, and no task has to know which guests share a segment.
 - Each fstab line the task adds carries the option `x-kdevops-ng`,
   which mount ignores, so a second run finds and removes the lines of
   the first.
