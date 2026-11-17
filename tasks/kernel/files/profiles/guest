@@ -6,8 +6,9 @@
 # virtio-net and vsock. The fs fragments build the root file systems of
 # the distributions and the EFI partition's vfat as modules, so a guest
 # boots its own disk, which virtio-blk, built by core, carries. The
-# builtin fragment builds virtiofs in: a guest mounts the share that
-# holds its modules before it can load one.
+# builtin fragments build in what a guest uses before it can load a
+# module: virtiofs, which mounts the share that holds its modules, and
+# vsock, which systemd's ssh generator listens on.
 core/64bit.config
 core/modules.config
 core/core.config
@@ -22,4 +23,5 @@ virt/virtio-fs.config
 virt/virtio-net.config
 virt/vsock.config
 virt/virtio-extras.config
+builtin/virt/vsock.config
 builtin/virt/virtio-fs.config
