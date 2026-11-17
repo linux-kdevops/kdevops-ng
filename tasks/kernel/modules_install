@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/kernel/modules_install --directory DIR
+##
+## Install the modules the Linux tree in DIR built into its
+## build/mod-install/, stripped, for a guest to mount as its
+## /usr/lib/modules:
+##
+##   tasks/kernel/modules_install --directory ~/linux
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-modules_install/ of DIR.
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/kbuild"
+. "$(dirname "$0")/../common/unit"
+
+transcript
+# modules_install adds to what an earlier run installed, and a guest
+# mounts the whole directory: after a change of release it would hold
+# the old release's modules too.
+rm --recursive --force build/mod-install
+# A relative INSTALL_MOD_PATH would lie under O=, one build/ too deep.
+# kbuild skips depmod where it does not find it, and Debian keeps it in
+# /usr/sbin, off a user's PATH.
+"${unit[@]}" env PATH="$PATH:/usr/sbin" "${make[@]}" modules_install \
+	INSTALL_MOD_PATH="$build/mod-install" INSTALL_MOD_STRIP=1

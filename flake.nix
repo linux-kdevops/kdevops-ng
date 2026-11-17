@@ -60,6 +60,8 @@
             pkgs.bc
             pkgs.bison
             pkgs.flex
+            # depmod, for modules_install.
+            pkgs.kmod
             pkgs.perl
             # What make runs under LLVM=1.
             (clang pkgs)

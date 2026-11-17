@@ -14,6 +14,7 @@ tracks, and write only in its ``build/``.
 
    $ tasks/kernel/kconfig --directory ~/linux --target tinyconfig
    $ tasks/kernel/build --directory ~/linux
+   $ tasks/kernel/modules_install --directory ~/linux
    $ tasks/kernel/mrproper --directory ~/linux
    $ tasks/kernel/series --directory ~/linux --range v7.3..
    $ tasks/kernel/checkpatch --directory ~/linux --range v7.3..
@@ -24,7 +25,11 @@ tracks, and write only in its ``build/``.
 :src:`kconfig <tasks/kernel/kconfig>` makes ``build/.config`` with one of make's
 :term:`configuration <Configuration>` targets, such as ``tinyconfig`` or
 ``defconfig``. :src:`build <tasks/kernel/build>` builds what that ``.config``
-says, with a job for each processor. :src:`mrproper <tasks/kernel/mrproper>`
+says, with a job for each processor.
+:src:`modules_install <tasks/kernel/modules_install>` installs the
+build's modules, stripped, into ``build/mod-install/``, which holds one
+release: a guest mounts it as its ``/usr/lib/modules``.
+:src:`mrproper <tasks/kernel/mrproper>`
 removes what `kbuild`_ made in ``build/``, the ``.config`` with it.
 :src:`series <tasks/kernel/series>` names the commits of a range as the
 series the tree's records are of (:ref:`records-series`).
@@ -129,7 +134,7 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo apt install build-essential bc bison flex libelf-dev libssl-dev
+         $ sudo apt install build-essential bc bison flex kmod libelf-dev libssl-dev
          $ sudo apt install clang lld llvm
          $ sudo apt install sparse
 
@@ -139,8 +144,8 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo dnf install gcc make perl bc bison flex elfutils-libelf-devel \
-             openssl-devel
+         $ sudo dnf install gcc make perl bc bison flex kmod \
+             elfutils-libelf-devel openssl-devel
          $ sudo dnf install clang lld llvm
          $ sudo dnf install sparse smatch
 
@@ -152,7 +157,7 @@ needs `Perl`_. The second line of each list is for `Clang`_, under
       .. code-block:: console
          :class: cmd-host
 
-         $ sudo apt install build-essential bc bison flex libelf-dev libssl-dev
+         $ sudo apt install build-essential bc bison flex kmod libelf-dev libssl-dev
          $ sudo add-apt-repository universe
          $ sudo apt install clang lld llvm
          $ sudo apt install sparse
