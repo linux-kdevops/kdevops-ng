@@ -94,6 +94,12 @@ the profile of what is under test, as ``guest+block-layer``. The
 fragments come from the vendored kfragments copy
 (:doc:`/contributing/vendor`).
 
+Every merge also takes ``core/localversion.config``, which sets
+``CONFIG_LOCALVERSION_AUTO``. The kernel's release then names the commit
+it was built from, as ``7.3.0-rc5-00135-g0123456789ab``, with ``-dirty``
+after it where the tree has changes not committed. Without it kbuild
+ends the release of any commit past a tag with a bare ``+``.
+
 Names joined by ``+`` merge each named profile's fragments, each once,
 in the order :src:`tasks/kernel/files/fragments` gives them: the base
 first, and a built-in override after the fragment it overrides. A later

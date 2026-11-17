@@ -32,7 +32,10 @@ files=$(dirname "$0")/files
 configs=$(realpath "$(dirname "$0")/../../vendor/kfragments/kernel/configs")
 arch=${ARCH:-$(uname --machine | sed 's/aarch64/arm64/;s/riscv64/riscv/')}
 IFS=+ read -r -a names <<<"$profile"
-lists=$(sed '/^#/d' "${names[@]/#/$files/profiles/}")
+# Every merge takes core/localversion.config, whatever its profiles
+# list: the release then names the commit, and says so where the tree
+# has changes, where kbuild would end it with a bare "+".
+lists=$(sed '/^#/d' "${names[@]/#/$files/profiles/}" && echo core/localversion.config)
 mapfile -t fragments < <(grep --fixed-strings --line-regexp --file=<(echo "$lists") "$files/fragments")
 fragments=("${fragments[@]//\$\{ARCH\}/$arch}")
 fragments=("${fragments[@]/#/build/kfragments/}")
