@@ -158,6 +158,19 @@ The suite writes its results under `build/` of the Linux tree whose
 kernel the guest runs. Nothing is copied out, and the results lie with
 the build they are of, where a record of them is made from.
 
+The guest's systemd is the second way to start a group:
+`blktests@.service`, a unit file of the guest, since it stays there
+(principle 3), installed with the suite. `systemctl` starts it, in the
+guest or from the host with `--host`, which is systemctl's own option,
+so nothing of the project carries the transport here either. The unit
+is one-shot: `start` returns the group's verdict, and with `--no-block`
+the group outlives the session that started it, which a command over
+ssh does not.
+
+An instance holds one name, the group, and no tree. The unit thus
+writes to `/var/lib/blktests`, where a package keeps its data (section
+9), and its results are read in the guest.
+
 A task that ran ssh itself could not run it in a unit. A unit of the
 developer's service manager that is sandboxed at all runs in a user
 namespace, where the files root owns are nobody's, and ssh refuses a
@@ -179,10 +192,11 @@ persistent data. It does not name `/usr/local`, and advises against
   `/etc/blktests/config`, given to `check` with `--config`: its own
   default is a `config` file inside its directory, which `/usr` is not
   the place for.
-- Its results go to the tree's `build/blktests/`, given with
-  `--output`, and not to `/var/lib/blktests`: they are of one build of
-  one tree, and are read on the host. Its own default is `results/`
-  inside its directory.
+- Its results go to the tree's `build/blktests/` when the task runs
+  it, given with `--output`: they are of one build of one tree, and
+  are read on the host. The guest's unit knows no tree and keeps them
+  in `/var/lib/blktests`. blktests' own default is `results/` inside
+  its directory.
 
 ## 10. The console is a log
 

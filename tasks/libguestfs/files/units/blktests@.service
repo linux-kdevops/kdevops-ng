@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# blktests@GROUP.service runs the blktests group GROUP on this machine,
+# and blktests@GROUP-NNN.service its test GROUP/NNN: the instance is the
+# name as systemd-escape writes it. check runs from its own
+# directory, and a run starts with nothing an earlier one left.
+
+[Unit]
+Description=blktests %I
+Documentation=https://github.com/linux-blktests/blktests
+
+[Service]
+Type=oneshot
+WorkingDirectory=/usr/lib/blktests
+StateDirectory=blktests
+ExecStartPre=rm --recursive --force --verbose /var/lib/blktests/%I
+ExecStart=/usr/lib/blktests/check --output=/var/lib/blktests/%I %I

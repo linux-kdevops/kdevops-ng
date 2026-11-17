@@ -54,4 +54,38 @@ A test that failed leaves its output beside it, as ``001.out.bad``,
 ``001.full`` and ``001.dmesg``. A run starts with the directory of what
 it was asked for empty.
 
+The guest's unit
+================
+
+The guest's own systemd runs a group as well, with no session held
+open for it. :src:`tasks/libguestfs/blktests` installs the unit
+:src:`blktests@.service <tasks/libguestfs/files/units/blktests@.service>`
+with blktests, and its instance is the group, or a test with a dash
+for the slash:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ systemctl --host guest start blktests@loop.service
+   $ systemctl --host guest start blktests@block-001.service
+   $ systemctl --host guest status blktests@loop.service
+   $ ssh guest journalctl --unit=blktests@loop.service
+
+``start`` returns when the group is done, and fails where a test
+failed. With ``--no-block`` it returns at once, and the group runs on
+with the terminal closed. In the guest the lines are the same without
+``--host guest``.
+
+The unit takes no tree, so it keeps the results in the guest, laid out
+as above:
+
+.. code-block:: text
+
+   /var/lib/blktests/
+   └── loop/                 the group or test asked for
+       └── nodev/
+           └── loop/
+               └── 001
+
 .. _blktests: https://github.com/linux-blktests/blktests

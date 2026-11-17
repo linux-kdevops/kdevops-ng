@@ -109,6 +109,11 @@ installs it as ``/usr/lib/blktests``, and deletes the copy. Run it alone
 to take a newer blktests, which takes 6 seconds on a Debian 13 disk:
 the packages are in the disk already.
 
+With blktests the task installs
+:src:`blktests@.service <tasks/libguestfs/files/units/blktests@.service>`
+in the disk, the unit that runs a group of its tests
+(:doc:`/tasks/blktests`).
+
 .. _requirements-libguestfs:
 
 Requirements
