@@ -16,9 +16,9 @@
 # device handlers of the srp group, and fs/f2fs.config the file system
 # a few block tests make.
 # Three debug fragments are in it, though they slow every test: a few
-# tests show their bug only as a report of KASAN (nvme/069, nvme/075)
-# or of DEBUG_VM (block/050, block/051), and are not run on a kernel
-# without. Under GCC, KASAN leaves Rust out, which Kconfig allows with
+# tests show their bug only as a report of KASAN (nvme/069, nvme/075),
+# of DEBUG_VM (block/050, block/051) or of DEBUG_ATOMIC_SLEEP
+# (nvme/055), and are not run on a kernel without. Under GCC, KASAN leaves Rust out, which Kconfig allows with
 # it only under Clang: build with LLVM=1 to keep both.
 core/ikconfig.config
 storage/block-test-devices.config
@@ -28,4 +28,5 @@ storage/md-raid.config
 storage/srp-target.config
 fs/f2fs.config
 debug/kasan.config
+debug/atomic-sleep.config
 debug/debug-heavy.config

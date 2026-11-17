@@ -130,6 +130,7 @@ debug/modules-debug.config
 debug/kmemleak.config
 debug/kasan.config
 debug/lockdep.config
+debug/atomic-sleep.config
 debug/gdb.config
 debug/codetagging.config
 debug/debug-heavy.config
