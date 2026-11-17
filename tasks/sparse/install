@@ -6,6 +6,9 @@
 ## ~/.local/lib/sparse with a link in ~/.local/bin:
 ##
 ##   tasks/sparse/install --directory ~/sparse
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/sparse-install/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/tool"
 . "$(dirname "$0")/../common/unit"

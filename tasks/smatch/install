@@ -6,6 +6,9 @@
 ## ~/.local/lib/smatch with a link in ~/.local/bin:
 ##
 ##   tasks/smatch/install --directory ~/smatch
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/smatch-install/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/tool"
 . "$(dirname "$0")/../common/unit"

@@ -99,12 +99,13 @@ or ``riscv``.
 ``merge_config.sh`` reports, for each fragment, the values it redefines
 and each requested value the ``.config`` lost, an option whose
 dependencies nothing met. It prints both on its standard output, so the
-journal has them and the record does not (:doc:`/records`):
+record has none of them (:doc:`/records`). They are in the task's
+``stdout`` file (:ref:`tasks-unit`):
 
 .. code-block:: console
    :class: cmd-host
 
-   $ journalctl --user --identifier kernel-merge_config@home-user-linux.service
+   $ cat build/logs/kernel-merge_config/stdout
 
 .. _requirements-kernel:
 
@@ -164,8 +165,7 @@ from the sources.
 
 A tree has one build. kbuild can keep several beside one tree, and the
 tasks do not: give each build a tree of its own, as :cmd:`git worktree`
-adds one. systemd refuses a task a second run on a tree while the first
-lasts.
+adds one.
 
 kbuild refuses to build apart from a tree that was built in place, and
 the ``mrproper`` task cleans ``build/`` only. Clean such a tree yourself,
@@ -182,16 +182,15 @@ one that is set:
    :class: cmd-host
 
    $ LLVM=1 tasks/kernel/build --directory ~/linux
-   $ systemd-run --user --unit=kernel-build@… … --setenv=LLVM=1 … make O=build --jobs=16
+   $ systemd-run --user --unit=kernel-build-12345.service … --setenv=LLVM=1 … make O=build --jobs=16
 
 The unit
 ========
 
-Each task runs its tool in a unit named for the task and the tree:
-``kernel-build@home-user-linux.service`` builds ``/home/user/linux``
-(:ref:`tasks-unit`). In the tree the unit may write ``build/`` only. The
-tasks take make's line and kbuild's variables from
-:src:`tasks/common/kbuild`.
+Each task runs its tool in a unit named for the task, as
+``kernel-build-12345.service`` (:ref:`tasks-unit`). In the tree the
+unit may write ``build/`` only. The tasks take make's line and kbuild's
+variables from :src:`tasks/common/kbuild`.
 
 .. _Clang: https://clang.llvm.org
 .. _fstests: https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git

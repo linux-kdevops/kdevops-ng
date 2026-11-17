@@ -6,6 +6,9 @@
 ## the C files its series changes, with kresults' kobjects:
 ##
 ##   tasks/kernel/objects --directory ~/linux
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-objects/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/kbuild"
 # kobjects writes the list where krecord files the build's records.

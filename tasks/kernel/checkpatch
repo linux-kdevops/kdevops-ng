@@ -6,12 +6,16 @@
 ## checkpatch.pl, --strict:
 ##
 ##   tasks/kernel/checkpatch --directory ~/linux --range HEAD~3..
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-checkpatch/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${range:?}"
 . "$(dirname "$0")/../common/kbuild"
 # commands.json lists no argv for checkpatch.pl, so --output names the
-# record, and no --priority keeps every line: checkpatch.pl reports on its
-# standard output (designs/tasks.md, R2).
+# record. checkpatch.pl reports on its standard output, so the record
+# holds both files (designs/tasks.md, R2).
+outputs=(stdout stderr)
 record=(--command "scripts/checkpatch.pl --strict --git {range}"
 	--range "$range" --output=checkpatch.pl.json)
 . "$(dirname "$0")/../common/unit"

@@ -73,40 +73,6 @@ each list is a command for you to run.
 
          $ sudo apt install git
 
-.. _requirements-journal:
-
-The journal
-===========
-
-A task runs its tool as a unit of your service manager, and what the tool
-printed is read back from your own journal. `journald`_ keeps a journal for each
-user only while it stores on disk, under ``/var/log/journal``. Every
-distribution here sets that up, so most hosts need nothing. Check that yours has
-the file:
-
-.. code-block:: console
-   :class: cmd-host
-
-   $ ls /var/log/journal/*/user-"$(id --user)".journal
-
-If it is missing, the journal is still in memory, under ``/run``. Root
-moves it to disk, once there is room on ``/var``:
-
-.. code-block:: console
-   :class: cmd-host
-
-   $ sudo mkdir --parents --verbose /var/log/journal
-   $ sudo journalctl --flush
-
-Your own journal needs no group. To read the system's too, as
-:cmd:`journalctl` does without ``--user``, join ``systemd-journal`` and log
-in again:
-
-.. code-block:: console
-   :class: cmd-host
-
-   $ sudo usermod --append --groups systemd-journal "$(whoami)"
-
 .. _requirements-io:
 
 I/O accounting
@@ -169,7 +135,6 @@ Each part of kdevops-ng lists its own tools, on its page:
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com
 .. _git-subrepo: https://github.com/ingydotnet/git-subrepo
-.. _journald: https://www.freedesktop.org/software/systemd/man/latest/systemd-journald.service.html
 .. _kresults: https://github.com/linux-kdevops/kresults
 .. _Linux: https://kernel.org
 .. _Meson: https://mesonbuild.com

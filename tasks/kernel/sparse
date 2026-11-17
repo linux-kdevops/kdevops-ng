@@ -6,12 +6,14 @@
 ## kbuild's C=2 with its warnings made errors:
 ##
 ##   tasks/kernel/sparse --directory ~/linux --object init/main.o
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-sparse/OBJECT/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${object:?}"
 . "$(dirname "$0")/../common/kbuild"
 record=(--command "make C=2 CF=-Wsparse-error {file}" --file "$object"
-	"${config[@]}" --output "sparse/{file}.json" --tool sparse
-	--priority warning)
+	"${config[@]}" --output "sparse/{file}.json" --tool sparse)
 . "$(dirname "$0")/../common/unit"
 
 transcript

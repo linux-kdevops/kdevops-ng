@@ -6,6 +6,9 @@
 ## tree's records are of, with kresults' kseries:
 ##
 ##   tasks/qemu/series --directory ~/qemu --range v11.1.0..
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/qemu-series/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${range:?}"
 . "$(dirname "$0")/../common/qemu"

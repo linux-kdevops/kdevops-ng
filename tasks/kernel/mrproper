@@ -6,6 +6,9 @@
 ## included:
 ##
 ##   tasks/kernel/mrproper --directory ~/linux
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-mrproper/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/kbuild"
 . "$(dirname "$0")/../common/unit"

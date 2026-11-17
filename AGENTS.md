@@ -27,6 +27,8 @@ lasts goes to `designs/` before the work ends.
 - `designs/principles.md`: the seven rules everything follows, with the
   reasons.
 - `designs/tasks.md`: the rules for a task, a workflow and an engine.
+- `designs/output.md`: where a tool's output goes and why, with the
+  measurements.
 - `designs/writing.md`: how commits, docs and comments are written.
 - `docs/terms.rst`: the glossary. Use its terms, and none of the words it
   lists to avoid.

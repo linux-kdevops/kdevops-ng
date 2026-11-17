@@ -5,6 +5,9 @@
 ## Build smatch in its tree in DIR, a clone you keep for the build:
 ##
 ##   tasks/smatch/build --directory ~/smatch
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/smatch-build/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/tool"
 . "$(dirname "$0")/../common/unit"

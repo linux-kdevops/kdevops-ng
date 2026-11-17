@@ -43,46 +43,41 @@ What a task prints
 ------------------
 
 A task runs its tool as a `unit`_ of your `service manager`_, named for the task
-and the directory it works in: ``kernel-build@home-user-linux.service`` builds
-``/home/user/linux``. The task shows what the tool prints as it comes, and exits
-with the tool's status. Your journal keeps it (:ref:`requirements-journal`),
-with the tool's standard error as warnings and every line under the
-unit's name as its identifier.
+and its process, as ``kernel-build-12345.service``. The task shows what the
+tool prints as it comes, and exits with the tool's status.
 
-To follow a run from another terminal, by the name the task printed:
+systemd writes what the tool prints to two files in ``build/logs/`` of
+the :term:`tree <Tree>`, in a directory named for the task:
+
+.. code-block:: text
+
+   build/logs/
+   ├── kernel-build/
+   │   ├── stdout                what make printed
+   │   └── stderr                its warnings and errors
+   ├── kernel-sparse/
+   │   └── block/blk-merge.o/    a task that checks one object
+   │       ├── stdout
+   │       └── stderr
+   └── kernel-checkpatch/
+       ├── stdout
+       └── stderr
+
+A run starts with its two files empty, so they hold the last run of the
+task. :cmd:`krecord` reads them as the tool exits (:doc:`/records`). To
+follow a run from another terminal:
 
 .. code-block:: console
    :class: cmd-host
 
-   $ journalctl --user --identifier kernel-build@home-user-linux.service \
-       --follow
-
-Only its warnings and errors:
-
-.. code-block:: console
-   :class: cmd-host
-
-   $ journalctl --user --identifier kernel-build@home-user-linux.service \
-       --priority warning
+   $ tail --follow build/logs/kernel-build/stdout
 
 What the unit runs, and the processor time and memory it has taken:
 
 .. code-block:: console
    :class: cmd-host
 
-   $ systemctl --user status 'kernel-build@*'
-
-.. note::
-
-   The same task is refused a second run on a directory while the first
-   lasts.
-
-.. note::
-
-   ``journalctl --user-unit`` misses lines. journald names a line's unit
-   only while the process that wrote it lives, so the last errors of a
-   compiler that has exited carry no unit. The identifier is on every
-   line.
+   $ systemctl --user status 'kernel-build-*'
 
 The unit's settings
 -------------------
@@ -95,16 +90,16 @@ task's tool keeps what it makes, as ``build/`` of a Linux tree, and
 is the :cmd:`krecord` line that files the run's record
 (:doc:`/records`).
 
-A `drop-in`_ of your own changes or adds a setting. One under the task's name
-holds for every tree, and one under a unit's full name for that tree:
+A `drop-in`_ of your own changes or adds a setting. One under the task's name,
+with the dash that ends it, holds for every run of the task:
 
 .. code-block:: console
    :class: cmd-host
 
-   $ mkdir --parents --verbose ~/.config/systemd/user/kernel-build@.service.d
+   $ mkdir --parents --verbose ~/.config/systemd/user/kernel-build-.service.d
 
 .. code-block:: ini
-   :caption: ~/.config/systemd/user/kernel-build@.service.d/limits.conf
+   :caption: ~/.config/systemd/user/kernel-build-.service.d/limits.conf
 
    [Service]
    MemoryHigh=16G

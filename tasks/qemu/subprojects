@@ -6,6 +6,9 @@
 ## subprojects its Meson wrap files pin:
 ##
 ##   tasks/qemu/subprojects --directory ~/qemu
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/qemu-subprojects/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/qemu"
 settings+=(--property=ReadWritePaths="$directory/subprojects")

@@ -84,10 +84,10 @@ that is set:
 The unit
 ========
 
-Each task runs its tool in a unit named for the task and the tree:
-``qemu-build@home-user-qemu.service`` builds ``/home/user/qemu``
-(:ref:`tasks-unit`). In the tree the unit of ``subprojects`` may write
-``subprojects/`` only, and the others ``build/`` only. Meson lists
+Each task runs its tool in a unit named for the task, as
+``qemu-build-12345.service`` (:ref:`tasks-unit`). In the tree the unit
+of ``subprojects`` may write ``subprojects/`` only, and the others
+``build/`` only. Meson lists
 QEMU's block tests as it configures, and they make a scratch directory:
 the task sets their ``TEST_DIR``, which keeps it in ``build/``. Your home
 is read-only to the unit, so ``configure``'s :cmd:`pip` runs without its

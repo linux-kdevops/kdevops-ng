@@ -8,15 +8,18 @@
 ##   tasks/kernel/merge_config --directory ~/linux --profile xfs-filesystem
 ##   tasks/kernel/merge_config --directory ~/linux \
 ##       --profile block-layer+nvm-express-driver
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-merge_config/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${profile:?}"
 . "$(dirname "$0")/../common/kbuild"
 # commands.json lists no argv for merge_config.sh, so --output names the
 # record. merge_config.sh prints the values a .config lost on its standard
-# output, so the record holds none of them: they are in the journal.
+# output, so the record holds none of them.
 record=(--command "scripts/kconfig/merge_config.sh -n -O build"
 	--arguments-file build/.config.fragments "${config[@]}"
-	--output=merge_config.sh.json --priority warning)
+	--output=merge_config.sh.json)
 . "$(dirname "$0")/../common/unit"
 
 # The fragments the listed profiles name, merged once each, in the order

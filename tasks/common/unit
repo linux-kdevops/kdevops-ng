@@ -2,34 +2,38 @@
 # SPDX-License-Identifier: copyleft-next-0.3.1
 # The unit a task runs its tool in, as "${unit[@]}" before the tool's
 # command: a transient unit of the developer's service manager, named for
-# the task and $directory, so the same task is refused a second run there
-# while one lasts. It runs in $directory and sees the developer's home
-# read-only (designs/principles.md, 4). $settings are the options of
+# the task and its process. It runs in $directory and sees the developer's
+# home read-only (designs/principles.md, 4). $settings are the options of
 # systemd-run a task or its tasks/common file adds: what of $directory
 # the tool may write.
-# systemd-cat sends the tool's standard output to the journal as it is and
-# its standard error as warnings, each line under the unit's name as its
-# identifier. journald names a line's unit only while the process that
-# wrote it lives, so a compiler's last errors would carry none: the
-# identifier is what finds every line, krecord's too. The tool's exit
-# status is the task's.
+# systemd writes the tool's standard output and standard error to the
+# files stdout and stderr of $log, a directory of the tree's build/ named
+# for the task, and for the object where the task checks one
+# (designs/output.md). The tool's exit status is the task's.
 # The unit gets none of the caller's environment, so each of $variables
 # that is set is named, and the log shows it (designs/tasks.md, I2).
-: "${directory:?} ${variables[*]:?}"
+: "${directory:?} ${variables[*]:?} ${settings[*]:?}"
 task=$(basename "$(dirname "$0")")-$(basename "$0")
-name=$(systemd-escape --path "$directory" --template="$task@.service")
+name=$task-$$.service
+log=build/logs/$task${object:+/$object}
 unit=(systemd-run --user --unit="$name" --wait --collect
-	--working-directory="$directory" --property=SyslogIdentifier="$name"
+	--working-directory="$directory"
 	--property=PrivateUsers=yes --property=ProtectHome=read-only
-	"${settings[@]}")
+	"${settings[@]}" --property=ReadWritePaths="$directory/$log"
+	--property=StandardOutput="append:$directory/$log/stdout"
+	--property=StandardError="append:$directory/$log/stderr")
 # A task that leaves a record names krecord's options in $record
 # (designs/tasks.md, R1): systemd runs krecord as the tool exits, pass or
-# fail. The "-" has it ignore krecord's exit status and env finds krecord
-# on the unit's PATH, so a host without krecord still does the work. A
-# word with a space is quoted, and a quote in it escaped, as systemd reads
-# the line.
+# fail. The record holds the files of $log that $outputs names, stderr
+# where the task names none (R2). The "-" has systemd ignore krecord's
+# exit status and env finds krecord on the unit's PATH, so a host without
+# krecord still does the work. A word with a space is quoted, and a quote
+# in it escaped, as systemd reads the line.
 if [ -n "${record[*]-}" ]; then
 	stop="-env krecord"
+	for output in "${outputs[@]-stderr}"; do
+		record+=(--output-file "$log/$output")
+	done
 	for word in "${record[@]}" --producer kdevops-ng \
 		--producer-tree "$(realpath "$(dirname "$0")")"; do
 		case $word in *' '*) word="\"${word//\"/\\\"}\"" ;; esac
@@ -43,23 +47,23 @@ for variable in "${variables[@]}"; do
 		unit+=(--setenv="$variable=${!variable}")
 	fi
 done
-unit+=(systemd-cat --identifier="$name" --stderr-priority=warning)
-# The unit's lines, shown as they come: journalctl follows the identifier
-# from where the journal ends now, and keeps its place in $cursor. As the
-# task ends, settle stops it and shows what it had not reached, with no
-# pager: on a terminal journalctl pages what is longer than the screen.
-cursor=$(mktemp)
-journalctl --user --lines=0 --quiet --show-cursor |
-	sed --quiet 's/^-- cursor: //p' >"$cursor"
-journalctl --user --follow --output=cat --identifier="$name" \
-	--cursor-file="$cursor" &
-settle() {
-	journalctl --sync
-	kill %% && wait
-	journalctl --user --no-pager --output=cat --identifier="$name" \
-		--cursor-file="$cursor"
-	rm "$cursor"
+# The task works from $directory on, as a developer would: systemd-run
+# looks a tool named by a path up from where it is started. The two files
+# start empty, since systemd appends to them, and tail shows their lines
+# as they come. tail ends once the process --pid names does, after
+# reading what is left: settle ends that process when the task is done.
+prepare() {
+	set -o xtrace
+	# shellcheck disable=SC2164 # errexit ends the task where cd fails
+	cd "$directory"
+	mkdir --parents "$log"
+	truncate --size=0 "$log/stdout" "$log/stderr"
+	sleep infinity &
+	tail --quiet --follow --sleep-interval=0.1 --pid=$! "$log/stdout" "$log/stderr" &
 }
-# systemd-run leaves its unit running when it is interrupted, and the next
-# run of the task would be refused: the unit stops with the task.
+settle() {
+	kill %sleep && wait
+}
+# systemd-run leaves its unit running when it is interrupted: the unit
+# stops with the task.
 trap 'systemctl --user stop "$name"' INT TERM HUP

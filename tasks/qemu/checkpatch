@@ -6,11 +6,15 @@
 ## checkpatch.pl:
 ##
 ##   tasks/qemu/checkpatch --directory ~/qemu --range HEAD~3..
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/qemu-checkpatch/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${range:?}"
 . "$(dirname "$0")/../common/qemu"
 # As tasks/kernel/checkpatch files its record. QEMU's checkpatch.pl has no
 # --git, and its --strict adds no check: it only fails a run on warnings.
+outputs=(stdout stderr)
 record=(--project qemu --command "scripts/checkpatch.pl --branch {range}"
 	--range "$range" --output=checkpatch.pl.json)
 . "$(dirname "$0")/../common/unit"

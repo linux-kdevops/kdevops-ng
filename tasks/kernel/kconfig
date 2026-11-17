@@ -6,10 +6,13 @@
 ## target TARGET:
 ##
 ##   tasks/kernel/kconfig --directory ~/linux --target tinyconfig
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-kconfig/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${target:?}"
 . "$(dirname "$0")/../common/kbuild"
-record=(--command "make {configuration}" "${config[@]}" --priority warning)
+record=(--command "make {configuration}" "${config[@]}")
 . "$(dirname "$0")/../common/unit"
 
 transcript

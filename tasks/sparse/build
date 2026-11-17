@@ -5,6 +5,9 @@
 ## Build sparse in its tree in DIR, a clone you keep for the build:
 ##
 ##   tasks/sparse/build --directory ~/sparse
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/sparse-build/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/tool"
 . "$(dirname "$0")/../common/unit"

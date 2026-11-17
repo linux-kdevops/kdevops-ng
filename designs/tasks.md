@@ -214,21 +214,21 @@ inputs and values, then the commands.
 
 - U1. A task runs its tool as a transient unit of the developer's service
   manager: `"${unit[@]}"` of `tasks/common/unit`, before the tool's
-  command. `systemd-cat` sends the tool's standard output to the journal
-  as it is and its standard error as warnings, each line under the
-  unit's name as its identifier. `tasks/common/unit` follows that
-  identifier with `journalctl` and shows the lines as they come, and the
-  tool's exit status is the task's. No task captures,
-  times or stores a tool's output itself: the journal does (principle 3).
-  A task with no tool to run, only commands on files, as
-  `tasks/smatch/uninstall`'s `rm`, starts no unit.
-- U2. The unit is named for the task and the directory it works in, as
-  `kernel-build@home-user-linux.service`. A task thus runs once on a
-  directory at a time, and `journalctl --user --identifier` with that
-  name finds its lines. A match on the unit misses some: journald reads
-  a line's unit from the cgroup of the process that wrote it, and a
-  process that has exited has none. It trusts the unit a stream names
-  only from root, so a developer's units have no other source.
+  command. systemd writes the tool's standard output and standard error
+  to two files, `stdout` and `stderr`, in `build/logs/` of the tree, in a
+  directory named for the task (`designs/output.md`). `tail` shows
+  their lines as they come, and the tool's exit status is the task's. No
+  task captures or times a tool's output itself, and none reads it back
+  from the journal, which drops lines of a unit that prints fast. A task
+  that needs what a tool printed reads the file. A task with no tool to
+  run, only commands on files, as `tasks/smatch/uninstall`'s `rm`, starts
+  no unit.
+- U2. The unit is named for the task and the task's process, as
+  `kernel-build-12345.service`, so a drop-in for `kernel-build-.service`
+  reaches every run of the task. Whether two runs may work on one
+  directory at a time is the workflow's to say. A run starts with its two
+  files empty, so the directory holds the last run of a task, and of a
+  task that checks one object, the last run on each.
 - U3. The unit gets none of the caller's environment. `tasks/common/unit`
   names `PATH` and each of the tool's variables that is set with
   `--setenv`, which puts them in the log (I2). Nothing of kdevops-ng's
@@ -240,12 +240,12 @@ inputs and values, then the commands.
   Nothing is installed on the host for a task to run, and the line
   reproduces the run on any host (principle 5).
 - U5. A limit, a timeout or one more writable path is a drop-in under
-  the unit's name, the developer's or a workflow's to write under
-  `~/.config/systemd/user/`. No task takes an option or a variable for
-  one.
+  the task's name, as `kernel-build-.service.d`, the developer's or a
+  workflow's to write under `~/.config/systemd/user/`. No task takes an
+  option or a variable for one.
 - U6. A task that is interrupted stops its unit, with the `systemctl`
   line in the log. `systemd-run` leaves the unit running when a signal
-  ends it, and the next run of the task would be refused.
+  ends it.
 
 ## 8. Records
 
@@ -259,10 +259,11 @@ format: its `validate` accepts every file a task leaves.
   kresults' `commands.json`, where a command gets its line before a task
   records it. No shell of a task builds the record.
 - R2. systemd runs `krecord` as the tool exits, pass or fail, with the
-  exit status. `krecord` reads the unit's warnings from the journal and
-  writes the record. A tool whose standard output is its report and
-  holds no progress of its own, as `checkpatch.pl`'s and smatch's, is
-  recorded whole: its task asks `krecord` for no `--priority`. What else
+  exit status. `krecord` reads the unit's `stderr` file, the tool's
+  warnings and errors, and writes the record. A tool whose standard
+  output is its report and holds no progress of its own, as
+  `checkpatch.pl`'s and smatch's, is recorded whole: its task names both
+  files in `outputs`. What else
   a record holds, when two runs are equal and how a tree with changes
   not committed is filed are kresults' to say, and no task repeats them.
 - R3. Records go to `~/.local/state/krecords`, `krecord`'s own default

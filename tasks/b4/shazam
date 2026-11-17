@@ -7,6 +7,9 @@
 ##
 ##   tasks/b4/shazam --directory ~/wt/qemu \
 ##       --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/b4-shazam/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${directory:?} ${message_id:?}"
 directory=$(realpath "$directory")

@@ -24,7 +24,9 @@ while [ $# -gt 0 ]; do
 done
 # The log from here on: each command after a "$ " prompt, as it ran. A
 # task that fails ends it with the exit status of its last command, after
-# settle has shown what was still to show (tasks/common/unit).
+# settle has shown what was still to show. prepare starts the trace, and
+# tasks/common/unit has it do what a unit needs first, traced as well.
+prepare() { set -o xtrace; }
 settle() { :; }
 transcript() {
 	exec {stderr}>&2 2>&1
@@ -33,5 +35,5 @@ transcript() {
 		settle
 		[ "$status" -eq 0 ] || echo "$0: exit status $status" >&$stderr' EXIT
 	PS4='$ '
-	set -o xtrace
+	prepare
 }

@@ -6,12 +6,16 @@
 ## kbuild's C=2 with its fatal checks, silent but for what smatch says:
 ##
 ##   tasks/kernel/smatch --directory ~/linux --object init/main.o
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/kernel-smatch/OBJECT/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${object:?}"
 . "$(dirname "$0")/../common/kbuild"
-# No --priority keeps every line: smatch reports on its standard output
+# smatch reports on its standard output, so the record holds both files
 # (designs/tasks.md, R2). make runs silent, so the lines are smatch's
 # alone and none of make's progress.
+outputs=(stdout stderr)
 record=(--command 'make --silent C=2 CHECK="smatch --project=kernel --fatal-checks" {file}'
 	--file "$object" "${config[@]}" --output "smatch/{file}.json"
 	--tool smatch)

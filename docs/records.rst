@@ -34,8 +34,8 @@ has, and a link under its name somewhere on your ``PATH``:
    $ ln --symbolic --verbose "$PWD/kresults/format/objects.py" \
        ~/.local/bin/kobjects
 
-:cmd:`krecord` reads what the tool printed from your journal
-(:ref:`requirements-journal`).
+:cmd:`krecord` reads what the tool printed from the files the task's
+unit wrote (:ref:`tasks-unit`).
 
 Name your :term:`lab <Lab>` once, in lowercase letters, digits and ``-``. A
 record says where it was made, and names no :term:`host <Host>`:

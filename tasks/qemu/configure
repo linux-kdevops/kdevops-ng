@@ -6,13 +6,16 @@
 ## with nothing downloaded:
 ##
 ##   tasks/qemu/configure --directory ~/qemu --target-list x86_64-softmmu
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/qemu-configure/ of DIR.
 . "$(dirname "$0")/../common/task"
 : "${target_list:?}"
 . "$(dirname "$0")/../common/qemu"
 # pip warns of a cache it cannot write in the unit's read-only home.
 settings+=(--setenv=PIP_NO_CACHE_DIR=1)
 record=(--project qemu --command "configure --target-list={configuration}"
-	--configuration-file build/.target-list --priority warning)
+	--configuration-file build/.target-list)
 . "$(dirname "$0")/../common/unit"
 
 transcript
