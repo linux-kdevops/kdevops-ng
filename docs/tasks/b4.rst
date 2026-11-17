@@ -13,7 +13,7 @@ one keeps the thread there:
    :caption: host
    :class: cmd-host
 
-   $ git -C ~/qemu worktree add --detach ~/wt/qemu 7a34f7b879
+   $ git -C ~/qemu worktree add -b b4/nvme-mam ~/wt/qemu 7a34f7b879
    $ tasks/b4/shazam --directory ~/wt/qemu \
        --message-id 20260825-nvme-mam-v1-0-afc38ac713ef@samsung.com
    $ tasks/b4/mbox --directory ~/wt/qemu \
@@ -24,7 +24,9 @@ one keeps the thread there:
 commit ends with a ``Link:`` to its message. b4 reads your own
 configuration, the keys it checks attestation against included. The
 base is the commit you checked out, so the range of the series
-(:ref:`records-series`) starts there. A series that does not apply
+(:ref:`records-series`) starts there. b4 names no branch for what it
+applies: the commits land on the branch the worktree is on, which
+``-b`` made here, and that branch is what you push to publish them. A series that does not apply
 leaves ``git am`` stopped in the worktree, and ``git am --abort`` there
 gives the base back.
 
