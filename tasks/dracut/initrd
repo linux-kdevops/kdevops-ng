@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/dracut/initrd --directory DIR
+##
+## Make build/initrd of the Linux tree in DIR with dracut, from the
+## modules tasks/kernel/modules_install put in build/mod-install/, for a
+## guest that boots the tree's kernel. The initrd mounts the guest's
+## root, and over its /usr/lib/modules the share tagged modules:
+##
+##   tasks/dracut/initrd --directory ~/linux
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/dracut-initrd/ of DIR.
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/kbuild"
+. "$(dirname "$0")/../common/unit"
+release=$(cat "$build/include/config/kernel.release")
+
+transcript
+# --no-hostonly builds for any machine, not for this host, and a guest
+# reached over a serial console and ssh needs none of this host's
+# keyboard and font, which dracut cannot set up without root. The share
+# mounts at /usr/lib/modules, since /lib is a link on a merged-usr root
+# and systemd refuses a mount whose path runs through one.
+"${unit[@]}" dracut --force --no-hostonly --omit "i18n console-setup" --kver "$release" \
+	--kmoddir "build/mod-install/lib/modules/$release" \
+	--mount "modules /sysroot/usr/lib/modules virtiofs defaults 0 0" \
+	build/initrd

@@ -29,6 +29,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
    :maxdepth: 1
 
    b4
+   dracut
    kernel
    libguestfs
    qemu

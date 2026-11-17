@@ -118,6 +118,7 @@ Each part of kdevops-ng lists its own tools, on its page:
 - :ref:`The b4 tasks <requirements-b4>`: `b4`_, Git and `GnuPG`_.
 - :ref:`The libguestfs tasks <requirements-libguestfs>`: `curl`_, GnuPG
   and two packages of distributions' keys.
+- :ref:`The dracut task <requirements-dracut>`: `dracut`_.
 - :ref:`The kernel tasks <requirements-kernel>`: :cmd:`make`, a compiler
   and `Perl`_.
 - :ref:`The QEMU tasks <requirements-qemu>`: `Meson`_, :cmd:`make`, a
@@ -135,6 +136,7 @@ Each part of kdevops-ng lists its own tools, on its page:
 .. _b4: https://b4.docs.kernel.org
 .. _curl: https://curl.se
 .. _Debian: https://www.debian.org/releases/testing/
+.. _dracut: https://dracut-ng.github.io/dracut-ng/
 .. _Fedora: https://docs.fedoraproject.org/en-US/releases/rawhide/
 .. _Git: https://git-scm.com
 .. _GnuPG: https://gnupg.org
