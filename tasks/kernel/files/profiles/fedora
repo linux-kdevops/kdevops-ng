@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# Guest: Fedora's userspace
+# Joined with the guest's profile where the guest's disk is Fedora's, as
+# in guest+fedora+blktests+block-layer. The guest profile has what any
+# distribution boots on, with AUDIT off. Fedora starts auditd, which
+# fails without the audit subsystem and leaves the boot degraded:
+# core/audit.config builds it.
+core/audit.config

@@ -31,6 +31,9 @@ test, build, and install the modules and the initrd in ``build/``
    $ tasks/kernel/modules_install --directory ~/linux
    $ tasks/dracut/initrd --directory ~/linux
 
+For a guest on Fedora's image, join the ``fedora`` profile as well,
+``guest+fedora+block-layer``: without it two units of its boot fail.
+
 ssh
 ===
 

@@ -92,7 +92,10 @@ filesystem's profile. ``guest`` names none either: it configures a
 kernel that boots a distribution's userspace under QEMU, and goes with
 the profile of what is under test, as ``guest+block-layer``.
 ``blktests`` builds what `blktests`_ asks of a kernel, and joins both:
-``guest+blktests+block-layer``. The
+``guest+blktests+block-layer``. ``fedora`` builds what Fedora's
+userspace asks beyond the others', the audit subsystem its boot starts
+a daemon for, and joins them where the guest's disk is Fedora's:
+``guest+fedora+blktests+block-layer``. The
 fragments come from the vendored kfragments copy
 (:doc:`/contributing/vendor`).
 

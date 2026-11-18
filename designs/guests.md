@@ -70,16 +70,21 @@ On Debian and Ubuntu the program is in `dracut-core`. The `dracut`
 package replaces initramfs-tools and makes the host's own initrd again,
 which is not ours to change.
 
-## 4. One guest profile, for now
+## 4. One guest profile, and one for a distribution that asks more
 
 `guest` lists what any distribution's userspace boots on. `AUDIT` is
 off in it, as `core/systemd.config` sets it. Debian's cloud image
-starts no audit daemon. Fedora's does, and it fails without the option.
+starts no audit daemon. Fedora's does: `auditd.service` and
+`audit-rules.service` fail without the option, the boot ends
+`degraded`, and a workflow that waits for `running` never goes on.
 
 What one distribution's userspace needs beyond the others goes in a
-profile of its own, joined as `guest+fedora+<subsystem>`, when that
-distribution boots: the shared profile stays what every guest needs,
-and no guest builds another's options.
+profile of its own, joined as `guest+fedora+<subsystem>`: the shared
+profile stays what every guest needs, and no guest builds another's
+options. `fedora` has one fragment, `core/audit.config`. The units are
+not masked in the image instead: the guest then runs as Fedora ships
+it, and the image's setup has no branch for a distribution. The price
+is a build of its own, and so records of its own, for a Fedora guest.
 
 ## 5. The disk is set up before the first boot
 

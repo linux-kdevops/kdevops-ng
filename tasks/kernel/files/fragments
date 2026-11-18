@@ -7,6 +7,7 @@ core/core.config
 core/compression.config
 core/systemd.config
 builtin/core/systemd.config
+core/audit.config
 core/namespaces.config
 core/cgroup-extras.config
 core/initrd.config
