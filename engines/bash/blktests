@@ -15,7 +15,7 @@
 ## It returns when the group is done. To run several side by side,
 ## start each as a unit of its own:
 ##
-##   systemd-run --user --unit=blktests-nvme-tcp-series \
+##   systemd-run --user --setenv=PATH --unit=blktests-nvme-tcp-series \
 ##       engines/bash/blktests --machine blktests-nvme-tcp-series \
 ##       --directory ~/linux
 . "$(dirname "$0")/workflow"
