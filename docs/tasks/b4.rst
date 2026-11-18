@@ -15,11 +15,19 @@ series:
    :caption: host
    :class: cmd-host
 
+   $ tasks/b4/mbox --directory ~/qemu --message-id ID --project qemu
+   base_commit=BASE
    $ git -C ~/qemu worktree add -b BRANCH ~/wt/qemu BASE
    $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID \
        --project qemu
    $ tasks/b4/mbox --directory ~/wt/qemu --message-id ID --project qemu
    $ tasks/qemu/series --directory ~/wt/qemu --range BASE..
+
+b4 applies a series onto the commit the worktree has checked out and
+looks for no base. ``mbox`` prints the commit the series names in its
+cover letter, where it names one, so the first run, in any tree of the
+project, says where to add the worktree. A tree that lacks that commit
+fetches it first.
 
 :src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link``, so each
 commit ends with a ``Link:`` to its message. b4 reads your own

@@ -10,7 +10,9 @@
 ##       --message-id 20260101-topic-v1-0-0123456789ab@example.org \
 ##       --project qemu
 ##
-## The thread goes to build/logs/b4-mbox/thread.mbx of DIR, and its tool's
+## It prints base_commit=COMMIT where the series names the commit it
+## applies to, for the worktree tasks/b4/shazam applies it in. The
+## thread goes to build/logs/b4-mbox/thread.mbx of DIR, and its tool's
 ## output to stdout and stderr beside it. A copy lies with the series'
 ## records, as b4/mbox.mbx under its Message-ID.
 . "$(dirname "$0")/../common/task"
@@ -32,3 +34,7 @@ echo "$message_id" | tee "$log/message-id"
 "${unit[@]}" b4 --no-stdin mbox --outdir "$log" --mbox-name thread.mbx \
 	"$message_id"
 install -D --verbose --mode=0644 "$log/thread.mbx" "$series/b4/mbox.mbx"
+# The commit the series says it applies to, where its cover letter names
+# one: b4 shazam applies onto what the worktree has checked out and
+# looks for no base.
+sed --quiet '0,/^base-commit: /s//base_commit=/p' "$log/thread.mbx"
