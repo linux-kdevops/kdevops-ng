@@ -318,5 +318,28 @@ tree:
 The series' page then says of each test how it went on both:
 ``passes on both``, or what the series changed.
 
+A test that differs
+===================
+
+One run of a test is one sample. A test that failed on the series and
+passed on its base may fail on either the next time: run that test
+alone again, on both kernels, before the difference is believed. The
+machines are up, so each run takes the test's own seconds, and its
+record joins the earlier ones:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ engines/bash/blktests --machine blktests-nvme-tcp-series \
+       --directory ~/linux --group nvme/039
+   $ engines/bash/blktests --machine blktests-nvme-tcp-base \
+       --directory ~/linux-base --group nvme/039
+
+``--group`` takes one test as it takes a group. The page shows the
+last run of each side, and every run under it: a test that passes and
+fails on the same kernel is unstable there, whatever the last run of
+the two says.
+
 .. _blktests: https://github.com/linux-blktests/blktests
 .. _blktests' own page: https://github.com/linux-blktests/blktests/blob/master/Documentation/running-tests.md
