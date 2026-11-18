@@ -63,6 +63,11 @@ build:
            ├── config                 its .config
            └── merge_config.sh.json   tasks/kernel/merge_config
 
+A series taken from a mailing list has records of its own, under its
+Message-ID and not under a commit (:doc:`/tasks/b4`):
+``linux/<message-id>/b4/shazam.json``, ``b4/mbox.json`` and the thread as
+``b4/mbox.mbx``.
+
 A QEMU commit has no build below it: ``qemu/<commit>/configure.json`` and
 ``qemu/<commit>/make/all.json``.
 

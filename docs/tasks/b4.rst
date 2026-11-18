@@ -16,8 +16,9 @@ series:
    :class: cmd-host
 
    $ git -C ~/qemu worktree add -b BRANCH ~/wt/qemu BASE
-   $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID
-   $ tasks/b4/mbox --directory ~/wt/qemu --message-id ID
+   $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID \
+       --project qemu
+   $ tasks/b4/mbox --directory ~/wt/qemu --message-id ID --project qemu
    $ tasks/qemu/series --directory ~/wt/qemu --range BASE..
 
 :src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link``, so each
@@ -36,6 +37,14 @@ that file to :cmd:`krecord` ``series``, which names the series by its
 Message-ID and takes the cover letter from it. A thread left from
 another series is not used: :cmd:`krecord` ``series`` takes it only when
 its patches are the commits of the range.
+
+Both leave a record (:doc:`/records`) under the series' Message-ID, not
+under a commit of the worktree: ``b4/shazam.json`` for the series applied
+and ``b4/mbox.json`` for the thread fetched, each holding what b4
+printed. The thread is also kept as ``b4/mbox.mbx`` beside them, for a
+reader who has no worktree. A series that does not apply has these
+alone. ``--project`` names the project the worktree is of, ``linux``
+or ``qemu``, which the records lie under.
 
 The keyring
 ===========

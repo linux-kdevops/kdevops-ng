@@ -1,23 +1,34 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: tasks/b4/mbox --directory DIR --message-id ID
+## Usage: tasks/b4/mbox --directory DIR --message-id ID --project NAME
 ##
-## Keep the thread of the series posted as ID in the tree in DIR, for the
-## tree's series task to name the series by:
+## Keep the thread of the series posted as ID in the tree in DIR, of the
+## project NAME, linux or qemu, for the tree's series task to name the
+## series by:
 ##
 ##   tasks/b4/mbox --directory ~/wt/qemu \
-##       --message-id 20260101-topic-v1-0-0123456789ab@example.org
+##       --message-id 20260101-topic-v1-0-0123456789ab@example.org \
+##       --project qemu
 ##
 ## The thread goes to build/logs/b4-mbox/thread.mbx of DIR, and its tool's
-## output to stdout and stderr beside it.
+## output to stdout and stderr beside it. A copy lies with the series'
+## records, as b4/mbox.mbx under its Message-ID.
 . "$(dirname "$0")/../common/task"
-: "${directory:?} ${message_id:?}"
+: "${directory:?} ${message_id:?} ${project:?}"
 directory=$(realpath "$directory")
-# Where b4 keeps what it fetched, if you moved it.
-variables=(XDG_CACHE_HOME)
+# Where b4 keeps what it fetched, and krecord the records, if you moved
+# them.
+variables=(XDG_CACHE_HOME XDG_STATE_HOME)
 settings=(--property=ReadOnlyPaths="$directory" --property=CacheDirectory=b4)
+# The record lies under the Message-ID, since a series is recorded before
+# it applies to any commit, and krecord reads it from a file.
+record=(--project "$project" --command "b4 mbox" --message-id-file build/logs/b4-mbox/message-id
+	--output=b4/mbox.json)
 . "$(dirname "$0")/../common/unit"
+series=${XDG_STATE_HOME:-$HOME/.local/state}/krecords/$project/$message_id
 
 transcript
+echo "$message_id" | tee "$log/message-id"
 "${unit[@]}" b4 --no-stdin mbox --outdir "$log" --mbox-name thread.mbx \
 	"$message_id"
+install -D --verbose --mode=0644 "$log/thread.mbx" "$series/b4/mbox.mbx"
