@@ -1,0 +1,13 @@
+# shellcheck shell=bash disable=SC2154 # the workflow that sources this sets them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What a workflow that runs a suite in a machine starts with: start the
+# machine $machine and wait for its guest to boot.
+"$tasks/qemu-system/start" --machine "$machine"
+# A guest takes no connection until its sshd listens: two minutes of
+# tries cover a boot.
+tries=60
+until "$tasks/qemu-system/is-system-running" --machine "$machine"; do
+	tries=$((tries - 1))
+	[ "$tries" -gt 0 ]
+	sleep 2
+done

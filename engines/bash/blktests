@@ -22,15 +22,7 @@
 : "${machine:?} ${directory:?}"
 : "${group:=$(cut --delimiter=- --fields=2 <<<"$machine")}"
 
-"$tasks/qemu-system/start" --machine "$machine"
-# A guest takes no connection until its sshd listens: two minutes of
-# tries cover a boot.
-tries=60
-until "$tasks/qemu-system/is-system-running" --machine "$machine"; do
-	tries=$((tries - 1))
-	[ "$tries" -gt 0 ]
-	sleep 2
-done
+. "$(dirname "$0")/boot"
 status=0
 "$tasks/blktests/start" --machine "$machine" --group "$group" || status=$?
 "$tasks/blktests/record" --directory "$directory" --machine "$machine"

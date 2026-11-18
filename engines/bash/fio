@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: engines/bash/fio --machine NAME --directory DIR --job JOB [--samples N]
+##
+## Run the fio job JOB in the machine NAME N times, and file each run as
+## a sample of the build of the Linux tree in DIR, whose kernel the
+## machine boots: start the machine, wait for its guest to boot, then
+## run the job and record what it left, N times, whether the job passed
+## or not. Without --samples, N is 3. The exit status is that of a run
+## of the job that failed, and zero where none did.
+##
+##   engines/bash/fio --machine fio-atomic-series --directory ~/linux \
+##       --job atomic-merge
+##
+## It returns when the last sample is filed. To run several side by
+## side, start each as a unit of its own, as engines/bash/blktests is.
+. "$(dirname "$0")/workflow"
+: "${machine:?} ${directory:?} ${job:?}" "${samples:=3}"
+
+. "$(dirname "$0")/boot"
+status=0
+for ((sample = 1; sample <= samples; sample++)); do
+	"$tasks/fio/start" --machine "$machine" --job "$job" || status=$?
+	"$tasks/fio/record" --directory "$directory" --machine "$machine" \
+		--job "$job"
+done
+exit "$status"
