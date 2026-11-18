@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/libguestfs/remove --directory DIR
+##
+## Remove the disk in DIR, work.qcow2, and DIR with it. A disk that is
+## an overlay of this one no longer opens:
+##
+##   tasks/libguestfs/remove \
+##       --directory ~/.local/state/machines/blktests-debian-14
+. "$(dirname "$0")/../common/task"
+: "${directory:?}"
+
+transcript
+rm --force --verbose "$directory/work.qcow2"
+rmdir --verbose "$directory"

@@ -255,7 +255,16 @@ those kept here:
    :start-at: [QEMU]
 
 :src:`remove <tasks/qemu-system/remove>` takes a machine away again,
-with its disk and what its guest left.
+with its disk and what its guest left. A workflow takes away all that
+these made: every machine of the family, the family's lines, and with
+``--distribution`` the disk the machines were overlays of. The images
+and the records stay:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ engines/bash/blktests-remove --distribution debian-14
 
 The third runs a machine's group and files its records. It
 starts the machine, waits for the guest to boot, runs the group the

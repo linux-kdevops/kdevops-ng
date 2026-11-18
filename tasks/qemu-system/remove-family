@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/remove-family --family NAME
+##
+## Remove the lines the machines of the family NAME share, the
+## directory NAME-.qemu.d of ~/.config/qemu/systemd that
+## tasks/qemu-system/machine copied there. A machine of the family that
+## is left does not start without them: remove the machines first.
+##
+##   tasks/qemu-system/remove-family --family blktests
+. "$(dirname "$0")/../common/task"
+: "${family:?}"
+config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd
+
+transcript
+rm --recursive --force --verbose "$config/$family-.qemu.d"
+systemctl --user start qemu-system-generator.service

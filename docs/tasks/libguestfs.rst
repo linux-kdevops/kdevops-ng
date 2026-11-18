@@ -91,6 +91,9 @@ disk again starts the guest over. Stop the guest first.
   ``~/.ssh`` lies the one key that opens the guest. The rest of your
   home is the guest's root's to read and write, as it is yours.
 
+:src:`remove <tasks/libguestfs/remove>` deletes a disk with its
+directory, as one no machine is an overlay of any more.
+
 The machine that boots the disk is in :doc:`/getting-started/guest`.
 Run the task again after a change: it takes its earlier lines and key out
 first.

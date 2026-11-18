@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: engines/bash/blktests-remove [--distribution NAME]
+##
+## Remove what the workflows of blktests made on this host: every
+## machine of the blktests-* family, with its disk and what its guest
+## left and no record holds, then the lines the family shares, and with
+## --distribution the disk engines/bash/blktests-disk made of NAME.
+## The images and the records stay:
+##
+##   engines/bash/blktests-remove --distribution debian-14
+. "$(dirname "$0")/workflow"
+config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd
+images=${XDG_STATE_HOME:-$HOME/.local/state}/machines
+
+for file in "$config"/blktests-*.qemu; do
+	[ -e "$file" ] || continue
+	"$tasks/qemu-system/remove" --machine "$(basename "$file" .qemu)"
+done
+"$tasks/qemu-system/remove-family" --family blktests
+[ -z "${distribution-}" ] ||
+	"$tasks/libguestfs/remove" --directory "$images/blktests-$distribution"

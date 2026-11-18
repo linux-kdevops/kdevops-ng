@@ -68,7 +68,9 @@ directory: a property of one of its devices, as ``set=`` lines.
 
 :src:`remove <tasks/qemu-system/remove>` stops a machine and deletes
 its file and its state directory: its disk, and what its guest left in
-its shares. A family's lines stay.
+its shares. A family's lines stay, since its other machines read them;
+:src:`remove-family <tasks/qemu-system/remove-family>` deletes those
+once the machines are gone.
 
 :src:`tasks/qemu-system/files/machines` has machines to copy and
 change: a guest that boots a tree's kernel, the same with an NVMe
