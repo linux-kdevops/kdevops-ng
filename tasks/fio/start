@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/fio/start --machine NAME --job JOB
+##
+## Run the fio job JOB once in the guest of the machine NAME, as the
+## guest's unit fio@JOB.service, and return when it is done, with its
+## verdict. Its files replace those of the run before:
+##
+##   tasks/fio/start --machine fio-atomic-series --job atomic-merge
+##
+## It runs on the host and reaches the guest as systemctl does with
+## --host. In the guest, systemctl starts the same unit.
+. "$(dirname "$0")/../common/task"
+: "${machine:?} ${job:?}"
+
+transcript
+systemctl --host "$machine" start "fio@$job.service"

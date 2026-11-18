@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/fio/config --machine NAME
+##
+## Give the machine NAME fio's config, tasks/fio/files/config, in the
+## share of its state directory that its guest mounts at /var/lib/fio.
+## A config that is there is left as it is:
+##
+##   tasks/fio/config --machine fio-atomic-series
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+files=$(realpath "$(dirname "$0")")/files
+share=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/fio
+
+transcript
+mkdir --parents --verbose "$share"
+cp --update=none --verbose "$files/config" "$share"

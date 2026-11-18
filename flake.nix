@@ -60,6 +60,8 @@
             pkgs.bc
             # What tasks/libguestfs/download_image fetches an image with.
             pkgs.curl
+            # What tasks/fio/record reads fio's JSON with.
+            pkgs.jq
             pkgs.bison
             pkgs.flex
             # depmod, for modules_install.
