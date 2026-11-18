@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/libguestfs/fio --directory DIR --copy-in TREE
+##
+## Install fio from your tree TREE into work.qcow2, the disk of the
+## guest whose state directory is DIR, as /usr/lib/fio: the tree, copied
+## in, built and installed in the disk, with the job files of
+## tasks/fio/files/jobs in /usr/lib/fio/jobs and the units that run one
+## and mount the host's share for its results. The disk has what fio
+## builds with once tasks/libguestfs/install has run its fio profile.
+## The guest must be stopped:
+##
+##   tasks/libguestfs/fio --directory ~/.local/state/qemu-system/guest \
+##       --copy-in ~/fio
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${copy_in:?}"
+copy_in=$(realpath "$copy_in")
+tree=/work/$(basename "$copy_in")
+jobs=$(nproc)
+checkout=$copy_in
+. "$(dirname "$0")/../common/origin"
+. "$(dirname "$0")/../common/units"
+files=$(realpath "$(dirname "$0")/../fio/files")
+
+transcript
+# The build runs in virt-customize's appliance, which --memsize and
+# --smp size. Its processor is not the guest's, so --disable-native
+# keeps configure from tuning fio to it. fio installs as one directory
+# of its own, bin/ and man/ in it, which goes under /usr/lib, where a
+# package keeps what is its alone, in place of /usr/local. The copy goes
+# when it is installed. The version file names the commit installed,
+# which a record names as fio's build, since fio's own version does not
+# tell a commit of a tree apart, and the url file where to read it. The
+# jobs are copied as the developer's files and made root's, and not
+# writable by others.
+virt-customize --format qcow2 --add "$directory/work.qcow2" \
+	--memsize 4096 --smp "$jobs" \
+	--mkdir /work --copy-in "$copy_in:/work" \
+	--run-command "cd $tree && ./configure --prefix=/usr/lib/fio --disable-native" \
+	--run-command "make --directory=$tree --jobs=$jobs" \
+	--run-command "make --directory=$tree install" \
+	--delete /work \
+	--copy-in "$files/jobs:/usr/lib/fio" \
+	--run-command "chown --recursive --verbose 0:0 /usr/lib/fio/jobs" \
+	--run-command "chmod --recursive --verbose go-w /usr/lib/fio/jobs" \
+	--write "/usr/lib/fio/version:$version" \
+	--write "/usr/lib/fio/url:$url" \
+	"${units[@]}"
