@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/blktests/requirements --directory DIR --machine NAME --group GROUP
+##
+## Print the tests of the blktests group GROUP that the guest of the
+## machine NAME cannot run, each with its reasons, without running one:
+## the guest's unit blktests-requirements@GROUP.service has blktests'
+## check stop at what a test requires. The machine runs the kernel the
+## Linux tree in DIR built, and a blktests with --require-only. It
+## leaves no record:
+##
+##   tasks/blktests/requirements --directory ~/linux --machine guest \
+##       --group nvme
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/kbuild"
+: "${machine:?} ${group:?}"
+# The share's directory of the build, as tasks/blktests/record has it.
+sum=$(sha256sum <"$build/.config")
+results=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/blktests
+results+=/$(<"$build/include/config/kernel.release")-${sum::12}
+instance=${group//\//-}
+
+transcript
+systemctl --host "$machine" start "blktests-requirements@$instance.service"
+# Each test check skipped for a reason other than "requirements met",
+# with its reasons: an indented line is a reason of the test above it.
+awk '/^    requirements met$/ { test = ""; next }
+	/^    / { if (test != "") print test; test = ""; print; next }
+	{ test = $0 }' "$results/$instance.requirements"

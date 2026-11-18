@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# blktests-requirements@GROUP.service says which tests of the blktests
+# group GROUP this machine cannot run, and why, without running one: it
+# is check with --require-only, for a blktests that has the option.
+# The instance is the name as systemd-escape writes it, as for
+# blktests@.service.
+#
+# What check prints goes to the host's share, to GROUP.requirements and
+# GROUP.requirements.stderr beside the group's own. check's per-test
+# files go to a private /tmp, not the share: a record reads every result
+# file under the directory, and this run leaves none, because its skips,
+# "requirements met", would stand as the latest entry over a full run's.
+
+[Unit]
+Description=blktests requirements of %I
+Documentation=https://github.com/linux-blktests/blktests
+Requires=suite-machine@blktests.service
+After=suite-machine@blktests.service
+
+[Service]
+Type=oneshot
+PrivateTmp=yes
+WorkingDirectory=/usr/lib/blktests
+StandardOutput=truncate:/run/blktests/%i.requirements
+StandardError=truncate:/run/blktests/%i.requirements.stderr
+ExecStart=/usr/lib/blktests/check --require-only \
+	--config=/var/lib/blktests/config --output=/tmp/blktests %I
