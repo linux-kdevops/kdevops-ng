@@ -96,11 +96,21 @@ boot.
 - Root's `authorized_keys` holds the one key the task is given.
 - The developer's home mounts at the path it has on the host, so a
   tree and the checkout are at one path on both sides.
-- Read-only tmpfs mounts cover `~/.ssh`, `~/.config/systemd` and
+- That home is root's home in the guest. A login lands in the
+  developer's files with their shell's settings, and a file either side
+  makes there is the developer's on the host, since virtiofsd maps the
+  guest's root to them. `/etc/passwd` is edited for it: `usermod`
+  refuses a user that runs a process, as root does in the appliance.
+- Read-only mounts cover `~/.ssh`, `~/.config/systemd` and
   `~/.local/share/systemd` of that home in the guest. The guest's root
-  owns every file of the share, and could otherwise add a key ssh
-  trusts on the host, or a unit the developer's service manager starts
-  at the next login.
+  owns every file of the share, and could otherwise read the
+  developer's keys, add a key ssh trusts on the host, or a unit the
+  developer's service manager starts at the next login. The rest of
+  the home is open to it, which is the price of one path on both sides.
+- Over `~/.ssh` the disk's `/root/.ssh` is mounted, with the key. A
+  setting of sshd cannot name another place: for a connection over
+  vsock systemd starts sshd with `AuthorizedKeysFile` on its command
+  line, which a file under `/etc/ssh` does not override.
 - A file for systemd-networkd asks for DHCP on every Ethernet card.
   Debian's and Ubuntu's images run networkd with no configuration once
   cloud-init is off. Fedora's runs NetworkManager, which asks by itself,

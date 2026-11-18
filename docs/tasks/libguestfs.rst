@@ -81,10 +81,14 @@ disk again starts the guest over. Stop the guest first.
   own systemd starts;
 - ``/etc/fstab`` lines that mount your home, which the host shares, at
   the path it has on the host, so a tree is at the same path on both
-  sides. Three more lines put a read-only tmpfs over ``~/.ssh``,
-  ``~/.config/systemd`` and ``~/.local/share/systemd`` in the guest: its
-  root could otherwise add a key your :cmd:`ssh` trusts, or a unit your
-  service manager starts.
+  sides. That home is root's in the guest: a login lands in your
+  files, with your shell's prompt and aliases, and what either side
+  writes there is yours on the host. Three more lines cover ``~/.ssh``,
+  ``~/.config/systemd`` and ``~/.local/share/systemd`` in the guest,
+  read-only: its root could otherwise read your keys, add one your
+  :cmd:`ssh` trusts, or a unit your service manager starts. Over
+  ``~/.ssh`` lies the one key that opens the guest. The rest of your
+  home is the guest's root's to read and write, as it is yours.
 
 The machine that boots the disk is in :doc:`/getting-started/guest`.
 Run the task again after a change: it takes its earlier lines and key out
