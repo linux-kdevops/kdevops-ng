@@ -237,8 +237,21 @@ other machine has and the root of its distribution's image, and copies
 the family's directory to ``~/.config/qemu/systemd`` where it is not
 there yet. :src:`tasks/blktests/config` puts blktests' config in the
 machine's share. ``overlay`` and ``customize`` make the disk, under the
-machine's name. The family's file runs as it is; what a series asks of
-its machines, as a QEMU of its own, is changed there.
+machine's name.
+
+The family's file runs as it is, and what a series asks of its
+machines goes beside it. With ``--qemu`` the workflow has a machine run
+the QEMU a tree of yours built, through
+:src:`qemu <tasks/qemu-system/qemu>` of :doc:`qemu-system`. A namespace
+takes the options a series tests from a file of yours in the family's
+directory, which sets them by the device's id, ``ns0`` or ``ns1``:
+
+.. code-block:: ini
+   :caption: ~/.config/qemu/systemd/blktests-.qemu.d/20-zoned.conf
+
+   [QEMU]
+   set=device.ns0.zoned=true
+
 :src:`remove <tasks/qemu-system/remove>` takes a machine away again,
 with its disk and what its guest left.
 

@@ -282,8 +282,13 @@ lie together.
 - The task copies the family's directory where it is missing and
   leaves it otherwise. The family's file runs as it is, with no line
   a developer must change first, so a workflow makes a machine with no
-  step by hand; what a series asks of its machines, as the QEMU it is
-  tested on, the developer changes there.
+  step by hand. What a series asks of its machines is added, never
+  edited in: `tasks/qemu-system/qemu` writes a drop-in of the
+  machine's own that names the QEMU a tree built, and a namespace's
+  options go in a drop-in of the family, as `set=device.ns0.NAME=VALUE`
+  lines, QEMU's own way to set a property of a device by its id. A
+  second `device=` line would be a second device, so the family's
+  namespaces have ids for it.
 - The root a kernel command line names differs by distribution, the
   first partition on Debian and Ubuntu, a btrfs subvolume of the third
   on Fedora. The distribution's file under

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/qemu --machine NAME --directory DIR
+##
+## Have the machine NAME run the QEMU the tree in DIR built, in place
+## of the host's: a file of the machine's own in
+## ~/.config/qemu/systemd names the binary of this host's architecture
+## in build/ of DIR. qemu-system-generator then makes the machine's
+## units again, and the machine runs that QEMU from its next start:
+##
+##   tasks/qemu-system/qemu --machine blktests-nvme-tcp-series \
+##       --directory ~/qemu
+. "$(dirname "$0")/../common/task"
+: "${machine:?} ${directory:?}"
+binary=$(realpath "$directory")/build/qemu-system-$(uname --machine)
+config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd/$machine.qemu.d
+
+transcript
+mkdir --parents --verbose "$config"
+printf '[VM]\nQEMUBinary=%s\n' "$binary" | tee "$config/20-qemu.conf"
+systemctl --user start qemu-system-generator.service

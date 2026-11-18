@@ -57,6 +57,11 @@ distribution's image.
        --directory ~/linux --distribution debian-14
    $ tasks/qemu-system/remove --machine blktests-nvme-tcp-series
 
+:src:`qemu <tasks/qemu-system/qemu>` has a machine run the QEMU a tree
+of yours built, ``tasks/qemu-system/qemu --machine NAME --directory
+~/qemu``: it writes a file of the machine's own that names the binary
+in the tree's ``build/``.
+
 :src:`remove <tasks/qemu-system/remove>` stops a machine and deletes
 its file and its state directory: its disk, and what its guest left in
 its shares. A family's lines stay.
