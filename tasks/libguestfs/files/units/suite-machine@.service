@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# suite-machine@SUITE.service makes the directory of the kernel's build
+# in the host's share of a suite, and every suite's is made alike: the
+# results of a build lie in a directory of their own in /var/lib/SUITE,
+# named for the release (%v) and the first twelve digits of the sha256
+# of its .config, which the release does not tell apart. The unit links
+# it as /run/SUITE, for the suite's own unit, whose settings can hold a
+# specifier and no hash.
+#
+# A record of a test names the machine it ran on and the SUITE that ran
+# it, which the suite's results lack. This unit keeps them in machine/
+# of the directory, as the kernel and the install gave them. It does not
+# stay active, so each start of the suite's unit starts it again.
+
+[Unit]
+Description=%i machine under test
+RequiresMountsFor=/var/lib/%i
+
+[Service]
+Type=oneshot
+ExecStart=cp --verbose /proc/config.gz /run/%i.config.gz
+ExecStart=gzip --decompress --force --verbose /run/%i.config.gz
+ExecStart=sh -c 'build=/var/lib/%i/%v-$$(sha256sum < /run/%i.config | cut --bytes=1-12) && \
+	mkdir --parents --verbose $$build/machine && \
+	cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
+		/usr/lib/%i/version /usr/lib/%i/url $$build/machine && \
+	ln --symbolic --force --no-target-directory --verbose $$build /run/%i'

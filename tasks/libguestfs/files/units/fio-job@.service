@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The directory of the job %i in the results of this build, empty:
+# fio@%i.service writes its two files there, and systemd opens a unit's
+# output files before it runs any command of that unit, so the directory
+# is another unit's to make. This one does not stay active, so each
+# start of fio@%i.service makes it again, and a start is a sample that
+# replaces the one before.
+
+[Unit]
+Description=fio job %i directory
+Requires=suite-machine@fio.service
+After=suite-machine@fio.service
+
+[Service]
+Type=oneshot
+ExecStart=rm --recursive --force --verbose /run/fio/%i
+ExecStart=mkdir --verbose /run/fio/%i

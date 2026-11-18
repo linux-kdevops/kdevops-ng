@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The device a fio job runs on in a machine of the fio-* family, the
+# first of its NVMe namespaces, in the form systemd's EnvironmentFile=
+# reads. fio@.service gives it to fio, whose job files name it
+# ${DEVICE}. tasks/fio/config puts this file in the machine's share.
+# A job writes to the device and overwrites what it holds.
+DEVICE=/dev/nvme0n1

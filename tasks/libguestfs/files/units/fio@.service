@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# fio@JOB.service runs the fio job /usr/lib/fio/jobs/JOB.fio once on
+# this machine. The device is DEVICE of /var/lib/fio/config, in the
+# form EnvironmentFile= reads, which fio expands as ${DEVICE} in the job
+# file.
+#
+# What fio prints goes to the host's share, to the directory of the job
+# in the results of the kernel's build (fio-job@.service): fio.json, the
+# one document --output-format=json gives, and stderr. The journal drops
+# lines of a unit that prints fast. A start is one sample and replaces
+# the files of the one before.
+
+[Unit]
+Description=fio %i
+Documentation=https://fio.readthedocs.io/
+Requires=fio-job@%i.service
+After=fio-job@%i.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/var/lib/fio/config
+StandardOutput=truncate:/run/fio/%i/fio.json
+StandardError=truncate:/run/fio/%i/stderr
+ExecStart=/usr/lib/fio/bin/fio --output-format=json /usr/lib/fio/jobs/%i.fio

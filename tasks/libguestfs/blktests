@@ -20,14 +20,7 @@ tree=/work/$(basename "$copy_in")
 jobs=$(nproc)
 checkout=$copy_in
 . "$(dirname "$0")/../common/origin"
-# The units that run a group, each uploaded with the developer's owner
-# and mode, which a file of /usr/lib does not keep.
-system=/usr/lib/systemd/system
-units=()
-for unit in "$(realpath "$(dirname "$0")")"/files/units/*; do
-	file=$system/$(basename "$unit")
-	units+=(--upload "$unit:$file" --chown "0:0:$file" --chmod "0644:$file")
-done
+. "$(dirname "$0")/../common/units"
 # systemd-sysusers makes the user of the file, or leaves the one a run
 # before this made.
 users=/usr/lib/sysusers.d/blktests.conf

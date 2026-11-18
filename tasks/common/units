@@ -1,0 +1,13 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads $units
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# The options that put every unit of tasks/libguestfs/files/units in a
+# guest's disk, as $units, each uploaded with the owner and mode of a
+# file of /usr/lib, which the developer's tree does not keep. Each suite's
+# install takes them all: suite-machine@.service is the suite-machine of
+# every suite, so a disk with one suite has what a second one needs.
+system=/usr/lib/systemd/system
+units=()
+for unit in "$(realpath "$(dirname "$0")")"/files/units/*; do
+	file=$system/$(basename "$unit")
+	units+=(--upload "$unit:$file" --chown "0:0:$file" --chmod "0644:$file")
+done

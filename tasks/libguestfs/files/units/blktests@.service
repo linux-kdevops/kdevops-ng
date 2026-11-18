@@ -5,7 +5,7 @@
 # and a run starts with nothing an earlier one left.
 #
 # The results go to the host's share, to the directory of the kernel's
-# build, which blktests-machine.service names /run/blktests, and the
+# build, which suite-machine@blktests.service names /run/blktests, and the
 # share holds the machine's config for blktests. What check prints
 # goes there too, to GROUP.stdout and
 # GROUP.stderr: blktests says why a test did not run nowhere else, and
@@ -16,8 +16,8 @@
 [Unit]
 Description=blktests %I
 Documentation=https://github.com/linux-blktests/blktests
-Requires=blktests-machine.service
-After=blktests-machine.service
+Requires=suite-machine@blktests.service
+After=suite-machine@blktests.service
 
 [Service]
 Type=oneshot
