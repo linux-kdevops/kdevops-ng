@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/git/worktree --directory DIR --path PATH --commit-ish COMMIT-ISH
+##
+## Add PATH as a detached worktree of the tree in DIR, at COMMIT-ISH,
+## where PATH has none, and leave a worktree already there as it is:
+##
+##   tasks/git/worktree --directory ~/linux --path ~/wt/series \
+##       --commit-ish HEAD
+##
+## It runs no unit and leaves no record: git writes the repository of
+## DIR, which is not the tree's build/ that a unit may write.
+. "$(dirname "$0")/../common/task"
+: "${directory:?} ${path:?} ${commit_ish:?}"
+
+transcript
+[ -e "$path/.git" ] || git -C "$directory" worktree add --detach "$path" "$commit_ish"

@@ -116,6 +116,7 @@ What each part needs
 Each part of kdevops-ng lists its own tools, on its page:
 
 - :ref:`The b4 tasks <requirements-b4>`: `b4`_, Git and `GnuPG`_.
+- :ref:`The git task <requirements-git>`: Git.
 - :ref:`The libguestfs tasks <requirements-libguestfs>`: `curl`_, GnuPG
   and two packages of distributions' keys.
 - :ref:`The dracut task <requirements-dracut>`: `dracut`_.
