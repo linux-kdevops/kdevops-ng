@@ -240,17 +240,19 @@ machine's share. ``overlay`` and ``customize`` make the disk, under the
 machine's name.
 
 The family's file runs as it is, and what a series asks of its
-machines goes beside it. With ``--qemu`` the workflow has a machine run
-the QEMU a tree of yours built, through
-:src:`qemu <tasks/qemu-system/qemu>` of :doc:`qemu-system`. A namespace
-takes the options a series tests from a file of yours in the family's
-directory, which sets them by the device's id, ``ns0`` or ``ns1``:
+machines is added beside it. With ``--qemu`` the workflow has a machine
+run the QEMU a tree of yours built, through
+:src:`qemu <tasks/qemu-system/qemu>` of :doc:`qemu-system`. With
+``--drop-in`` the machine takes the lines of a file, through
+:src:`drop-in <tasks/qemu-system/drop-in>`: the options a series tests
+on a namespace, which the file sets by the device's id, ``ns0`` or
+``ns1``. :src:`tasks/qemu-system/files/families/blktests/drop-ins` has
+those kept here:
 
-.. code-block:: ini
-   :caption: ~/.config/qemu/systemd/blktests-.qemu.d/20-zoned.conf
-
-   [QEMU]
-   set=device.ns0.zoned=true
+.. literalinclude:: ../../tasks/qemu-system/files/families/blktests/drop-ins/20-nvme-mam.conf
+   :language: ini
+   :caption: 20-nvme-mam.conf
+   :start-at: [QEMU]
 
 :src:`remove <tasks/qemu-system/remove>` takes a machine away again,
 with its disk and what its guest left.

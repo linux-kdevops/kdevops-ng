@@ -62,6 +62,10 @@ of yours built, ``tasks/qemu-system/qemu --machine NAME --directory
 ~/qemu``: it writes a file of the machine's own that names the binary
 in the tree's ``build/``.
 
+:src:`drop-in <tasks/qemu-system/drop-in>` gives a machine the lines
+of a file beside its own, a copy in the machine's ``.qemu.d``
+directory: a property of one of its devices, as ``set=`` lines.
+
 :src:`remove <tasks/qemu-system/remove>` stops a machine and deletes
 its file and its state directory: its disk, and what its guest left in
 its shares. A family's lines stay.

@@ -288,7 +288,10 @@ lie together.
   options go in a drop-in of the family, as `set=device.ns0.NAME=VALUE`
   lines, QEMU's own way to set a property of a device by its id. A
   second `device=` line would be a second device, so the family's
-  namespaces have ids for it.
+  namespaces have ids for it. `tasks/qemu-system/drop-in` copies such
+  a file into a machine's own directory, which `remove` deletes with
+  the machine, and the ones worth keeping lie in `drop-ins/` of the
+  family's files.
 - The root a kernel command line names differs by distribution, the
   first partition on Debian and Ubuntu, a btrfs subvolume of the third
   on Fedora. The distribution's file under

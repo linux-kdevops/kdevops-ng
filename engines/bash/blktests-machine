@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: engines/bash/blktests-machine --machine NAME --directory DIR --distribution NAME [--qemu DIR] [--backing-file FILE] [--ssh-inject FILE]
+## Usage: engines/bash/blktests-machine --machine NAME --directory DIR --distribution NAME [--qemu DIR] [--drop-in FILE] [--backing-file FILE] [--ssh-inject FILE]
 ##
 ## Make the machine NAME of the blktests-* family, which boots the
 ## kernel of the Linux tree in DIR on a disk of the distribution NAME:
@@ -9,8 +9,9 @@
 ## host name NAME and with the key FILE for root. Without them, FILE is
 ## the disk engines/bash/blktests-disk made of the distribution, and
 ## the key ~/.ssh/guests.pub. With --qemu the machine runs the QEMU the
-## tree in DIR built, and the host's without. The machine must be
-## stopped:
+## tree in DIR built, and the host's without. With --drop-in it has
+## the lines of FILE beside its own, as the options a series tests on a
+## namespace. The machine must be stopped:
 ##
 ##   engines/bash/blktests-machine --machine blktests-nvme-tcp-series \
 ##       --directory ~/linux --distribution debian-14
@@ -24,6 +25,8 @@ state=${XDG_STATE_HOME:-$HOME/.local/state}
 	--distribution "$distribution"
 [ -z "${qemu-}" ] ||
 	"$tasks/qemu-system/qemu" --machine "$machine" --directory "$qemu"
+[ -z "${drop_in-}" ] ||
+	"$tasks/qemu-system/drop-in" --machine "$machine" --file "$drop_in"
 "$tasks/blktests/config" --machine "$machine"
 "$tasks/libguestfs/overlay" --directory "$state/qemu-system/$machine" \
 	--backing-file "$backing_file"

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/drop-in --machine NAME --file FILE
+##
+## Give the machine NAME the lines of FILE, a drop-in of
+## qemu-system-generator, beside its own: a copy in NAME.qemu.d of
+## ~/.config/qemu/systemd, under FILE's name, whose number orders it
+## among the others. qemu-system-generator then makes the machine's
+## units again:
+##
+##   tasks/qemu-system/drop-in --machine blktests-nvme-series --file \
+##       tasks/qemu-system/files/families/blktests/drop-ins/20-nvme-mam.conf
+. "$(dirname "$0")/../common/task"
+: "${machine:?} ${file:?}"
+file=$(realpath "$file")
+config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd/$machine.qemu.d
+
+transcript
+mkdir --parents --verbose "$config"
+cp --verbose "$file" "$config"
+systemctl --user start qemu-system-generator.service
