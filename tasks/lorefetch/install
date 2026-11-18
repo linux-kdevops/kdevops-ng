@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/lorefetch/install --directory DIR
+##
+## Install the lorefetch built in its tree in DIR for you alone, under
+## ~/.local/lib/lorefetch with a link in ~/.local/bin:
+##
+##   tasks/lorefetch/install --directory ~/lorefetch
+. "$(dirname "$0")/../common/task"
+: "${directory:?}"
+directory=$(realpath "$directory")
+. "$(dirname "$0")/../common/prefix"
+
+transcript
+install -D --verbose "$directory/build/lorefetch" "$prefix/bin/$tool"
+mkdir --parents --verbose "$(dirname "$link")"
+ln --symbolic --force --no-dereference --verbose "$prefix/bin/$tool" "$link"

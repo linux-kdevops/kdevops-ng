@@ -33,6 +33,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
    dracut
    kernel
    libguestfs
+   lorefetch
    qemu
    qemu-system
    smatch

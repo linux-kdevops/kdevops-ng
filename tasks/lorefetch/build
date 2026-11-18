@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/lorefetch/build --directory DIR
+##
+## Build lorefetch in its tree in DIR, a clone you keep for the build,
+## as build/lorefetch there:
+##
+##   tasks/lorefetch/build --directory ~/lorefetch
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/lorefetch-build/ of DIR.
+. "$(dirname "$0")/../common/task"
+: "${directory:?}"
+directory=$(realpath "$directory")
+variables=(GOFLAGS)
+# go keeps what it compiled in a cache, which is the developer's home
+# by default, where the unit writes nothing: the build has its own. The
+# tree's commit is not stamped into the binary, which would have go run
+# git in a tree the unit's user does not own.
+settings=(--property=ReadOnlyPaths="$directory"
+	--property=ReadWritePaths="-$directory/build"
+	--setenv=GOCACHE="$directory/build/cache")
+. "$(dirname "$0")/../common/unit"
+
+transcript
+"${unit[@]}" go build -buildvcs=false -o build/lorefetch

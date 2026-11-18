@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/lorefetch/uninstall
+##
+## Remove the lorefetch that tasks/lorefetch/install installed for you:
+## its link in ~/.local/bin and ~/.local/lib/lorefetch:
+##
+##   tasks/lorefetch/uninstall
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/prefix"
+
+transcript
+rm --force --verbose "$link"
+rm --recursive --force --verbose "$prefix"
