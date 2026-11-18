@@ -207,7 +207,7 @@ of the kernel. They go to the guest's state directory on the host,
   this one's. The guest hashes `/proc/config.gz`, which holds the
   build's `.config` byte for byte, and the host the file itself.
 - A unit's settings take specifiers and no hash, so
-  `blktests-machine.service` links the directory as `/run/blktests`
+  `suite-machine@blktests.service` links the directory as `/run/blktests`
   and the service's settings name the link.
 - Neither the unit nor the task takes a tree. A template's instance
   holds one name, the group, and the task needs nothing more.
@@ -228,20 +228,20 @@ of the kernel. They go to the guest's state directory on the host,
   address to read it at, which the install wrote into the disk. The
   address is that of the first remote of the developer's tree that has
   the commit and an `https` address, and empty where none has: a
-  commit no public tree holds has no link. They are copied as they are, with `cp`,
-  before each run. The reader on the host takes what it needs, so the
+  commit no public tree holds has no link. They are copied as they are,
+  with `cp`, before each run. The reader on the host takes what it needs, so the
   guest runs no code of the project and needs none of its tools.
 - What the suite prints goes to two files under the build, named for
   what was asked, as a task's output goes to files (`designs/output.md`):
   blktests says why a test did not run nowhere else, and the journal
   drops lines. The unit's settings write them, the task's `tee`. The
   files are on the host as they grow, so a run is followed there.
-- A unit of its own, `blktests-machine.service`, makes `machine/` and
-  copies the facts. systemd opens a unit's output files before it runs
-  any of its commands, and before it makes a `StateDirectory=`: a unit
-  whose output lies in a directory it makes itself fails with status
-  209. The service requires that unit, which does not stay active and
-  so runs again before each group.
+- A unit of its own, `suite-machine@blktests.service`, makes
+  `machine/` and copies the facts. systemd opens a unit's output files
+  before it runs any of its commands, and before it makes a
+  `StateDirectory=`: a unit whose output lies in a directory it makes
+  itself fails with status 209. The service requires that unit, which
+  does not stay active and so runs again before each group.
 - The machine's QEMU is named on the host, by the record task, from
   the machine's running process: nothing in the guest names the build
   of the QEMU it runs on. A record made after the machine has started
@@ -290,8 +290,8 @@ lie together.
   second `device=` line would be a second device, so the family's
   namespaces have ids for it. `tasks/qemu-system/drop-in` copies such
   a file into a machine's own directory, which `remove` deletes with
-  the machine, and the ones worth keeping lie in `drop-ins/` of the
-  family's files.
+  the machine, and the ones worth keeping lie in
+  `tasks/qemu-system/files/drop-ins`.
 - The root a kernel command line names differs by distribution, the
   first partition on Debian and Ubuntu, a btrfs subvolume of the third
   on Fedora. The distribution's file under
@@ -303,7 +303,8 @@ lie together.
   the file name its distribution gave it.
 - The disk the machines are overlays of lies with the images,
   `~/.local/state/machines/blktests-<distribution>/`, one for each
-  distribution. `engines/bash/blktests-disk` makes it. It is a task of
+  distribution, and the machines of every suite are overlays of it
+  (section 9b). `engines/bash/blktests-disk` makes it. It is a task of
   `qemu-system`, since a machine is what it works on, and it finds the
   family's files by the first word of the name, under
   `tasks/qemu-system/files/families`; `files/machines` there keeps the
@@ -344,6 +345,59 @@ lie together.
 - A machine has 4G: with 2G the kernel killed a test of the block
   group under KASAN. The unit has `OOMPolicy=continue`, so a test
   that is killed fails and the group goes on.
+
+## 9b. fio is a suite on the same disk
+
+fio is installed and run as a suite is (sections 7 to 10), and the
+parts that differ are these.
+
+- fio comes from a tree the developer gives, built in the disk and
+  installed with `--prefix=/usr/lib/fio`, which puts its own tree, with
+  `bin/fio`, in the one directory a package has under `/usr/lib`.
+  `--disable-native` keeps the build from being tuned to the processor
+  of virt-customize's appliance, which is not the guest's.
+- The jobs are data of the repository, `tasks/fio/files/jobs`, and every
+  guest gets all of them: a guest is not made for a job, and a job is
+  chosen when it runs. A job names no device: fio expands `${DEVICE}`
+  from the environment, and the unit gets it from the machine's config.
+- The config is a file of the share in the form `EnvironmentFile=` reads,
+  so the unit needs no program to parse it.
+- A start of `fio@JOB.service` is one sample: fio runs the job once,
+  its standard output is the results' `fio.json`, its standard error
+  `stderr`, and both replace the files of the start before. Repeating
+  is the workflow's (T5). The job's directory is made by a unit of its
+  own, `fio-job@.service`, for the reason in section 9: systemd opens
+  the output files before any command of the unit that writes them.
+- The unit that makes the build's directory and `machine/` is the same
+  one blktests uses, `suite-machine@SUITE.service`: the suite is its
+  instance, so the two suites do not keep two copies of the script.
+  Each suite's install uploads every unit of `files/units`, since the
+  template belongs to neither.
+- The numbers are not extracted in the guest. The guest runs fio and
+  keeps its JSON, and `tasks/fio/record` on the host reads it with
+  `jq`, so the guest has none of the project's code and a change to the
+  metrics needs no new disk. The jobs of a file that starts several set
+  `group_reporting`, which gives fio one entry in `jobs[]`, and the
+  write direction of that entry is what the metrics are. The device of
+  `disk_util` is the one the share's config names, since fio lists each
+  device of a stack. A sample starts at `job_start`: `timestamp_ms` is
+  when fio wrote the document, 117 ms later in a test run.
+- A pass means the job ran to the end. Whether its numbers are good is
+  for the records to say, against another build's.
+- The machine is the blktests one with another share, so what any suite's
+  machine has is stored once, `families/10-machine.conf` with
+  `template.qemu`, and the task copies it into each family's directory
+  beside the family's own `05-share.conf`. The share's name sorts before
+  the common file, which keeps the share ahead of the home share in the
+  generated unit, as it was before the split. A family directory made
+  before the split has the whole file in `10-machine.conf`: remove it
+  with `remove-family` before the next machine of that family.
+- The drop-ins kept for a namespace, as the MAM one, are in
+  `tasks/qemu-system/files/drop-ins`, for the machines of any family.
+- One disk serves both suites: `engines/bash/blktests-disk` takes
+  `--fio` to put fio in it beside blktests, and `blktests-machine` takes
+  the suite's config task from the first word of the machine's name.
+  A fio-only disk would repeat the disk's tasks for two more.
 
 ## 10. Where a suite's files go in the guest
 
