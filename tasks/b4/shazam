@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: copyleft-next-0.3.1
 ## Usage: tasks/b4/shazam --directory DIR --message-id ID --project NAME
 ##
-## Apply the series posted as ID onto the commit checked out in DIR, a
-## worktree of the project NAME, linux or qemu, that you add at the
-## series' base, with b4:
+## Apply the series posted as ID with b4, on the commit its cover
+## letter names as its base, and check the result out in DIR, a
+## worktree of the project NAME, linux or qemu, that you add for the
+## series at any commit. A series that names no base, or one the tree
+## lacks, is applied on what DIR has checked out:
 ##
 ##   tasks/b4/shazam --directory ~/wt/qemu \
 ##       --message-id 20260101-topic-v1-0-0123456789ab@example.org \
@@ -30,4 +32,8 @@ record=(--project "$project" --command "b4 shazam" --message-id-file build/logs/
 
 transcript
 echo "$message_id" | tee "$log/message-id"
-"${unit[@]}" b4 --no-stdin shazam --add-link "$message_id"
+# b4 applies the series in a worktree of its own, at the base, and
+# leaves the result as FETCH_HEAD: the series is then checked out here,
+# detached, whatever was.
+"${unit[@]}" b4 --no-stdin shazam --add-link --make-fetch-head "$message_id"
+git checkout --detach FETCH_HEAD

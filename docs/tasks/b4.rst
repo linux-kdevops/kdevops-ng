@@ -5,39 +5,33 @@ b4
 ==
 
 Two :term:`tasks <Task>` take a series from a mailing list by its
-Message-ID with `b4`_. One applies it in a worktree you add at the
-series' base, and one keeps the thread there. With ``ID`` the
-Message-ID the series was posted as, ``BASE`` the commit its cover
-letter names as ``base-commit`` and ``BRANCH`` a name of yours for the
-series:
+Message-ID with `b4`_: one applies it in a worktree you add for it, on
+the base its cover letter names, and one keeps the thread there. With
+``ID`` the Message-ID the series was posted as and ``BASE`` the commit
+``mbox`` prints:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
-   $ tasks/b4/mbox --directory ~/qemu --message-id ID --project qemu
-   base_commit=BASE
-   $ git -C ~/qemu worktree add -b BRANCH ~/wt/qemu BASE
+   $ git -C ~/qemu worktree add --detach ~/wt/qemu
    $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID \
        --project qemu
    $ tasks/b4/mbox --directory ~/wt/qemu --message-id ID --project qemu
+   base_commit=BASE
    $ tasks/qemu/series --directory ~/wt/qemu --range BASE..
 
-b4 applies a series onto the commit the worktree has checked out and
-looks for no base. ``mbox`` prints the commit the series names in its
-cover letter, where it names one, so the first run, in any tree of the
-project, says where to add the worktree. A tree that lacks that commit
-fetches it first.
-
-:src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link``, so each
-commit ends with a ``Link:`` to its message. b4 reads your own
-configuration, the keys it checks attestation against included. The
-base is the commit you checked out, so the range of the series
-(:ref:`records-series`) starts there. b4 names no branch for what it
-applies: the commits land on the branch the worktree is on, which
-``-b`` made here, and that branch is what you push to publish them. A
-series that does not apply leaves ``git am`` stopped in the worktree,
-and ``git am --abort`` there gives the base back.
+:src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link
+--make-fetch-head``. b4 applies the series in a worktree of its own, at
+the commit the cover letter names as ``base-commit``, and leaves the
+result as ``FETCH_HEAD``, which the task checks out in yours, detached:
+the worktree may be at any commit before. Each commit ends with a
+``Link:`` to its message, and b4 reads your own configuration, the keys
+it checks attestation against included. A series that names no base, or
+one your tree lacks, is applied on what the worktree has checked out,
+so fetch the tree its maintainers apply to first. A series that does
+not apply changes nothing in the worktree. Name a branch at the result
+to publish it, ``git -C ~/wt/qemu switch --create BRANCH``.
 
 :src:`mbox <tasks/b4/mbox>` runs ``b4 mbox`` and keeps the thread as
 ``build/logs/b4-mbox/thread.mbx`` of the worktree. The series task hands
