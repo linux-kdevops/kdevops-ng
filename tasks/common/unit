@@ -11,8 +11,12 @@
 # for the task, and for the object where the task checks one
 # (designs/output.md). The tool's exit status is the task's.
 # The unit gets none of the caller's environment, so each of $variables
-# that is set is named, and the log shows it (designs/tasks.md, I2).
-: "${directory:?} ${variables[*]:?} ${settings[*]:?}"
+# that is set is named, and the log shows it (designs/tasks.md, I2). A tool
+# that reads none has an empty list, and declare fails where a task names
+# none.
+: "${directory:?} ${settings[*]:?}"
+# shellcheck disable=SC2154 # the task sets it
+declare -p variables >/dev/null
 task=$(basename "$(dirname "$0")")-$(basename "$0")
 name=$task-$$.service
 log=build/logs/$task${object:+/$object}

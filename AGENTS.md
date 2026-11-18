@@ -29,6 +29,8 @@ lasts goes to `designs/` before the work ends.
 - `designs/tasks.md`: the rules for a task, a workflow and an engine.
 - `designs/guests.md`: how a guest boots a tree's kernel, and why dracut
   makes its initrd.
+- `designs/lore.md`: how the mail of a `MAINTAINERS` entry is fetched
+  from lore, and why.
 - `designs/output.md`: where a tool's output goes and why, with the
   measurements.
 - `designs/writing.md`: how commits, docs and comments are written.
