@@ -22,7 +22,6 @@ settings+=(--property=StateDirectory=krecords)
 sum=$(sha256sum <"$build/.config")
 results=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/blktests
 results+=/$(<"$build/include/config/kernel.release")-${sum::12}
-producer=$(realpath "$(dirname "$0")")
 # The QEMU the machine runs, by the process itself: the file its unit
 # names may have been built again since.
 pid=$(systemctl --user show --property=MainPID --value "qemu-system@$machine.service")
@@ -30,4 +29,4 @@ qemu=$(readlink "/proc/$pid/exe")
 
 transcript
 "${unit[@]}" krecord blktests --results "$results" "${config[@]}" \
-	--qemu "$qemu" --producer kdevops-ng --producer-tree "$producer"
+	--qemu "$qemu" "${producer[@]}"

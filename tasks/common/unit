@@ -28,14 +28,15 @@ unit=(systemd-run --user --unit="$name" --wait --collect
 # where the task names none (R2). The "-" has systemd ignore krecord's
 # exit status and env finds krecord on the unit's PATH, so a host without
 # krecord still does the work. A word with a space is quoted, and a quote
-# in it escaped, as systemd reads the line.
+# in it escaped, as systemd reads the line. $producer is who a record
+# says made it, for a task that hands krecord its options itself.
+producer=(--producer kdevops-ng --producer-tree "$(realpath "$(dirname "$0")")")
 if [ -n "${record[*]-}" ]; then
 	stop="-env krecord"
 	for output in "${outputs[@]-stderr}"; do
 		record+=(--output-file "$log/$output")
 	done
-	for word in "${record[@]}" --producer kdevops-ng \
-		--producer-tree "$(realpath "$(dirname "$0")")"; do
+	for word in "${record[@]}" "${producer[@]}"; do
 		case $word in *' '*) word="\"${word//\"/\\\"}\"" ;; esac
 		stop+=" $word"
 	done
