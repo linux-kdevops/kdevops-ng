@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: engines/bash/blktests --machine NAME --directory DIR [--group GROUP]
+## Usage: engines/bash/blktests --machine NAME --directory DIR [--group GROUP] [--requirements yes]
 ##
 ## Run one group of blktests in the machine NAME and file its tests as
 ## records of the build of the Linux tree in DIR, whose kernel the
 ## machine boots: start the machine, wait for its guest to boot, run
 ## the group, and record what it left, whether the group passed or not.
 ## Without GROUP it is the one the machine is named for, the word after
-## blktests-. The exit status is the group's.
+## blktests-. The exit status is the group's. With --requirements yes it
+## runs nothing: after the boot it prints what the machine lacks for
+## the group, with tasks/blktests/requirements, and files no record.
 ##
 ##   engines/bash/blktests --machine blktests-nvme-tcp-series \
 ##       --directory ~/linux
@@ -23,6 +25,10 @@
 : "${group:=$(cut --delimiter=- --fields=2 <<<"$machine")}"
 
 . "$(dirname "$0")/boot"
+if [ "${requirements-}" = yes ]; then
+	exec "$tasks/blktests/requirements" --directory "$directory" \
+		--machine "$machine" --group "$group"
+fi
 status=0
 "$tasks/blktests/start" --machine "$machine" --group "$group" || status=$?
 "$tasks/blktests/record" --directory "$directory" --machine "$machine"
