@@ -81,7 +81,7 @@ while IFS= read -r f; do
 		echo "error: $f: missing 'SPDX-License-Identifier:' in the first two lines"
 		status=1
 	fi
-done < <(git ls-files "${scope[@]}" | grep --extended-regexp '\.(nix|sh|py|md|rst|txt|yaml|yml|toml|jsonc|ini|service|timer)$|(^|/)\.gitignore$|^(scripts|tasks)/(.*/)?[^./]*$' || true)
+done < <(git ls-files "${scope[@]}" | grep --extended-regexp '\.(nix|sh|py|md|rst|txt|yaml|yml|toml|jsonc|ini|service|timer)$|(^|/)\.gitignore$|^(scripts|tasks|engines)/(.*/)?[^./]*$' || true)
 
 [ "$status" -eq 0 ] && echo "style: OK"
 exit "$status"

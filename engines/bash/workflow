@@ -1,0 +1,26 @@
+# shellcheck shell=bash disable=SC2034 # the workflow that sources this reads $tasks
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What every workflow of this engine starts from (designs/tasks.md,
+# "Engines"): strict mode, the ## header as --help and as the usage
+# error, each "--option VALUE" given as the variable of the option's
+# name, $tasks, and a log that names each task as it starts. An option
+# the usage line shows in brackets has a default, which the workflow
+# sets.
+set -o errexit -o nounset -o pipefail
+
+header() { sed --quiet 's/^## \{0,1\}//p' "$0"; }
+usage() { header >&2 && exit 2; }
+if [ "${1-}" = --help ]; then
+	header
+	exit 0
+fi
+form=$(sed --quiet 's/^## Usage: //p' "$0")
+while [ $# -gt 0 ]; do
+	[[ $# -ge 2 && $1 == --* && " ${form//[][]/ } " == *" $1 "* ]] || usage
+	option=${1#--}
+	declare "${option//-/_}=$2"
+	shift 2
+done
+tasks=$(realpath "$(dirname "$0")/../../tasks")
+PS4='+ '
+set -o xtrace

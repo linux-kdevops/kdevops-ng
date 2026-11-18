@@ -182,8 +182,14 @@ and any number can be supported at once: the tasks are the same for all.
   and branch on one or pass it on, repeat a task for each item of a list,
   and run a task again until it passes.
 
-The first engine is [Dagu]. Ansible, a Bash script or a CI system can be
-another.
+The first engine is Bash: a workflow under `engines/bash/` is a script
+that calls tasks, with `engines/bash/workflow` as its prelude, and holds
+a loop, a default or a status kept for the end, and no command of a
+tool. It needs nothing installed, so it is what a host has before any
+other engine, and a workflow that outgrows it is written again for
+[Dagu], Ansible or a CI system. A workflow that takes long runs as a
+unit of the developer's service manager, `systemd-run --user`, which
+is the caller's line: the workflow does not start itself.
 
 ## 6. Writing a task
 

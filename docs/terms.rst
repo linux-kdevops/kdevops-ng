@@ -55,13 +55,15 @@ Execution
    Workflow
       A file that orders tasks: which run, in what order, for which items
       of a list, and how often again. It is written in the language of one
-      :term:`engine <Engine>`. None exists yet.
+      :term:`engine <Engine>`. Those of the first, Bash, are under
+      ``engines/bash``.
 
       Avoid: *pipeline*, *playbook*, *flow*, and an engine's own word for
       it, as *DAG*.
 
    Engine
-      A program that runs workflows, such as `Dagu`_ or `Ansible`_. The tasks
+      A program that runs workflows, such as Bash, `Dagu`_ or
+      `Ansible`_. The tasks
       are tied to none.
 
       Avoid: *orchestrator*, *scheduler*.

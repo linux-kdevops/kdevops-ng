@@ -91,9 +91,9 @@
               shellcheck --external-sources --source-path=SCRIPTDIR \
                 scripts/check-style.sh scripts/commit-msg scripts/docs scripts/serve \
                 scripts/check-profiles.sh \
-                $(find tasks -type f ! -path '*/files/*')
+                $(find tasks engines -type f ! -path '*/files/*')
               shfmt --diff scripts/check-style.sh scripts/commit-msg scripts/docs \
-                scripts/serve scripts/check-profiles.sh tasks
+                scripts/serve scripts/check-profiles.sh tasks engines
               black --check scripts tests docs/conf.py
               ruff check --no-cache scripts tests
               HOME=$TMPDIR pyright

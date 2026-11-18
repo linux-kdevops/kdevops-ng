@@ -87,8 +87,8 @@ a change is reviewed against.
 The work is in the tasks, which run by hand with no engine and read no
 variable of one. A workflow is its engine's own: a file in that engine's
 language that holds the control flow and nothing else. Any engine can thus
-drive the tasks, and several can be supported side by side. [Dagu] is the
-first, and whoever wants Ansible, a Bash script or a CI system writes the
+drive the tasks, and several can be supported side by side. Bash is the
+first, and whoever wants [Dagu], Ansible or a CI system writes the
 workflow there. No format defines a workflow for every engine, so one is
 written again for each, which stays cheap while it holds only control
 flow.
