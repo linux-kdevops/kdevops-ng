@@ -16,27 +16,21 @@ accepts every record a task leaves.
 Requirements
 ============
 
-kresults' :cmd:`krecord` writes the record, its :cmd:`kseries` what
-series a commit is the tip of, its :cmd:`kobjects` what a build
-compiles of the series (:ref:`records-series`), and its
-:cmd:`kblktests` the records of a blktests run
-(:doc:`/tasks/blktests`). Each needs `Python`_ 3.11
-or later, which each :term:`distribution <Distribution>`'s base system
-has, and a link under its name somewhere on your ``PATH``:
+kresults' :cmd:`krecord` writes the record, and each of the rest by a
+subcommand: ``series`` what series a commit is the tip of, ``objects``
+what a build compiles of the series (:ref:`records-series`), and
+``blktests`` the records of a blktests run (:doc:`/tasks/blktests`). It
+needs `Python`_ 3.11 or later, which each
+:term:`distribution <Distribution>`'s base system has, and a link under
+its name somewhere on your ``PATH``:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
    $ git clone https://github.com/linux-kdevops/kresults.git
-   $ ln --symbolic --verbose "$PWD/kresults/format/record.py" \
+   $ ln --symbolic --verbose "$PWD/kresults/format/krecord.py" \
        ~/.local/bin/krecord
-   $ ln --symbolic --verbose "$PWD/kresults/format/series.py" \
-       ~/.local/bin/kseries
-   $ ln --symbolic --verbose "$PWD/kresults/format/objects.py" \
-       ~/.local/bin/kobjects
-   $ ln --symbolic --verbose "$PWD/kresults/format/blktests.py" \
-       ~/.local/bin/kblktests
 
 :cmd:`krecord` reads what the tool printed from the files the task's
 unit wrote (:ref:`tasks-unit`).
@@ -143,22 +137,22 @@ the range from the base:
    $ tasks/kernel/series --directory ~/linux --range v7.3..
    $ tasks/qemu/series --directory ~/qemu --range v11.1.0..
 
-:cmd:`kseries` writes ``series.json`` beside the commit's records: the
-base, the commits it lacks, the files they change and the branch the
-tree is on, which names the series. The records of the series are then
-set against those of its base, built the same way. Run it again after
-the tree's commits change.
+:cmd:`krecord` ``series`` writes ``series.json`` beside the commit's
+records: the base, the commits it lacks, the files they change and the
+branch the tree is on, which names the series. The records of the series
+are then set against those of its base, built the same way. Run it again
+after the tree's commits change.
 
 On a branch made with `b4`_ ``prep`` the first commit is the cover
 letter, an empty commit. Give the range from the base as before:
-:cmd:`kseries` takes the cover from that commit and leaves it out of the
-patches. A check of the patches, as checkpatch, takes its range from
-the cover commit, so it reads no patch in it.
+:cmd:`krecord` ``series`` takes the cover from that commit and leaves it
+out of the patches. A check of the patches, as checkpatch, takes its
+range from the cover commit, so it reads no patch in it.
 
 :src:`objects <tasks/kernel/objects>` then says what a build compiles of
-the series: :cmd:`kobjects` writes ``objects.json`` beside the build's
-records, the objects to check and the C files the configuration leaves
-out.
+the series: :cmd:`krecord` ``objects`` writes ``objects.json`` beside the
+build's records, the objects to check and the C files the configuration
+leaves out.
 
 .. _b4: https://b4.docs.kernel.org
 .. _Git: https://git-scm.com

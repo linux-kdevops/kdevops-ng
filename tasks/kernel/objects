@@ -3,7 +3,7 @@
 ## Usage: tasks/kernel/objects --directory DIR
 ##
 ## List the object files the build of the Linux tree in DIR compiles from
-## the C files its series changes, with kresults' kobjects:
+## the C files its series changes, with kresults' krecord objects:
 ##
 ##   tasks/kernel/objects --directory ~/linux
 ##
@@ -11,9 +11,9 @@
 ## build/logs/kernel-objects/ of DIR.
 . "$(dirname "$0")/../common/task"
 . "$(dirname "$0")/../common/kbuild"
-# kobjects writes the list where krecord files the build's records.
+# krecord objects writes the list beside the build's records.
 settings+=(--property=StateDirectory=krecords)
 . "$(dirname "$0")/../common/unit"
 
 transcript
-"${unit[@]}" kobjects "${config[@]}"
+"${unit[@]}" krecord objects "${config[@]}"

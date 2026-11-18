@@ -32,10 +32,10 @@ and ``git am --abort`` there gives the base back.
 
 :src:`mbox <tasks/b4/mbox>` runs ``b4 mbox`` and keeps the thread as
 ``build/logs/b4-mbox/thread.mbx`` of the worktree. The series task hands
-that file to :cmd:`kseries`, which names the series by its Message-ID
-and takes the cover letter from it. A thread left from another series
-is not used: :cmd:`kseries` takes it only when its patches are the
-commits of the range.
+that file to :cmd:`krecord` ``series``, which names the series by its
+Message-ID and takes the cover letter from it. A thread left from
+another series is not used: :cmd:`krecord` ``series`` takes it only when
+its patches are the commits of the range.
 
 The keyring
 ===========

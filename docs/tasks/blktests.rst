@@ -148,7 +148,7 @@ The records
 A :term:`record <Record>` of a test lies under the build of the kernel
 it ran on, so a series' tests are set against its base's as its build
 is (:doc:`/records`). One task on the host files what the guest left,
-with kresults' :cmd:`kblktests`:
+with kresults' :cmd:`krecord` ``blktests``:
 
 .. code-block:: console
    :caption: host
