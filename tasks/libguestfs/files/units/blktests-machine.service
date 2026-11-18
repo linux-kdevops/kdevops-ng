@@ -1,9 +1,15 @@
 # SPDX-License-Identifier: copyleft-next-0.3.1
+# The results of a build of the kernel lie in a directory of their own
+# in the host's share, named for the release (%v) and the first twelve
+# digits of the sha256 of its .config, which the release does not tell
+# apart. This unit names that directory /run/blktests, for
+# blktests@.service, whose settings can hold a specifier and no hash.
+#
 # A record of a test names the machine it ran on and the blktests that
 # ran it, which blktests' results do not. This unit keeps them in
-# machine/ of the results, as the kernel and the install gave them,
-# before each run of blktests@.service: it does not stay active, so
-# each start of that unit starts it again.
+# machine/ of the directory, as the kernel and the install gave them.
+# It does not stay active, so each start of blktests@.service starts
+# it again.
 
 [Unit]
 Description=blktests machine under test
@@ -11,6 +17,10 @@ RequiresMountsFor=/var/lib/blktests
 
 [Service]
 Type=oneshot
-ExecStart=mkdir --parents --verbose /var/lib/blktests/%v/machine
-ExecStart=cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
-	/usr/lib/blktests/version /var/lib/blktests/%v/machine
+ExecStart=cp --verbose /proc/config.gz /run/blktests.config.gz
+ExecStart=gzip --decompress --force --verbose /run/blktests.config.gz
+ExecStart=sh -c 'build=/var/lib/blktests/%v-$$(sha256sum < /run/blktests.config | cut --bytes=1-12) && \
+	mkdir --parents --verbose $$build/machine && \
+	cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
+		/usr/lib/blktests/version $$build/machine && \
+	ln --symbolic --force --no-target-directory --verbose $$build /run/blktests'

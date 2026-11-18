@@ -17,10 +17,11 @@
 # kblktests writes the records where krecord files the build's.
 settings+=(--property=StateDirectory=krecords)
 . "$(dirname "$0")/../common/unit"
-# The results lie in the machine's state directory, under the release of
-# the kernel that ran: the one this build made.
+# The results lie in the machine's state directory, under the release
+# of the kernel that ran and the sha256 of its .config: this build's.
+sum=$(sha256sum <"$build/.config")
 results=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/blktests
-results+=/$(<"$build/include/config/kernel.release")
+results+=/$(<"$build/include/config/kernel.release")-${sum::12}
 producer=$(realpath "$(dirname "$0")")
 # The QEMU the machine runs, by the process itself: the file its unit
 # names may have been built again since.

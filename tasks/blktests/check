@@ -4,8 +4,9 @@
 ##
 ## Run the blktests group GROUP, or one test of it, on this machine,
 ## and keep what blktests writes of each test in
-## /var/lib/blktests/RELEASE/GROUP/, RELEASE being the kernel's that
-## runs, with what it prints beside it as GROUP.stdout. blktests reads
+## /var/lib/blktests/BUILD/GROUP/, with what it prints beside it as
+## GROUP.stdout. BUILD is the release of the kernel that runs and the
+## first twelve digits of the sha256 of its .config. blktests reads
 ## the machine's /var/lib/blktests/config. Run it as root where
 ## blktests is installed, in a guest:
 ##
@@ -13,18 +14,19 @@
 ##   tasks/blktests/check --group block/001
 . "$(dirname "$0")/../common/task"
 : "${group:?}"
-release=/var/lib/blktests/$(uname --kernel-release)
-output=$release/$group
-printed=$release/${group//\//-}.stdout
+sum=$(zcat /proc/config.gz | sha256sum)
+build=/var/lib/blktests/$(uname --kernel-release)-${sum::12}
+output=$build/$group
+printed=$build/${group//\//-}.stdout
 
 transcript
 # The host's share, which holds the config and takes the results.
 systemctl start var-lib-blktests.mount
 # What a record of a test names and the results lack: the machine it
 # ran on and the blktests that ran it.
-mkdir --parents --verbose "$release/machine"
+mkdir --parents --verbose "$build/machine"
 cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
-	/usr/lib/blktests/version "$release/machine"
+	/usr/lib/blktests/version "$build/machine"
 # What an earlier run left would pass for this one's.
 rm --recursive --force "$output"
 # check runs from its own directory.

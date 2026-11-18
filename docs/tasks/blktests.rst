@@ -27,19 +27,21 @@ blktests reads its config from ``/var/lib/blktests`` of the guest and
 keeps what it writes of each test there. The directory is a share of
 the host: ``blktests/`` of the guest's state directory, under the tag
 ``blktests``. Both are of the guest, so they lie with it, the results
-under the release of the kernel the guest ran:
+under the build of the kernel the guest ran: its release, and the first
+twelve digits of the sha256 of its ``.config``, which the release does
+not tell apart:
 
 .. code-block:: text
 
    ~/.local/state/qemu-system/guest/blktests/
-   ├── config                           what blktests' check sources
-   └── 7.3.0-rc5-00135-gc8c68c8ed043/   the kernel's release
-       ├── machine/                     the guest's processors and memory, and blktests' commit
-       ├── block-003.stdout             what check printed, and block-003.stderr
-       └── block/003/                   the group or test asked for
-           └── nvme0n1/                 the device, or nodev for a test that makes its own
+   ├── config                  what blktests' check sources
+   └── 7.3.0-c159a85d968d/     the kernel's release and .config
+       ├── machine/            the guest's processors and memory, and blktests' commit
+       ├── block-003.stdout    what check printed, and block-003.stderr
+       └── block/003/          the group or test asked for
+           └── nvme0n1/        the device, or nodev for a test that makes its own
                └── block/
-                   └── 003              status, runtime, description, exit status, date
+                   └── 003     status, runtime, description, exit status, date
 
 A test that failed leaves its output beside it, as ``003.out.bad``,
 ``003.full`` and ``003.dmesg``. A run starts with the directory of what
@@ -103,7 +105,7 @@ the terminal closed, and ``is-active`` says how it stands:
 ``--host guest``.
 
 What blktests prints goes to ``loop.stdout`` and ``loop.stderr`` under
-the release, on the host as it comes, and not to the guest's journal:
+the build, on the host as it comes, and not to the guest's journal:
 it is where blktests says why a test did not run, and a
 :term:`record <Record>` reads it there.
 
@@ -144,8 +146,8 @@ with kresults' :cmd:`kblktests`:
    $ tasks/blktests/record --directory ~/linux --machine guest
 
 :src:`record <tasks/blktests/record>` takes the results under the
-release of the kernel the tree built, so the guest has to have run
-that build, and the machine has to be running: the record names its
+release and the ``.config`` of the tree's build, so the guest has to
+have run that build, and the machine has to be running: the record names its
 QEMU. Each test gets a record, named for the device it ran on:
 
 .. code-block:: text

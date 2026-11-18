@@ -4,13 +4,14 @@
 # name as systemd-escape writes it. check runs from its own directory,
 # and a run starts with nothing an earlier one left.
 #
-# The results go to the host's share, under the release of the kernel
-# that runs (%v), and the share holds the machine's config for
-# blktests. What check prints goes there too, to GROUP.stdout and
+# The results go to the host's share, to the directory of the kernel's
+# build, which blktests-machine.service names /run/blktests, and the
+# share holds the machine's config for blktests. What check prints
+# goes there too, to GROUP.stdout and
 # GROUP.stderr: blktests says why a test did not run nowhere else, and
 # the journal drops lines of a unit that prints fast. systemd opens the
 # two files before it runs a command of this unit, so the directory is
-# blktests-machine.service's to make.
+# that unit's to make.
 
 [Unit]
 Description=blktests %I
@@ -21,8 +22,8 @@ After=blktests-machine.service
 [Service]
 Type=oneshot
 WorkingDirectory=/usr/lib/blktests
-StandardOutput=truncate:/var/lib/blktests/%v/%i.stdout
-StandardError=truncate:/var/lib/blktests/%v/%i.stderr
-ExecStartPre=rm --recursive --force /var/lib/blktests/%v/%I
+StandardOutput=truncate:/run/blktests/%i.stdout
+StandardError=truncate:/run/blktests/%i.stderr
+ExecStartPre=rm --recursive --force /run/blktests/%I
 ExecStart=/usr/lib/blktests/check --config=/var/lib/blktests/config \
-	--output=/var/lib/blktests/%v/%I %I
+	--output=/run/blktests/%I %I

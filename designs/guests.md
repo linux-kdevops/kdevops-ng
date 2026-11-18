@@ -176,10 +176,17 @@ of the kernel. They go to the guest's state directory on the host,
 `blktests/` there, which the machine's file shares under the tag
 `blktests` and the guest mounts at `/var/lib/blktests`.
 
-- The kernel's release is the first directory inside, `%v` in the
-  unit. The guest boots whatever kernel its machine file names, so the
-  release is what ties a result to a build, and one tree's results
-  outlast the boot of another's.
+- The kernel's build is the first directory inside: its release and
+  the first twelve digits of the sha256 of its `.config`. The guest
+  boots whatever kernel its machine file names, so the name is what
+  ties a result to a build, and one build's results outlast the boot
+  of another's. The release alone does not: it stays as it is when the
+  `.config` changes, and results of the build before were filed as
+  this one's. The guest hashes `/proc/config.gz`, which holds the
+  build's `.config` byte for byte, and the host the file itself.
+- A unit's settings take specifiers and no hash, so
+  `blktests-machine.service` links the directory as `/run/blktests`
+  and the service's settings name the link.
 - Neither the unit nor the task takes a tree. A template's instance
   holds one name, the group, and the task needs nothing more.
 - The share is its own, not a path of the home share, which would put
@@ -193,13 +200,13 @@ of the kernel. They go to the guest's state directory on the host,
   no run leaves results in the disk by mistake.
 - The directory is not in a tree's `build/`, so `mrproper` leaves the
   machine able to start.
-- `machine/` under the release holds what a record of a test names
+- `machine/` under the build holds what a record of a test names
   and the suite's results lack: the guest's `/proc/cpuinfo`,
   `/proc/meminfo` and arch, and the commit of the suite, which the
   install wrote into the disk. They are copied as they are, with `cp`,
   before each run. The reader on the host takes what it needs, so the
   guest runs no code of the project and needs none of its tools.
-- What the suite prints goes to two files under the release, named for
+- What the suite prints goes to two files under the build, named for
   what was asked, as a task's output goes to files (`designs/output.md`):
   blktests says why a test did not run nowhere else, and the journal
   drops lines. The unit's settings write them, the task's `tee`. The
@@ -215,8 +222,8 @@ of the kernel. They go to the guest's state directory on the host,
   of the QEMU it runs on. A record made after the machine has started
   again on another QEMU would name the wrong one.
 - The records are made on the host, by a task that takes the tree: the
-  commit, the `.config` and the profiles are there, and the release
-  names which results are that build's. A test's date is the guest's
+  commit, the `.config` and the profiles are there, and they name
+  which results are that build's. A test's date is the guest's
   local time, which a cloud image keeps in UTC.
 - The suite's config is a file of the same directory, read as
   `/var/lib/blktests/config`. It names devices the machine's file
