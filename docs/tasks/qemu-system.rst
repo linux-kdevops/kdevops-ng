@@ -54,6 +54,11 @@ has and the tree whose kernel it boots.
 
    $ tasks/qemu-system/machine --machine blktests-nvme-tcp-series \
        --directory ~/linux
+   $ tasks/qemu-system/remove --machine blktests-nvme-tcp-series
+
+:src:`remove <tasks/qemu-system/remove>` stops a machine and deletes
+its file and its state directory: its disk, and what its guest left in
+its shares. A family's lines stay.
 
 :src:`tasks/qemu-system/files/machines` has machines to copy and
 change: a guest that boots a tree's kernel, the same with an NVMe

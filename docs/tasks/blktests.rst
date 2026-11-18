@@ -225,6 +225,8 @@ other machine has, and copies the family's directory to
 marked ``CHANGE`` in it once. :src:`tasks/blktests/config` puts
 blktests' config in the machine's share. ``overlay`` and ``customize``
 of :doc:`libguestfs` make the disk, under the machine's name.
+:src:`remove <tasks/qemu-system/remove>` takes a machine away again,
+with its disk and what its guest left.
 
 A second workflow runs a machine's group and files its records. It
 starts the machine, waits for the guest to boot, runs the group the

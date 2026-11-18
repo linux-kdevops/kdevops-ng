@@ -272,6 +272,9 @@ lie together.
   `tasks/qemu-system/files/families`; `files/machines` there keeps the
   machines a developer copies and names. What a suite adds to a
   machine is the suite's task, as `tasks/blktests/config`.
+- `tasks/qemu-system/remove` takes a machine away: its file and its
+  state directory, the disk and the shares with it. The family's
+  lines stay for the other machines.
 - A long group splits by what its config sets, the transports of nvme.
   The config reads the transport from the machine's name, so every
   machine has the same file and the same disk, any of them can run any

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/remove --machine NAME
+##
+## Remove the machine NAME: stop it, and delete its file in
+## ~/.config/qemu/systemd with the lines that are its alone, and its
+## state directory, which holds its disk and what its guest left in its
+## shares. What a suite left there and no record holds goes with it:
+##
+##   tasks/qemu-system/remove --machine blktests-nvme-tcp-series
+##
+## The lines a family shares stay, for its other machines.
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd
+state=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine
+
+transcript
+systemctl --user stop "qemu-system@$machine.service"
+rm --recursive --force --verbose "$config/$machine.qemu" "$config/$machine.qemu.d"
+rm --recursive --force --verbose "$state"
+systemctl --user start qemu-system-generator.service
