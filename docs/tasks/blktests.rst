@@ -161,5 +161,27 @@ that did not run is a skip, with the reason blktests printed. Run the
 task again after another group: what is filed already is left as it
 is.
 
+The base
+========
+
+A series' tests are set against the same tests on its base, so the base
+needs them too: a second guest that boots the base's kernel, built with
+the same profiles. Make it as the first was made, with a state
+directory, a disk with blktests, a share with its config and a vsock
+number of its own, and name the base's tree in its machine's file. Give
+it the QEMU and the devices of the first, so that the kernel is all
+that differs. Then run the same groups and file them with the base's
+tree:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ systemctl --host guest-base start blktests@loop.service
+   $ tasks/blktests/record --directory ~/linux-base --machine guest-base
+
+The series' page then says of each test how it went on both:
+``passes on both``, or what the series changed.
+
 .. _blktests: https://github.com/linux-blktests/blktests
 .. _blktests' own page: https://github.com/linux-blktests/blktests/blob/master/Documentation/running-tests.md
