@@ -270,8 +270,16 @@ by the task: the URLs, and the commands that import the distribution's
 key, verify the checksums' signature and check the image. A
 distribution that signs nothing leaves the first two empty. The key
 goes into a gpg home made for the run, which holds no other, so a good
-signature is that key's. The image reaches the guest's directory only
-when it has passed.
+signature is that key's. The image reaches its directory only when it
+has passed.
+
+The images lie in one directory of the host, `~/.local/state/machines`
+in the docs, and each guest's disk is an overlay of one by its path: a
+distribution is downloaded once however many guests run it. The
+directory is the user's `/var/lib/machines`, as `~/.local/state` is a
+user's `/var/lib`. It is not under `~/.cache`: an overlay does not
+open without its image, and a cache is what may be emptied. The tasks
+take the directory and the image as options and name no default.
 
 Debian signs neither its cloud images nor their checksums. Ubuntu and
 Fedora sign the checksums, with keys the host's `ubuntu-keyring` and

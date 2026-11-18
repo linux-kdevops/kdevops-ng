@@ -3,12 +3,12 @@
 ## Usage: tasks/libguestfs/download_image --directory DIR --distribution NAME
 ##
 ## Download the cloud image tasks/libguestfs/files/images/NAME names for this
-## host's machine into DIR, a guest's state directory, once it passes
-## its distribution's checksums, and those their signature where the
-## distribution signs them:
+## host's machine into DIR, where the guests' disks find it, once it
+## passes its distribution's checksums, and those their signature where
+## the distribution signs them:
 ##
 ##   tasks/libguestfs/download_image \
-##       --directory ~/.local/state/qemu-system/guest --distribution debian-13
+##       --directory ~/.local/state/machines --distribution debian-13
 ##
 ## The download lies in download/ of DIR until the image has passed.
 . "$(dirname "$0")/../common/task"

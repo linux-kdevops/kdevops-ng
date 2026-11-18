@@ -3,17 +3,17 @@
 ## Usage: tasks/libguestfs/overlay --directory DIR --backing-file IMAGE
 ##
 ## Make work.qcow2, the disk of the guest whose state directory is DIR,
-## as an overlay of the cloud image IMAGE there. What the guest writes
-## stays in the overlay, and making it again starts the guest over:
+## as an overlay of the cloud image IMAGE. What the guest writes stays
+## in the overlay, and making it again starts the guest over:
 ##
 ##   tasks/libguestfs/overlay --directory ~/.local/state/qemu-system/guest \
-##       --backing-file debian-13-genericcloud-amd64.qcow2
+##       --backing-file ~/.local/state/machines/debian-13-genericcloud-amd64.qcow2
 . "$(dirname "$0")/../common/task"
 : "${directory:?} ${backing_file:?}"
 
 transcript
-# The overlay names its image by a path relative to its own directory,
-# so the two move together.
+# The overlay names its image as given: a name without a directory is
+# an image beside the disk.
 # shellcheck disable=SC2164 # errexit ends the task where cd fails
 cd "$directory"
 qemu-img create -f qcow2 -F qcow2 -b "$backing_file" work.qcow2

@@ -14,11 +14,11 @@ boot, and one installs packages in it:
    :caption: host
    :class: cmd-host
 
-   $ mkdir --parents --verbose ~/.local/state/qemu-system/guest
    $ tasks/libguestfs/download_image \
-       --directory ~/.local/state/qemu-system/guest --distribution debian-13
+       --directory ~/.local/state/machines --distribution debian-13
+   $ mkdir --parents --verbose ~/.local/state/qemu-system/guest
    $ tasks/libguestfs/overlay --directory ~/.local/state/qemu-system/guest \
-       --backing-file debian-13-genericcloud-amd64.qcow2
+       --backing-file ~/.local/state/machines/debian-13-genericcloud-amd64.qcow2
    $ tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
        --hostname guest --ssh-inject ~/.ssh/guests.pub
    $ tasks/libguestfs/install --directory ~/.local/state/qemu-system/guest \
@@ -58,8 +58,11 @@ other, so a good signature is that key's.
 
 :src:`overlay <tasks/libguestfs/overlay>` makes ``work.qcow2`` with
 :cmd:`qemu-img`, an overlay of the image: what the guest writes stays in
-it and the image stays as downloaded. Making it again starts the guest
-over. Stop the guest first.
+it and the image stays as downloaded, so one download serves every
+guest of that distribution. The images lie in ``~/.local/state/machines``
+here, a user's ``/var/lib/machines``: a disk does not start without its
+image, so a cache that may be emptied is no place for it. Making the
+disk again starts the guest over. Stop the guest first.
 
 :src:`customize <tasks/libguestfs/customize>` changes the disk with
 :cmd:`virt-customize`, which takes seconds and needs the guest stopped:

@@ -77,18 +77,19 @@ from your own configuration:
 The disk
 ========
 
-Make the guest's disk in its state directory, with the public half of
-that key (:doc:`/tasks/libguestfs`):
+Download the distribution's image once, to a directory every guest of
+the host makes its disk from, and make the guest's disk in its state
+directory, with the public half of that key (:doc:`/tasks/libguestfs`):
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
-   $ mkdir --parents --verbose ~/.local/state/qemu-system/guest
    $ tasks/libguestfs/download_image \
-       --directory ~/.local/state/qemu-system/guest --distribution debian-13
+       --directory ~/.local/state/machines --distribution debian-13
+   $ mkdir --parents --verbose ~/.local/state/qemu-system/guest
    $ tasks/libguestfs/overlay --directory ~/.local/state/qemu-system/guest \
-       --backing-file debian-13-genericcloud-amd64.qcow2
+       --backing-file ~/.local/state/machines/debian-13-genericcloud-amd64.qcow2
    $ tasks/libguestfs/customize --directory ~/.local/state/qemu-system/guest \
        --hostname guest --ssh-inject ~/.ssh/guests.pub
 
