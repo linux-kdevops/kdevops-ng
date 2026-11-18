@@ -131,8 +131,10 @@ The two shares carry the tags the guest's ``/etc/fstab`` mounts.
    namespace's file.
 
 ``guest-blktests.qemu``
-   ``guest-nvme.qemu`` with the share blktests keeps its results in
-   (:doc:`/tasks/blktests`).
+   With two NVMe namespaces that start empty and the share blktests
+   keeps its results in (:doc:`/tasks/blktests`). The files named
+   ``guest-blktests-`` beside it are a family of such machines, one for
+   each group.
 
 ``guest-lan.qemu``
    With a second card on a segment the guests share, for a test two

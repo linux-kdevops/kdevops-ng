@@ -168,6 +168,74 @@ once for each condition has a record for each, in the directory
 blktests names for it: ``nvme0n1_tr_loop/nvme/035.json``. Run the task
 again after another group: what is filed already is left as it is.
 
+Several guests at once
+======================
+
+A group runs in one guest, and a host has room for more than one: each
+group gets a guest of its own, on the series' kernel and on the base's,
+and they run side by side. The machines are a family, as
+qemu-system-generator reads one: the lines they share lie in
+directories named for the start of their names, and a machine's own
+file holds its vsock number and its share.
+
+:src:`guest-blktests-.qemu.d <tasks/qemu-system/files/machines/guest-blktests-.qemu.d/10-machine.conf>`
+   What every machine named ``guest-blktests-*`` has. Its namespaces
+   are sparse files the machine makes empty at each start, so they
+   take no room until a test writes.
+
+:src:`guest-blktests-series-.qemu.d <tasks/qemu-system/files/machines/guest-blktests-series-.qemu.d/10-kernel.conf>`, :src:`guest-blktests-base-.qemu.d <tasks/qemu-system/files/machines/guest-blktests-base-.qemu.d/10-kernel.conf>`
+   The kernel of the machines named for the series, and for its base.
+
+:src:`guest-blktests-series-block.qemu <tasks/qemu-system/files/machines/guest-blktests-series-block.qemu>`
+   One machine. Copy it for each, and change the two lines marked.
+
+Name a machine for the kernel and the group it runs,
+``guest-blktests-base-nvme-tcp``. The nvme group is the long one, and
+splits by transport: each machine has its own config, so one names
+``NVMET_TRTYPES=tcp`` and the next ``rdma``.
+
+No machine downloads or installs anything. One disk is made as before,
+with the packages and blktests in it, and is never started; each
+machine's disk is an overlay of it with a host name of its own:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ for name in series-block base-block series-nvme-tcp base-nvme-tcp; do
+       state=~/.local/state/qemu-system/guest-blktests-$name
+       mkdir --parents --verbose $state/blktests
+       cp --verbose tasks/blktests/files/config $state/blktests/
+       tasks/libguestfs/overlay --directory $state \
+           --backing-file ~/.local/state/qemu-system/guest-blktests/work.qcow2
+       tasks/libguestfs/customize --directory $state \
+           --hostname guest-blktests-$name --ssh-inject ~/.ssh/guests.pub
+     done
+
+Start the machines, wait for each to boot, and start each group
+without waiting for it. A machine's tests then say when they are done,
+and a record is filed as before:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ systemctl --user start qemu-system-generator.service
+   $ tasks/qemu-system/start --machine guest-blktests-series-block
+   $ systemctl --host guest-blktests-series-block is-system-running --wait
+   running
+   $ systemctl --host guest-blktests-series-block start --no-block \
+       blktests@block.service
+   $ systemctl --host guest-blktests-series-block is-active \
+       blktests@block.service
+   activating
+   $ tasks/blktests/record --directory ~/linux \
+       --machine guest-blktests-series-block
+
+Size the machines to the host: each takes the processors and memory its
+family's file names, and more guests than the host has processors make
+the tests that measure time fail.
+
 The base
 ========
 

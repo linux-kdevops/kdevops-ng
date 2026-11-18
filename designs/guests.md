@@ -236,6 +236,45 @@ of the kernel. They go to the guest's state directory on the host,
   unit and the task always name it: a machine has a config, though it
   may set nothing.
 
+## 9a. A suite runs in several guests at once
+
+A group of blktests is the unit a guest runs, so the groups are what
+runs side by side: a machine for each, on the series' kernel and on
+its base's. Nothing deals tests out and nothing merges results: each
+machine's share is recorded by itself, and the records of one build
+lie together.
+
+- The machines are a family of qemu-system-generator: drop-in
+  directories named for the start of a machine's name hold what the
+  machines share, so the kernel comes before the group in a name,
+  `guest-blktests-series-nvme-tcp`, and one directory selects the
+  machines of one kernel. Every name starts with `guest-`, which the
+  ssh configuration of a guest matches.
+- A machine's own file holds its vsock number, which the generator
+  takes as a number, and its share, since `%i` in a `[virtiofsd]`
+  section is the daemon's instance, the machine and the tag, and not
+  the machine.
+- A long group splits by what its config sets, the transports of nvme:
+  the config lies in each machine's share, so the split needs no
+  option of a unit or a task.
+- Each machine's disk is an overlay of one disk that has the packages
+  and the suite, which no machine starts. A machine is made in
+  seconds and downloads nothing.
+- The namespaces are raw sparse files the machine's unit removes and
+  makes at each start, with `cache=unsafe`, `discard=unmap` and
+  `detect-zeroes=unmap`: a test's data is of no use after it, a flush
+  that reaches the disk is time lost, and a discard gives the room
+  back. They are not `null-co`, which drops what is written: tests
+  that make a file system or verify what they wrote, and the metadata
+  of a namespace, need it back. QEMU has no block driver that keeps
+  its data in memory; a file on tmpfs would, at the price of the
+  host's memory for every byte written.
+- The fan-out is a workflow's: starting the machines, each group with
+  `--no-block`, and the records when `is-active` says a group is done.
+  How many run at once is the host's processors and memory over what
+  the family's file gives a machine. More guests than processors make
+  tests that measure time fail.
+
 ## 10. Where a suite's files go in the guest
 
 The guest's paths follow the UAPI group's file hierarchy
