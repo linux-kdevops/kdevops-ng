@@ -97,6 +97,18 @@ them once and enable the one that serves:
    $ systemctl --user link "$PWD"/kresults/units/user/kresults-*
    $ systemctl --user enable --now kresults-serve.service
 
+The same program lists a project's series in the terminal, a line each
+with its state, date, Message-ID and subject, the newest first:
+
+.. code-block:: console
+   :class: cmd-host
+
+   $ krender --list --records ~/.local/state/krecords | less --chop-long-lines
+
+A series is ``fetched``, ``cannot apply``, or shows how many records it
+has and how many findings are in them. A run is recorded when it ends,
+so none shows as running.
+
 When a run leaves a record
 ==========================
 
