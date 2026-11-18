@@ -13,8 +13,8 @@
 # multipath-tools starts at boot and which fails with no dm_multipath.
 # storage/md-raid.config builds the MD personalities of the md group,
 # storage/srp-target.config the SRP initiator and target with the SCSI
-# device handlers of the srp group, and fs/f2fs.config the file system
-# a few block tests make.
+# device handlers of the srp group, and fs/f2fs.config and
+# fs/xfs.config the file systems a few block and nvme tests make.
 # Three debug fragments are in it, though they slow every test: a few
 # tests show their bug only as a report of KASAN (nvme/069, nvme/075),
 # of DEBUG_VM (block/050, block/051) or of DEBUG_ATOMIC_SLEEP
@@ -27,6 +27,7 @@ storage/dm-targets.config
 storage/md-raid.config
 storage/srp-target.config
 fs/f2fs.config
+fs/xfs.config
 debug/kasan.config
 debug/atomic-sleep.config
 debug/debug-heavy.config
