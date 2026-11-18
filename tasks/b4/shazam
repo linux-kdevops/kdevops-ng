@@ -5,7 +5,9 @@
 ## Apply the series posted as ID with b4, on the commit its cover
 ## letter names as its base, and check the result out in DIR, a
 ## worktree of the project NAME, linux or qemu, that you add for the
-## series at any commit. A series that names no base, or one the tree
+## series at any commit. tasks/b4/mbox has kept the thread in DIR
+## before: the revision posted as ID is the one applied, where b4 would
+## take a later one. A series that names no base, or one the tree
 ## lacks, is applied on what DIR has checked out:
 ##
 ##   tasks/b4/shazam --directory ~/wt/qemu \
@@ -29,11 +31,17 @@ settings=(--property=ReadWritePaths="$directory"
 record=(--project "$project" --command "b4 shazam" --message-id-file build/logs/b4-shazam/message-id
 	--output=b4/shazam.json)
 . "$(dirname "$0")/../common/unit"
+# The revision of the thread tasks/b4/mbox kept, from the subject that
+# starts it: b4 looks for a later revision of a series and applies
+# that, which the records under this Message-ID are not of.
+version=$(sed --quiet '/^Subject: \[/{s/^[^]]*\bv\([0-9]\+\)\b.*/\1/p;q}' \
+	"$directory/build/logs/b4-mbox/thread.mbx")
 
 transcript
 echo "$message_id" | tee "$log/message-id"
 # b4 applies the series in a worktree of its own, at the base, and
 # leaves the result as FETCH_HEAD: the series is then checked out here,
 # detached, whatever was.
-"${unit[@]}" b4 --no-stdin shazam --add-link --make-fetch-head "$message_id"
+"${unit[@]}" b4 --no-stdin shazam --add-link --make-fetch-head \
+	--use-version "${version:-1}" "$message_id"
 git checkout --detach FETCH_HEAD

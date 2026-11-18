@@ -374,9 +374,12 @@ once. Nothing else is asked, so it holds no guess.
   tools say what they found and the records hold it. A build that fails
   does, since nothing after it has a kernel to run.
 - Machines are named without the series, so one series runs at a time.
-- b4 shazam applies the latest revision of a series, and `tasks/b4/mbox`
-  keeps the thread of the revision the ID names. A caller gives the ID of
-  the latest revision, or the base and the applied tree disagree.
+- b4 shazam looks for a later revision of a series and applies that,
+  on that revision's base, while the thread, the range and the records
+  are of the Message-ID given. `tasks/b4/shazam` therefore names the
+  revision, read from the subject of the thread `tasks/b4/mbox` kept,
+  so mbox runs first. A later revision is another Message-ID and
+  another run.
 
 ## 9b. fio is a suite on the same disk
 

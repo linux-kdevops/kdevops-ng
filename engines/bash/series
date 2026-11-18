@@ -52,8 +52,8 @@ lines() {
 }
 
 "$tasks/git/worktree" --directory "$directory" --path "${trees[0]}" --commit-ish HEAD
-"$tasks/b4/shazam" --directory "${trees[0]}" --message-id "$message_id" --project linux
 facts "$tasks/b4/mbox" --directory "${trees[0]}" --message-id "$message_id" --project linux
+"$tasks/b4/shazam" --directory "${trees[0]}" --message-id "$message_id" --project linux
 base=$(lines base_commit=)
 : "${base:?the series names no base-commit}"
 "$tasks/kernel/series" --directory "${trees[0]}" --range "$base.."

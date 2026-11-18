@@ -133,9 +133,8 @@ tree to work from, and a profile for the kernel to build:
        --directory ~/linux --profile guest+blktests+nvm-express-driver \
        --groups "nvme-tcp nvme-loop"
 
-Give the Message-ID of the series' latest revision: b4 applies the latest
-one, and the thread of an older Message-ID names another base. In order,
-it:
+The revision posted as that Message-ID is the one tested, though a
+later one exists. In order, it:
 
 #. adds two worktrees of ``--directory`` under
    ``~/.local/state/kdevops-ng/series/ID/``, ``series`` and ``base``,

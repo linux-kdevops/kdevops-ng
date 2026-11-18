@@ -15,17 +15,19 @@ the base its cover letter names, and one keeps the thread there. With
    :class: cmd-host
 
    $ git -C ~/qemu worktree add --detach ~/wt/qemu
-   $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID \
-       --project qemu
    $ tasks/b4/mbox --directory ~/wt/qemu --message-id ID --project qemu
    base_commit=BASE
+   $ tasks/b4/shazam --directory ~/wt/qemu --message-id ID \
+       --project qemu
    $ tasks/qemu/series --directory ~/wt/qemu --range BASE..
 
 :src:`shazam <tasks/b4/shazam>` runs ``b4 shazam --add-link
 --make-fetch-head``. b4 applies the series in a worktree of its own, at
 the commit the cover letter names as ``base-commit``, and leaves the
 result as ``FETCH_HEAD``, which the task checks out in yours, detached:
-the worktree may be at any commit before. Each commit ends with a
+the worktree may be at any commit before. It applies the revision
+posted as ``ID``, which it reads from the thread ``mbox`` kept, where
+b4 alone would take a later revision of the series. Each commit ends with a
 ``Link:`` to its message, and b4 reads your own configuration, the keys
 it checks attestation against included. A series that names no base, or
 one your tree lacks, is applied on what the worktree has checked out,
