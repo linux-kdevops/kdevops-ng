@@ -1,0 +1,18 @@
+; SPDX-License-Identifier: copyleft-next-0.3.1
+;
+; Sequential atomic writes that the block layer can merge: four 16k
+; writes are submitted in one batch, so the ones that are adjacent reach
+; the device as fewer requests, and the write_merges of the device in
+; fio's disk_util count them. The device is DEVICE, which
+; fio@.service reads from /var/lib/fio/config and fio expands here.
+
+[atomic-merge]
+filename=${DEVICE}
+rw=write
+bs=16k
+size=64k
+ioengine=io_uring
+iodepth=4
+iodepth_batch_submit=4
+atomic=1
+direct=1

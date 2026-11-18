@@ -1,0 +1,25 @@
+; SPDX-License-Identifier: copyleft-next-0.3.1
+;
+; Atomic writes racing with the reads that verify them: ten jobs write
+; random 4k blocks of one range and check each block's crc64 as they
+; read it back. A torn write fails the check, so a pass shows that a
+; read saw all of a write or none of it. The jobs write the same range
+; on purpose, so verify_write_sequence is off: blocks are out of
+; sequence between them (fio's examples/atomic-verify.fio). The range
+; is a quarter of a 1 GiB namespace. The device is DEVICE, which
+; fio@.service reads from /var/lib/fio/config and fio expands here.
+; group_reporting gives the ten jobs one entry in fio's output.
+
+[atomic-verify]
+filename=${DEVICE}
+rw=randwrite
+bs=4k
+size=256m
+direct=1
+ioengine=libaio
+iodepth=16
+verify=crc64
+atomic=1
+verify_write_sequence=0
+numjobs=10
+group_reporting
