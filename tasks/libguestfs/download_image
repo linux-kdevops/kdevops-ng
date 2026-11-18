@@ -11,6 +11,8 @@
 ##       --directory ~/.local/state/machines --distribution debian-13
 ##
 ## The download lies in download/ of DIR until the image has passed.
+## NAME.qcow2 there is then a link to the image, so what makes a disk
+## of it need not know the file's name.
 . "$(dirname "$0")/../common/task"
 : "${directory:?} ${distribution:?}"
 # gpg's home for this run alone: it holds the one key the distribution's
@@ -37,4 +39,5 @@ curl --fail --fail-early --location --continue-at - --remote-name-all "${urls[@]
 "${verify[@]}"
 "${check[@]}"
 mv --verbose "$image" "$directory"
+ln --symbolic --force --verbose "$image" "$directory/$distribution.qcow2"
 rm --recursive --verbose "$directory/download"

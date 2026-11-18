@@ -32,7 +32,8 @@ boot, and one installs packages in it:
 its checksums with :cmd:`curl`, checks the one against the other, and
 moves the image into the directory only when it passes: until then the
 download lies in ``download/`` there. A run leaves a whole image or
-none.
+none, and a link to it named for the distribution,
+``debian-13.qcow2``.
 
 A distribution is a file under :src:`tasks/libguestfs/files/images` that
 names the image for this host's machine, ``x86_64`` or ``aarch64``, its

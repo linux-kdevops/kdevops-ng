@@ -12,6 +12,7 @@
 : "${directory:?} ${backing_file:?}"
 
 transcript
+mkdir --parents --verbose "$directory"
 # The overlay names its image as given: a name without a directory is
 # an image beside the disk.
 # shellcheck disable=SC2164 # errexit ends the task where cd fails

@@ -1,4 +1,4 @@
-# shellcheck shell=bash disable=SC2034 # tasks/libguestfs/download_image reads them
+# shellcheck shell=bash disable=SC2034 # the tasks that source this read them
 # SPDX-License-Identifier: copyleft-next-0.3.1
 # Fedora 45, the generic cloud image. Fedora signs the checksums, in the
 # file itself, with the release's key, which the distribution-gpg-keys
@@ -11,3 +11,5 @@ import=("${gpg[@]}" --quiet --import
 	/usr/share/distribution-gpg-keys/fedora/RPM-GPG-KEY-fedora-45-primary)
 verify=("${gpg[@]}" --verify "Fedora-Cloud-45-1.4-$machine-CHECKSUM")
 check=(sha256sum --check --ignore-missing "Fedora-Cloud-45-1.4-$machine-CHECKSUM")
+# What the kernel command line of a machine names as the image's root.
+root='root=/dev/vda3 rootflags=subvol=root'

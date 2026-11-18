@@ -1,4 +1,4 @@
-# shellcheck shell=bash disable=SC2034 # tasks/libguestfs/download_image reads them
+# shellcheck shell=bash disable=SC2034 # the tasks that source this read them
 # SPDX-License-Identifier: copyleft-next-0.3.1
 # Debian 14, the generic cloud image, built daily while Debian 14 is in testing. Debian signs neither the image
 # nor its checksums, so there is no key to import and nothing to verify:
@@ -9,3 +9,5 @@ urls=("$site/debian-14-genericcloud-${arch[$(uname --machine)]}-daily.qcow2" "$s
 import=()
 verify=()
 check=(sha512sum --check --ignore-missing SHA512SUMS)
+# What the kernel command line of a machine names as the image's root.
+root=root=/dev/vda1
