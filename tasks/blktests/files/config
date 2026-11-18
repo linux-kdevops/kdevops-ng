@@ -12,3 +12,9 @@ TEST_DEVS=(/dev/nvme0n1)
 # The user of the tests that run a command without privileges, which
 # tasks/libguestfs/blktests made in the guest.
 NORMAL_USER=blktests
+
+# The transports the nvme group sets its targets up on: it runs each
+# test once for every one named, and a test of one transport is not
+# run on another. All four take the group four times as long as loop
+# alone, which is blktests' own default.
+NVMET_TRTYPES="loop tcp rdma fc"
