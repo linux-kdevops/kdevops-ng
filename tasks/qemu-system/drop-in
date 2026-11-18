@@ -9,7 +9,7 @@
 ## units again:
 ##
 ##   tasks/qemu-system/drop-in --machine blktests-nvme-series --file \
-##       tasks/qemu-system/files/families/blktests/drop-ins/20-nvme-mam.conf
+##       tasks/qemu-system/files/drop-ins/20-nvme-mam.conf
 . "$(dirname "$0")/../common/task"
 : "${machine:?} ${file:?}"
 file=$(realpath "$file")

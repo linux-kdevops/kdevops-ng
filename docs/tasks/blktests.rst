@@ -197,12 +197,15 @@ The nvme group is the long one, and splits by transport: the config
 sets ``NVMET_TRTYPES`` to the transport in the machine's name, so the
 machines share one file, and a machine named for none runs all four.
 
-The machines are a family, as qemu-system-generator reads one, and
-:src:`tasks/qemu-system/files/families/blktests` has its two files.
-``blktests-.qemu.d`` holds what every machine named ``blktests-*`` has,
-and a machine's own file, written from ``template.qemu``, its vsock
-number and its kernel. The namespaces are sparse files the machine
-makes empty at each start, so they take no room until a test writes.
+The machines are a family, as qemu-system-generator reads one.
+``blktests-.qemu.d`` of ``~/.config/qemu/systemd`` holds what every
+machine named ``blktests-*`` has, from two places of
+:src:`tasks/qemu-system/files/families`: the share of blktests' results,
+in ``blktests/blktests-.qemu.d/05-share.conf``, and ``10-machine.conf``,
+the lines every suite's machines share. A machine's own file is written
+from ``template.qemu`` there, with its vsock number and its kernel.
+The namespaces are sparse files the machine makes empty at each start,
+so they take no room until a test writes.
 
 No machine downloads or installs anything. Three
 :term:`workflows <Workflow>` of the Bash :term:`engine <Engine>` do
@@ -246,10 +249,10 @@ run the QEMU a tree of yours built, through
 ``--drop-in`` the machine takes the lines of a file, through
 :src:`drop-in <tasks/qemu-system/drop-in>`: the options a series tests
 on a namespace, which the file sets by the device's id, ``ns0`` or
-``ns1``. :src:`tasks/qemu-system/files/families/blktests/drop-ins` has
+``ns1``. :src:`tasks/qemu-system/files/drop-ins` has
 those kept here:
 
-.. literalinclude:: ../../tasks/qemu-system/files/families/blktests/drop-ins/20-nvme-mam.conf
+.. literalinclude:: ../../tasks/qemu-system/files/drop-ins/20-nvme-mam.conf
    :language: ini
    :caption: 20-nvme-mam.conf
    :start-at: [QEMU]

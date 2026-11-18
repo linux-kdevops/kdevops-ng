@@ -43,11 +43,13 @@ stop, and clears the failure that leaves its unit in.
 
 :src:`machine <tasks/qemu-system/machine>` describes a machine of a
 family, one of many that share their lines: the family is the first
-word of the machine's name, and :src:`tasks/qemu-system/files/families`
-has, for each, the directory of what its machines share and the file a
-machine's own is written from, with a vsock number no other machine
-has, the tree whose kernel it boots, and the root of its
-distribution's image.
+word of the machine's name. :src:`tasks/qemu-system/files/families`
+has the lines every family's machines share, ``10-machine.conf``, the
+file a machine's own is written from, ``template.qemu``, with a vsock
+number no other machine has, the tree whose kernel it boots, and the
+root of its distribution's image, and for each family a directory with
+what its machines have beside the others': the share of its suite. The
+task copies the family's lines to ``~/.config/qemu/systemd`` once.
 
 .. code-block:: console
    :caption: host

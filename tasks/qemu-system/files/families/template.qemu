@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: copyleft-next-0.3.1
-# What one machine of the blktests-* family has for itself, beside the
-# lines of blktests-.qemu.d: its vsock number, the kernel it boots and
-# the root of its disk's distribution. tasks/qemu-system/machine writes
+# What one machine has for itself, beside the lines of its family's
+# NAME-.qemu.d: its vsock number, the kernel it boots and the root of
+# its disk's distribution. tasks/qemu-system/machine writes
 # it as ~/.config/qemu/systemd/NAME.qemu, with each in place of a word
 # between at signs.
 

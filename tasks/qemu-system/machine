@@ -8,8 +8,9 @@
 ## ~/.config/qemu/systemd, with a vsock number no other machine there
 ## has, beside the lines its family shares. The
 ## family is the first word of the name, blktests of
-## blktests-nvme-tcp-series, and tasks/qemu-system/files/families has
-## its files. qemu-system-generator then makes the machine's units:
+## blktests-nvme-tcp-series: tasks/qemu-system/files/families has the
+## family's share and, for every family, the lines of a machine.
+## qemu-system-generator then makes the machine's units:
 ##
 ##   tasks/qemu-system/machine --machine blktests-nvme-tcp-series \
 ##       --directory ~/linux --distribution debian-14
@@ -26,7 +27,7 @@ gpg=()
 # shellcheck source=tasks/libguestfs/files/images/debian-13
 . "$(dirname "$0")/../libguestfs/files/images/$distribution"
 family=${machine%%-*}
-files=$(realpath "$(dirname "$0")")/files/families/$family
+files=$(realpath "$(dirname "$0")")/files/families
 config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd
 # The machine's vsock number: the one its file has, or one above the
 # highest of the machines there, from 100.
@@ -40,7 +41,8 @@ fi
 
 transcript
 mkdir --parents --verbose "$config"
-cp --recursive --update=none --verbose "$files/$family-.qemu.d" "$config"
+cp --recursive --update=none --verbose "$files/$family/$family-.qemu.d" "$config"
+cp --update=none --verbose "$files/10-machine.conf" "$config/$family-.qemu.d"
 sed --expression="s|@cid@|$cid|" --expression="s|@directory@|$directory|" \
 	--expression="s|@root@|$root|" \
 	"$files/template.qemu" | tee "$config/$machine.qemu"
