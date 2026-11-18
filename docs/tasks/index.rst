@@ -31,6 +31,7 @@ argument, as ``--directory`` is :cmd:`make`'s own.
    b4
    blktests
    dracut
+   fio
    kernel
    libguestfs
    lorefetch

@@ -27,19 +27,25 @@ The workflows
 =============
 
 :src:`blktests-disk <engines/bash/blktests-disk>`
-   Makes the disk the machines of :doc:`/tasks/blktests` are overlays
-   of, from a distribution's image.
+   Makes the disk the machines of :doc:`/tasks/blktests` and
+   :doc:`/tasks/fio` are overlays of, from a distribution's image, with
+   fio in it as well when asked.
 
 :src:`blktests-machine <engines/bash/blktests-machine>`
    Makes one machine from its name, the tree whose kernel it boots and
-   its distribution.
+   its distribution. The first word of the name is the family, so it
+   makes a ``fio-*`` machine as well.
 
 :src:`blktests <engines/bash/blktests>`
    Starts a machine, waits for its guest to boot, runs the group the
    machine is named for, and files the records.
 
+:src:`fio <engines/bash/fio>`
+   Starts a machine, waits for its guest to boot, and runs a job of
+   :doc:`/tasks/fio` a number of times, filing a record after each.
+
 :src:`blktests-remove <engines/bash/blktests-remove>`
-   Removes the machines, and the disk when asked.
+   Removes the machines of blktests, and the disk when asked.
 
 Run one
 =======

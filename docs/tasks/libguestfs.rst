@@ -132,6 +132,16 @@ It also makes the user ``blktests``, with systemd-sysusers, from
 a few tests run a command as a user without privileges, and are not run
 where the config names none.
 
+:src:`fio <tasks/libguestfs/fio>` installs `fio`_ from a tree of yours
+as ``blktests`` does blktests, after the ``fio`` profile of ``install``
+has put what fio builds with in the disk: the tree is copied in, built
+with the guest's compiler, installed as ``/usr/lib/fio``, and the copy
+deleted. The jobs of :src:`tasks/fio/files/jobs` go to
+``/usr/lib/fio/jobs``, and the units that run one in the disk. The
+commit and its address are written there as for blktests
+(:doc:`/tasks/fio`). Both suites install into one disk, and the units
+they share go in with either.
+
 .. _requirements-libguestfs:
 
 Requirements
@@ -169,3 +179,4 @@ Requirements
 
 .. _libguestfs: https://libguestfs.org
 .. _blktests: https://github.com/linux-blktests/blktests
+.. _fio: https://github.com/axboe/fio

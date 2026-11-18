@@ -90,6 +90,7 @@ cmd_links = {
     "qemu-img": "https://www.qemu.org/docs/master/tools/qemu-img.html",
     "virt-customize": "https://libguestfs.org/virt-customize.1.html",
     "ssh": "https://man.openbsd.org/ssh",
+    "jq": "https://jqlang.org/manual/",
     "journalctl": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html",
     "systemd-ssh-proxy": "https://www.freedesktop.org/software/systemd/man/latest/systemd-ssh-proxy.html",
     "git": "https://git-scm.com/docs/git",

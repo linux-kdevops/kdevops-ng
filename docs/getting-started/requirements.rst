@@ -119,6 +119,7 @@ Each part of kdevops-ng lists its own tools, on its page:
 - :ref:`The libguestfs tasks <requirements-libguestfs>`: `curl`_, GnuPG
   and two packages of distributions' keys.
 - :ref:`The dracut task <requirements-dracut>`: `dracut`_.
+- :ref:`The fio tasks <requirements-fio>`: :cmd:`jq`.
 - :ref:`The kernel tasks <requirements-kernel>`: :cmd:`make`, a compiler
   and `Perl`_.
 - :ref:`The QEMU tasks <requirements-qemu>`: `Meson`_, :cmd:`make`, a
