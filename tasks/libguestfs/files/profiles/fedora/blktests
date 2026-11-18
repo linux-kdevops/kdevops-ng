@@ -4,7 +4,7 @@
 # call.
 install gcc,gcc-c++,make,liburing-devel
 install gawk,fio,blktrace,parted,nvme-cli,sg3_utils
-install e2fsprogs,xfsprogs,f2fs-tools,btrfs-progs
+install e2fsprogs,xfsprogs,f2fs-tools,btrfs-progs,dosfstools
 install device-mapper-multipath,device-mapper,nbd
 install python3,ethtool,iproute
 install cryptsetup,lvm2,mdadm,bcache-tools,ktls-utils,fscrypt,expect,bc
