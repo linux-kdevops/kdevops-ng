@@ -158,7 +158,9 @@ QEMU. Each test gets a record, named for the device it ran on:
        └── nvme0n1/block/003.json
 
 The record names the machine under test and the commit of blktests,
-from ``machine/`` of the results, and the QEMU the machine runs. A test
+from ``machine/`` of the results, and the QEMU the machine runs. It
+links the commit where a remote of your blktests tree with an
+``https`` address has it. A test
 that did not run is a skip, with the reason blktests printed. A group
 that did not run is one skip, ``nvme0n1/block.json``. A test that runs
 once for each condition has a record for each, in the directory

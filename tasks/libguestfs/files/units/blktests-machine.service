@@ -22,5 +22,5 @@ ExecStart=gzip --decompress --force --verbose /run/blktests.config.gz
 ExecStart=sh -c 'build=/var/lib/blktests/%v-$$(sha256sum < /run/blktests.config | cut --bytes=1-12) && \
 	mkdir --parents --verbose $$build/machine && \
 	cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
-		/usr/lib/blktests/version $$build/machine && \
+		/usr/lib/blktests/version /usr/lib/blktests/url $$build/machine && \
 	ln --symbolic --force --no-target-directory --verbose $$build /run/blktests'

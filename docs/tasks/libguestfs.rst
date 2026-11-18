@@ -105,7 +105,9 @@ tree of yours, so the guest runs the tests you have checked out. The
 ``blktests`` profile of ``install`` comes first, once: it holds what the
 suite builds with and what its test groups call. The task then copies
 the tree into the disk, builds it there with the guest's own compiler,
-installs it as ``/usr/lib/blktests``, and deletes the copy. Run it alone
+installs it as ``/usr/lib/blktests``, and deletes the copy. It writes
+the commit there, and the address of it on the first remote of the tree
+that has the commit and an ``https`` address, for a record to name. Run it alone
 to take a newer blktests, which takes 6 seconds on a Debian 13 disk:
 the packages are in the disk already.
 

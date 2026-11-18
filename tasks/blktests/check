@@ -26,7 +26,8 @@ systemctl start var-lib-blktests.mount
 # ran on and the blktests that ran it.
 mkdir --parents --verbose "$build/machine"
 cp --verbose /proc/cpuinfo /proc/meminfo /proc/sys/kernel/arch \
-	/usr/lib/blktests/version "$build/machine"
+	/usr/lib/blktests/version /usr/lib/blktests/url \
+	"$build/machine"
 # What an earlier run left would pass for this one's.
 rm --recursive --force "$output"
 # check runs from its own directory.

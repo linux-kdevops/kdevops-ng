@@ -202,8 +202,11 @@ of the kernel. They go to the guest's state directory on the host,
   machine able to start.
 - `machine/` under the build holds what a record of a test names
   and the suite's results lack: the guest's `/proc/cpuinfo`,
-  `/proc/meminfo` and arch, and the commit of the suite, which the
-  install wrote into the disk. They are copied as they are, with `cp`,
+  `/proc/meminfo` and arch, and the commit of the suite with the
+  address to read it at, which the install wrote into the disk. The
+  address is that of the first remote of the developer's tree that has
+  the commit and an `https` address, and empty where none has: a
+  commit no public tree holds has no link. They are copied as they are, with `cp`,
   before each run. The reader on the host takes what it needs, so the
   guest runs no code of the project and needs none of its tools.
 - What the suite prints goes to two files under the build, named for

@@ -19,6 +19,16 @@ copy_in=$(realpath "$copy_in")
 tree=/work/$(basename "$copy_in")
 jobs=$(nproc)
 version=$(git -C "$copy_in" describe --always --dirty --abbrev=12)
+# Where the commit can be read: the first remote with an https address
+# that has it, and nowhere for a commit no such remote has.
+url=
+while read -r remote; do
+	site=$(git -C "$copy_in" remote get-url "${remote%%/*}")
+	[[ $site == https://* ]] || continue
+	url=${site%.git}/commit/$(git -C "$copy_in" rev-parse HEAD)
+	break
+done < <(git -C "$copy_in" for-each-ref --contains HEAD \
+	--format='%(refname:lstrip=2)' refs/remotes)
 # The units that run a group, each uploaded with the developer's owner
 # and mode, which a file of /usr/lib does not keep.
 system=/usr/lib/systemd/system
@@ -42,7 +52,8 @@ transcript
 # under /usr/lib, where a package keeps what is its alone, in place of
 # the Makefile's /usr/local. The copy goes when it is installed. The
 # version file names the commit installed, which a record of a test
-# gives as blktests' build, since blktests prints no version.
+# gives as blktests' build, since blktests prints no version, and the
+# url file where to read it.
 virt-customize --format qcow2 --add "$directory/work.qcow2" \
 	--memsize 4096 --smp "$jobs" \
 	--mkdir /work --copy-in "$copy_in:/work" \
@@ -50,4 +61,5 @@ virt-customize --format qcow2 --add "$directory/work.qcow2" \
 	--run-command "make --directory=$tree prefix=/usr/lib install" \
 	--delete /work \
 	--write "/usr/lib/blktests/version:$version" \
+	--write "/usr/lib/blktests/url:$url" \
 	"${units[@]}" "${user[@]}"
