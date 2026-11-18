@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: engines/bash/series --message-id ID --directory DIR --profile NAME[+NAME...] [--groups "GROUP..."] [--distribution NAME] [--qemu DIR] [--drop-in FILE]
+##
+## Test the Linux series posted as the Message-ID ID, against the commit
+## its cover letter names as its base. It adds two worktrees of the tree
+## in DIR under ~/.local/state/kdevops-ng/series/, one with the series
+## applied and one at the base, checks the series, builds both kernels
+## of PROFILE (tasks/kernel/merge_config) and checks the objects the
+## series changes in both. A check that fails does not stop the rest,
+## and the exit status says whether everything passed. A series that
+## names no base stops it at once.
+##
+## Each word of GROUP... is a group of blktests to run in a machine on
+## each kernel, blktests-GROUP-series and blktests-GROUP-base, all of
+## them at once: the length of the list is how much runs at once, and
+## no suite runs without it. Each machine's lines go to
+## ~/.local/state/kdevops-ng/series/ID/logs/. Without --distribution
+## the machines are debian-14's, and --qemu and --drop-in are those of
+## engines/bash/blktests-machine. One series at a time: the machines
+## carry no series in their names, so a second run resets them.
+##
+##   engines/bash/series --message-id 20260101-topic-v1-0-0123456789ab@example.org \
+##       --directory ~/linux --profile guest+blktests+nvm-express-driver \
+##       --groups "nvme-tcp nvme-loop"
+##
+## Run again after a failure it keeps the worktrees and builds what
+## changed, and applies the series again.
+. "$(dirname "$0")/workflow"
+: "${message_id:?} ${directory:?} ${profile:?}" "${distribution:=debian-14}"
+here=$(dirname "$0")
+# A Message-ID may hold characters a path should not.
+root=${XDG_STATE_HOME:-$HOME/.local/state}/kdevops-ng/series/${message_id//[^A-Za-z0-9._-]/_}
+trees=("$root/series" "$root/base")
+read -r -a words <<<"${groups-}"
+status=0
+
+# Run a task and keep what it printed in $output, shown when it ends,
+# and give the value of each of its lines that starts with the prefix $1.
+facts() {
+	local status=0
+	output=$("$@") || status=$?
+	printf '%s\n' "$output"
+	return "$status"
+}
+lines() {
+	local - line
+	set +o xtrace
+	while IFS= read -r line; do
+		[[ $line != "$1"* ]] || printf '%s\n' "${line#"$1"}"
+	done <<<"$output"
+}
+
+"$tasks/git/worktree" --directory "$directory" --path "${trees[0]}" --commit-ish HEAD
+"$tasks/b4/shazam" --directory "${trees[0]}" --message-id "$message_id" --project linux
+facts "$tasks/b4/mbox" --directory "${trees[0]}" --message-id "$message_id" --project linux
+base=$(lines base_commit=)
+: "${base:?the series names no base-commit}"
+"$tasks/kernel/series" --directory "${trees[0]}" --range "$base.."
+"$tasks/git/worktree" --directory "$directory" --path "${trees[1]}" --commit-ish "$base"
+"$tasks/kernel/checkpatch" --directory "${trees[0]}" --range "$base.." || status=1
+
+for tree in "${trees[@]}"; do
+	"$tasks/kernel/merge_config" --directory "$tree" --profile "$profile"
+	"$tasks/kernel/build" --directory "$tree"
+	"$tasks/kernel/modules_install" --directory "$tree"
+	"$tasks/dracut/initrd" --directory "$tree"
+done
+
+facts "$tasks/kernel/objects" --directory "${trees[0]}"
+mapfile -t objects < <(lines 'object: ')
+for object in "${objects[@]}"; do
+	for tree in "${trees[@]}"; do
+		"$tasks/kernel/sparse" --directory "$tree" --object "$object" || status=1
+		"$tasks/kernel/smatch" --directory "$tree" --object "$object" || status=1
+	done
+done
+
+machines=()
+for group in "${words[@]}"; do
+	machines+=("blktests-$group-series" "blktests-$group-base")
+done
+extra=()
+[ -z "${qemu-}" ] || extra+=(--qemu "$qemu")
+[ -z "${drop_in-}" ] || extra+=(--drop-in "$drop_in")
+for machine in "${machines[@]}"; do
+	"$here/blktests-machine" --machine "$machine" --directory "$root/${machine##*-}" \
+		--distribution "$distribution" "${extra[@]}"
+done
+mkdir --parents --verbose "$root/logs"
+pids=()
+for machine in "${machines[@]}"; do
+	echo "$machine: $root/logs/$machine.log"
+	"$here/blktests" --machine "$machine" --directory "$root/${machine##*-}" \
+		>"$root/logs/$machine.log" 2>&1 &
+	pids+=($!)
+done
+for pid in "${pids[@]}"; do
+	wait "$pid" || status=1
+done
+exit "$status"

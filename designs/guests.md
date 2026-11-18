@@ -346,6 +346,38 @@ lie together.
   group under KASAN. The unit has `OOMPolicy=continue`, so a test
   that is killed fails and the group goes on.
 
+## 9c. A series goes from its Message-ID to records
+
+`engines/bash/series` is the workflow of 9a for a series posted on a
+list: it needs the Message-ID, a tree to take worktrees from and the
+profile of what is under test, and the groups the caller wants run at
+once. Nothing else is asked, so it holds no guess.
+
+- The series and its base are two worktrees of the caller's tree under
+  `~/.local/state/kdevops-ng/series/<Message-ID>/`, which is where
+  principle 4 puts what tasks share, and the Message-ID gives the name,
+  so a second run finds them. A character a path should not hold becomes
+  `_` in the name only: b4 and the records keep the ID as posted.
+  `tasks/git/worktree` adds a worktree and leaves one it finds (T4), so
+  `git worktree add` is a task and not a command of the workflow (W1).
+- The base is what the cover letter names, read from `tasks/b4/mbox`'s
+  `base_commit=` line (O1). A series that names none stops the workflow:
+  no range and no base can be named, and a guess from the tree's
+  remotes is what R5 rules out.
+- The profile is required. It says what a kernel is built for, and no
+  default builds the options of a series' subsystem.
+- A word of `--groups` is one machine on each kernel, so the caller bounds
+  the load by the length of the list and the workflow counts no
+  processor. Each machine is `engines/bash/blktests` as a background job,
+  its lines in a file of its own, and the status says whether any of them
+  or any check failed. A check that fails does not stop the rest: the
+  tools say what they found and the records hold it. A build that fails
+  does, since nothing after it has a kernel to run.
+- Machines are named without the series, so one series runs at a time.
+- b4 shazam applies the latest revision of a series, and `tasks/b4/mbox`
+  keeps the thread of the revision the ID names. A caller gives the ID of
+  the latest revision, or the base and the applied tree disagree.
+
 ## 9b. fio is a suite on the same disk
 
 fio is installed and run as a suite is (sections 7 to 10), and the

@@ -44,6 +44,11 @@ The workflows
    Starts a machine, waits for its guest to boot, and runs a job of
    :doc:`/tasks/fio` a number of times, filing a record after each.
 
+:src:`series <engines/bash/series>`
+   Takes a series from its Message-ID to records: applies it, checks it,
+   builds it and its base, and runs blktests groups on both
+   (:ref:`bash-series`).
+
 :src:`blktests-remove <engines/bash/blktests-remove>`
    Removes the machines of blktests, and the disk when asked.
 
@@ -110,5 +115,77 @@ How many run at once is yours to choose. Nothing here counts the
 host's processors: each machine takes what its family's file gives it,
 and more guests than the host has processors make tests that measure
 time fail.
+
+.. _bash-series:
+
+Test a series
+=============
+
+``series`` takes the Message-ID of a series posted on a list and the
+tree to work from, and a profile for the kernel to build:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ engines/bash/series \
+       --message-id 20260101-topic-v1-0-0123456789ab@example.org \
+       --directory ~/linux --profile guest+blktests+nvm-express-driver \
+       --groups "nvme-tcp nvme-loop"
+
+Give the Message-ID of the series' latest revision: b4 applies the latest
+one, and the thread of an older Message-ID names another base. In order,
+it:
+
+#. adds two worktrees of ``--directory`` under
+   ``~/.local/state/kdevops-ng/series/ID/``, ``series`` and ``base``,
+   with the characters of the Message-ID a path should not hold
+   replaced by ``_``, and applies the series in the first
+   (:doc:`/tasks/git`, :doc:`/tasks/b4`);
+#. reads the commit the cover letter names as ``base-commit``, adds
+   ``base`` there and names the commits since it as the series
+   (:ref:`records-series`). A series that names no base stops the
+   workflow here;
+#. runs checkpatch on the series, then makes the configuration of
+   ``--profile``, builds, installs the modules and makes the initrd of
+   each worktree, one after the other;
+#. lists the object files the series changes and checks each with sparse
+   and smatch, in both worktrees (:doc:`/tasks/kernel`);
+#. makes one machine of the :doc:`blktests </tasks/blktests>` family for
+   each word of ``--groups`` and each worktree, and runs them all at
+   once.
+
+A failed check, a failed group or an object that fails to check does not
+stop the rest, and the workflow's status is 1 if any did. A failed build
+stops it. Every machine's records are filed whether its group passed or
+not. The lines of each machine, from ``engines/bash/blktests``, go to
+``~/.local/state/kdevops-ng/series/ID/logs/NAME.log``, and the workflow's
+log names each file.
+
+``--groups`` is how you bound the load. Each word is a group of blktests
+(``nvme-tcp``, ``nvme-loop``, ``block``, ``loop``) and the workflow runs
+two machines for each, one on each kernel, so four words are eight
+guests, each with the processors its family's file gives it. Nothing
+counts the host's. Without ``--groups`` no machine runs, and the series is
+applied, built and checked only. ``--distribution`` is ``debian-14``
+without it, and ``--qemu`` and ``--drop-in`` are those of
+``engines/bash/blktests-machine``.
+
+The machines are named without the series, so run one series at a time:
+a second run reuses the machines and resets them. Run again for the same
+Message-ID, the workflow keeps the worktrees, applies the series again
+and builds what changed. It runs for hours, so start it as a unit and
+follow it in the journal:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ systemd-run --user --setenv=PATH --unit=series \
+       engines/bash/series \
+       --message-id 20260101-topic-v1-0-0123456789ab@example.org \
+       --directory ~/linux --profile guest+blktests+nvm-express-driver \
+       --groups "nvme-tcp nvme-loop"
+   $ journalctl --user --follow --unit=series
 
 .. _Bash: https://www.gnu.org/software/bash/
