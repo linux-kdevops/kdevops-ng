@@ -46,14 +46,15 @@ family, one of many that share their lines: the family is the first
 word of the machine's name, and :src:`tasks/qemu-system/files/families`
 has, for each, the directory of what its machines share and the file a
 machine's own is written from, with a vsock number no other machine
-has and the tree whose kernel it boots.
+has, the tree whose kernel it boots, and the root of its
+distribution's image.
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
    $ tasks/qemu-system/machine --machine blktests-nvme-tcp-series \
-       --directory ~/linux
+       --directory ~/linux --distribution debian-14
    $ tasks/qemu-system/remove --machine blktests-nvme-tcp-series
 
 :src:`remove <tasks/qemu-system/remove>` stops a machine and deletes

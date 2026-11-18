@@ -1,24 +1,27 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: engines/bash/blktests-machine --machine NAME --directory DIR [--backing-file FILE] [--ssh-inject FILE]
+## Usage: engines/bash/blktests-machine --machine NAME --directory DIR --distribution NAME [--backing-file FILE] [--ssh-inject FILE]
 ##
 ## Make the machine NAME of the blktests-* family, which boots the
-## kernel of the Linux tree in DIR: its description, blktests' config,
-## and its disk as an overlay of FILE, a disk with blktests in it that no machine starts,
-## under the host name NAME and with the key FILE for root. Without
-## them, FILE is work.qcow2 of the state directory of blktests, and the
-## key ~/.ssh/guests.pub. The machine must be stopped:
+## kernel of the Linux tree in DIR on a disk of the distribution NAME:
+## its description, blktests' config, and its disk as an overlay of
+## FILE, a disk with blktests in it that no machine starts, under the
+## host name NAME and with the key FILE for root. Without them, FILE is
+## the disk engines/bash/blktests-disk made of the distribution, and
+## the key ~/.ssh/guests.pub. The machine must be stopped:
 ##
 ##   engines/bash/blktests-machine --machine blktests-nvme-tcp-series \
-##       --directory ~/linux
+##       --directory ~/linux --distribution debian-14
 . "$(dirname "$0")/workflow"
-: "${machine:?} ${directory:?}"
-state=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system
-: "${backing_file:=$state/blktests/work.qcow2}" "${ssh_inject:=$HOME/.ssh/guests.pub}"
+: "${machine:?} ${directory:?} ${distribution:?}"
+state=${XDG_STATE_HOME:-$HOME/.local/state}
+: "${backing_file:=$state/machines/blktests-$distribution/work.qcow2}"
+: "${ssh_inject:=$HOME/.ssh/guests.pub}"
 
-"$tasks/qemu-system/machine" --machine "$machine" --directory "$directory"
+"$tasks/qemu-system/machine" --machine "$machine" --directory "$directory" \
+	--distribution "$distribution"
 "$tasks/blktests/config" --machine "$machine"
-"$tasks/libguestfs/overlay" --directory "$state/$machine" \
+"$tasks/libguestfs/overlay" --directory "$state/qemu-system/$machine" \
 	--backing-file "$backing_file"
-"$tasks/libguestfs/customize" --directory "$state/$machine" \
+"$tasks/libguestfs/customize" --directory "$state/qemu-system/$machine" \
 	--hostname "$machine" --ssh-inject "$ssh_inject"

@@ -1,13 +1,12 @@
 # shellcheck shell=bash disable=SC2034 # blktests' check reads them
 # SPDX-License-Identifier: copyleft-next-0.3.1
-# blktests' configuration for a guest of guest-blktests.qemu, which
-# check sources (Documentation/running-tests.md of blktests). Copy it
-# to blktests/ of the guest's state directory and change the lines
-# marked CHANGE.
+# blktests' configuration for a machine of the blktests-* family, or
+# of guest-blktests.qemu, which check sources
+# (Documentation/running-tests.md of blktests). tasks/blktests/config
+# puts it in the machine's share.
 
-# CHANGE: the devices a test that needs one runs on, once on each,
-# and overwrites: the machine's NVMe namespaces, the second with
-# metadata.
+# The devices a test that needs one runs on, once on each, and
+# overwrites: the machine's NVMe namespaces, the second with metadata.
 TEST_DEVS=(/dev/nvme0n1 /dev/nvme0n2)
 
 # The user of the tests that run a command without privileges, which

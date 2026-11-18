@@ -69,12 +69,13 @@ the directory is there, with the config, before the machine starts:
 namespaces as the devices of the tests that need one, which run once
 on each and overwrite it. The second has metadata, which a few tests
 ask of their device. Change it on the host, with the guest running or
-not: the next run reads it. `blktests' own page`_ lists what else it can set.
+not: the next run reads it. `blktests' own page`_ lists what else it
+can set.
 
 .. literalinclude:: ../../tasks/blktests/files/config
    :language: bash
    :caption: ~/.local/state/qemu-system/guest/blktests/config
-   :start-at: # CHANGE
+   :start-at: # The devices
 
 Nothing mounts the share as the guest boots. The unit and the task
 below each mount it first, and on a machine without it they fail
@@ -203,32 +204,45 @@ and a machine's own file, written from ``machine.qemu``, its vsock
 number and its kernel. The namespaces are sparse files the machine
 makes empty at each start, so they take no room until a test writes.
 
-No machine downloads or installs anything. One disk is made as before,
-with the packages and blktests in it, in the state directory of
-``blktests``, and is never started. A machine's disk is an overlay of
-it. One :term:`workflow <Workflow>` of the Bash
-:term:`engine <Engine>` makes a machine from its name and its tree:
+No machine downloads or installs anything. Three
+:term:`workflows <Workflow>` of the Bash :term:`engine <Engine>` do
+the work, and none needs a file changed by hand. The first makes one
+disk of a distribution's image, with the packages and blktests from
+your tree in it, which no machine starts:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ engines/bash/blktests-disk --distribution debian-14 --copy-in ~/blktests
+
+It downloads the image to ``~/.local/state/machines`` where none is
+there, and runs ``overlay``, ``customize``, ``install`` and
+``blktests`` of :doc:`libguestfs` in ``blktests-debian-14`` beside it.
+The second makes a machine from its name, its tree and its
+distribution, with a disk that is an overlay of that one:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
    $ engines/bash/blktests-machine --machine blktests-nvme-tcp-series \
-       --directory ~/linux
+       --directory ~/linux --distribution debian-14
    $ engines/bash/blktests-machine --machine blktests-nvme-tcp-base \
-       --directory ~/linux-base
+       --directory ~/linux-base --distribution debian-14
 
 It runs four tasks. :src:`machine <tasks/qemu-system/machine>` of
 :doc:`qemu-system` writes the machine's file, with a vsock number no
-other machine has, and copies the family's directory to
-``~/.config/qemu/systemd`` where it is not there yet; change the lines
-marked ``CHANGE`` in it once. :src:`tasks/blktests/config` puts
-blktests' config in the machine's share. ``overlay`` and ``customize``
-of :doc:`libguestfs` make the disk, under the machine's name.
+other machine has and the root of its distribution's image, and copies
+the family's directory to ``~/.config/qemu/systemd`` where it is not
+there yet. :src:`tasks/blktests/config` puts blktests' config in the
+machine's share. ``overlay`` and ``customize`` make the disk, under the
+machine's name. The family's file runs as it is; what a series asks of
+its machines, as a QEMU of its own, is changed there.
 :src:`remove <tasks/qemu-system/remove>` takes a machine away again,
 with its disk and what its guest left.
 
-A second workflow runs a machine's group and files its records. It
+The third runs a machine's group and files its records. It
 starts the machine, waits for the guest to boot, runs the group the
 machine is named for, and records what it left, whether the group
 passed or not:

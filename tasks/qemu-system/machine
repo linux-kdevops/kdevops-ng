@@ -1,22 +1,30 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: copyleft-next-0.3.1
-## Usage: tasks/qemu-system/machine --machine NAME --directory DIR
+## Usage: tasks/qemu-system/machine --machine NAME --directory DIR --distribution NAME
 ##
 ## Describe the machine NAME, which boots the kernel of the Linux tree
-## in DIR: its file in ~/.config/qemu/systemd, with a vsock number no
-## other machine there has, beside the lines its family shares. The
+## in DIR on a disk of the distribution NAME, as
+## tasks/libguestfs/download_image takes it: its file in
+## ~/.config/qemu/systemd, with a vsock number no other machine there
+## has, beside the lines its family shares. The
 ## family is the first word of the name, blktests of
 ## blktests-nvme-tcp-series, and tasks/qemu-system/files/families has
 ## its files. qemu-system-generator then makes the machine's units:
 ##
 ##   tasks/qemu-system/machine --machine blktests-nvme-tcp-series \
-##       --directory ~/linux
+##       --directory ~/linux --distribution debian-14
 ##
 ## A second run for another tree keeps the machine's number, and the
 ## family's lines are left as they are found.
 . "$(dirname "$0")/../common/task"
-: "${machine:?} ${directory:?}"
+: "${machine:?} ${directory:?} ${distribution:?}"
 directory=$(realpath "$directory")
+# The distribution's file says where its image keeps its root. Its
+# other lines are the download's, and read $gpg.
+# shellcheck disable=SC2034 # the distribution's file reads it
+gpg=()
+# shellcheck source=tasks/libguestfs/files/images/debian-13
+. "$(dirname "$0")/../libguestfs/files/images/$distribution"
 family=${machine%%-*}
 files=$(realpath "$(dirname "$0")")/files/families/$family
 config=${XDG_CONFIG_HOME:-$HOME/.config}/qemu/systemd
@@ -34,5 +42,6 @@ transcript
 mkdir --parents --verbose "$config"
 cp --recursive --update=none --verbose "$files/$family-.qemu.d" "$config"
 sed --expression="s|@cid@|$cid|" --expression="s|@directory@|$directory|" \
+	--expression="s|@root@|$root|" \
 	"$files/machine.qemu" | tee "$config/$machine.qemu"
 systemctl --user start qemu-system-generator.service

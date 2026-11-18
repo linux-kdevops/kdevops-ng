@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: engines/bash/blktests-disk --distribution NAME --copy-in DIR [--profile PROFILE] [--ssh-inject FILE]
+##
+## Make the disk the machines of the blktests-* family are overlays of,
+## from the cloud image of the distribution NAME: download the image
+## where ~/.local/state/machines has none of it, and make a disk of it
+## in blktests-NAME there, set up for a first boot with the key FILE
+## for root, with the packages of PROFILE and with blktests from your
+## tree in DIR. Without them, PROFILE is blktests and the key
+## ~/.ssh/guests.pub. No machine starts this disk, and making it again
+## leaves the machines' disks without what they are made of:
+##
+##   engines/bash/blktests-disk --distribution debian-14 --copy-in ~/blktests
+. "$(dirname "$0")/workflow"
+: "${distribution:?} ${copy_in:?}"
+images=${XDG_STATE_HOME:-$HOME/.local/state}/machines
+: "${profile:=blktests}" "${ssh_inject:=$HOME/.ssh/guests.pub}"
+
+[ -e "$images/$distribution.qcow2" ] ||
+	"$tasks/libguestfs/download_image" --directory "$images" \
+		--distribution "$distribution"
+"$tasks/libguestfs/overlay" --directory "$images/blktests-$distribution" \
+	--backing-file "$images/$distribution.qcow2"
+"$tasks/libguestfs/customize" --directory "$images/blktests-$distribution" \
+	--hostname blktests --ssh-inject "$ssh_inject"
+"$tasks/libguestfs/install" --directory "$images/blktests-$distribution" \
+	--distribution "$distribution" --profile "$profile"
+"$tasks/libguestfs/blktests" --directory "$images/blktests-$distribution" \
+	--copy-in "$copy_in"

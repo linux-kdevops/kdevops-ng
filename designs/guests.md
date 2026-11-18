@@ -280,8 +280,22 @@ lie together.
   generator has systemd make a share that lies there, and that would
   reach into the developer's tree.
 - The task copies the family's directory where it is missing and
-  leaves it otherwise: the lines marked CHANGE in it are the
-  developer's, as the QEMU a series is tested on. It is a task of
+  leaves it otherwise. The family's file runs as it is, with no line
+  a developer must change first, so a workflow makes a machine with no
+  step by hand; what a series asks of its machines, as the QEMU it is
+  tested on, the developer changes there.
+- The root a kernel command line names differs by distribution, the
+  first partition on Debian and Ubuntu, a btrfs subvolume of the third
+  on Fedora. The distribution's file under
+  `tasks/libguestfs/files/images` says it, beside where its image
+  comes from, and `tasks/qemu-system/machine` reads it there, so the
+  machine's file has it and no family's file is per distribution.
+- `download_image` leaves a link named for the distribution beside
+  the image, `debian-14.qcow2`, so a workflow names an image without
+  the file name its distribution gave it.
+- The disk the machines are overlays of lies with the images,
+  `~/.local/state/machines/blktests-<distribution>/`, one for each
+  distribution. `engines/bash/blktests-disk` makes it. It is a task of
   `qemu-system`, since a machine is what it works on, and it finds the
   family's files by the first word of the name, under
   `tasks/qemu-system/files/families`; `files/machines` there keeps the
