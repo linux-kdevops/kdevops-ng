@@ -133,10 +133,11 @@ of kdevops-ng in ``~/kdevops-ng``:
    $ systemctl --user enable --now lore-fetch.timer
 
 :src:`record <tasks/lorefetch/record>` files each series of the
-maildir as a :term:`record <Record>` under its Message-ID, with its
-thread (:doc:`/records`): the site then lists it as fetched, and
-:doc:`b4 <b4>`'s tasks take the Message-ID from there. A series filed
-already is left, so the task runs after every fetch.
+maildir as a :term:`record <Record>` under its Message-ID, with what its
+first message says of it (:doc:`/records`): the site then lists it as
+fetched, and :doc:`b4 <b4>`'s tasks take the Message-ID from there. The
+mail stays in the maildir. A series filed already is left, so the task
+runs after every fetch.
 
 .. _requirements-lorefetch:
 

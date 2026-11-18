@@ -3,10 +3,10 @@
 ## Usage: tasks/lorefetch/record --directory DIR --profile NAME
 ##
 ## File the series tasks/lorefetch/fetch has fetched for the kernel
-## profile NAME as records, each under its Message-ID with its thread,
-## with kresults' krecord lore. DIR is the Linux tree the fetch took its
-## query from. A series filed already is left, and one whose thread has
-## grown is filed again:
+## profile NAME as records, each under its Message-ID with what its
+## first message says of it, with kresults' krecord lore. DIR is the
+## Linux tree the fetch took its query from. A series filed already is
+## left as it is:
 ##
 ##   tasks/lorefetch/record --directory ~/linux --profile nvm-express-driver
 ##

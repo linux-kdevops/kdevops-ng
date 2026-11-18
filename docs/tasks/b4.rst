@@ -43,8 +43,10 @@ its patches are the commits of the range.
 Both leave a record (:doc:`/records`) under the series' Message-ID, not
 under a commit of the worktree: ``b4/shazam.json`` for the series applied
 and ``b4/mbox.json`` for the thread fetched, each holding what b4
-printed. The thread is also kept as ``b4/mbox.mbx`` beside them, for a
-reader who has no worktree. A series that does not apply has these
+printed. From the thread ``mbox`` saved, :cmd:`krecord` also writes
+``series.json`` beside them: the subject, author and date of the series'
+first message, how many patches it has, and its cover letter. The thread
+itself is not kept there. A series that does not apply has these
 alone. ``--project`` names the project the worktree is of, ``linux``
 or ``qemu``, which the records lie under.
 
