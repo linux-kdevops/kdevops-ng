@@ -278,20 +278,9 @@ passed or not:
    $ engines/bash/blktests --machine blktests-nvme-tcp-series \
        --directory ~/linux
 
-It returns when the group is done, with the group's verdict. To run
-several side by side, start each as a unit of your service manager,
-which returns at once and keeps the workflow's lines in the journal:
-
-.. code-block:: console
-   :caption: host
-   :class: cmd-host
-
-   $ for machine in blktests-block-series blktests-nvme-tcp-series; do
-       systemd-run --user --unit=$machine engines/bash/blktests \
-           --machine $machine --directory ~/linux
-     done
-   $ systemctl --user list-units 'blktests-*'
-   $ journalctl --user --follow --unit=blktests-block-series
+It returns when the group is done, with the group's verdict.
+:doc:`/engines/bash` has how to run several side by side, each as a
+unit of your service manager.
 
 The workflow's tasks run alone as well:
 :src:`tasks/blktests/start` runs a group in a machine's guest from the
