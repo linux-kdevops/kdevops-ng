@@ -62,6 +62,7 @@ profile (:doc:`kernel`), whose second line names the entry:
    :class: cmd-host
 
    $ tasks/lorefetch/fetch --directory ~/linux --profile nvm-express-driver
+   $ tasks/lorefetch/record --directory ~/linux --profile nvm-express-driver
 
 The task makes one search term of each ``F:`` line of the entry, which
 lore matches against the file names a patch changes, and joins them. The
@@ -130,6 +131,12 @@ of kdevops-ng in ``~/kdevops-ng``:
 
    $ systemctl --user daemon-reload
    $ systemctl --user enable --now lore-fetch.timer
+
+:src:`record <tasks/lorefetch/record>` files each series of the
+maildir as a :term:`record <Record>` under its Message-ID, with its
+thread (:doc:`/records`): the site then lists it as fetched, and
+:doc:`b4 <b4>`'s tasks take the Message-ID from there. A series filed
+already is left, so the task runs after every fetch.
 
 .. _requirements-lorefetch:
 

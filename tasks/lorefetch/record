@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/lorefetch/record --directory DIR --profile NAME
+##
+## File the series tasks/lorefetch/fetch has fetched for the kernel
+## profile NAME as records, each under its Message-ID with its thread,
+## with kresults' krecord lore. DIR is the Linux tree the fetch took its
+## query from. A series filed already is left, and one whose thread has
+## grown is filed again:
+##
+##   tasks/lorefetch/record --directory ~/linux --profile nvm-express-driver
+##
+## Its tool's output goes to stdout and stderr in
+## build/logs/lorefetch-record/ of DIR.
+. "$(dirname "$0")/../common/task"
+. "$(dirname "$0")/../common/lore"
+. "$(dirname "$0")/../common/prefix"
+# Where krecord keeps the records, if you moved it.
+variables=(XDG_STATE_HOME)
+settings=(--property=ReadOnlyPaths="$directory"
+	--property=StateDirectory=krecords)
+. "$(dirname "$0")/../common/unit"
+
+transcript
+# The record names the query that fetched the mail, and the lorefetch
+# its install left under its prefix.
+"${unit[@]}" krecord lore --maildir "$maildir" --query "$query" \
+	--lorefetch "$prefix" "${producer[@]}"

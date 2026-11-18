@@ -1,0 +1,44 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What the tasks that watch a MAINTAINERS entry share: $query, the lore
+# search for the series that change a file of the entry the kernel
+# profile $profile names, in the Linux tree in $directory, and $maildir,
+# where lorefetch keeps their mail.
+: "${directory:?} ${profile:?}"
+directory=$(realpath "$directory")
+# The entry is named on the profile's second line, as merge_config's
+# profiles do.
+entry=$(sed --quiet '2s/^# MAINTAINERS: //p' \
+	"$(dirname "$0")/../kernel/files/profiles/$profile")
+: "${entry:?}"
+# One dfn: term for each file or directory an F: line of the entry
+# names, which lore matches against the file names of a diff. lore
+# indexes a path as its words, so a directory's term, without its
+# closing slash, takes in the whole directory. A pattern is the files
+# it matches in the tree today, each a term of its own: a file a later
+# kernel adds under the pattern is found once the tree has it.
+# lore cannot say what X: excludes without dropping a series that also
+# changes an included file, nor what N: and K: match in a patch's text:
+# both are left out, and the maildir holds a little more.
+patterns=$(awk -v entry="$entry" '
+	$0 == entry { on = 1; next }
+	on && !NF { exit }
+	on && $1 == "F:" { print $2 }' "$directory/MAINTAINERS")
+files=
+for pattern in $patterns; do
+	for file in $(cd "$directory" && compgen -G "$pattern"); do
+		files+="${files:+ OR }dfn:${file%/}"
+	done
+done
+: "${files:?}"
+# The series are patches, not their replies, which come with the thread
+# of a patch. Stable's review series, and the mails that say a patch
+# failed to apply to a stable tree, change these files too and are
+# addressed to the stable list: a real patch only copies it.
+# lorefetch goes on from its last run only when the query is the same
+# text, so this holds no date but a relative one. A first run reaches 30
+# days back, the time a series is under review, and not the archive's
+# years; what it fetches stays in the maildir.
+query="($files) AND s:PATCH AND NOT s:Re AND NOT s:FAILED"
+query+=" AND NOT t:stable@vger.kernel.org AND d:30.days.ago.."
+maildir=${XDG_STATE_HOME:-$HOME/.local/state}/lore/$profile
