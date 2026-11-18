@@ -28,7 +28,9 @@ machine=q35
 nodefaults=
 accel=kvm
 cpu=host
-m=2G
+# The debug options of the blktests profile take memory: with 2G the
+# kernel kills a test of the block group for want of it.
+m=4G
 smp=4
 nographic=
 serial=mon:stdio

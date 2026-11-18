@@ -21,6 +21,9 @@ After=blktests-machine.service
 
 [Service]
 Type=oneshot
+# A test the kernel kills for want of memory fails, and the group goes
+# on: by default systemd stops the whole unit with it.
+OOMPolicy=continue
 WorkingDirectory=/usr/lib/blktests
 StandardOutput=truncate:/run/blktests/%i.stdout
 StandardError=truncate:/run/blktests/%i.stderr
