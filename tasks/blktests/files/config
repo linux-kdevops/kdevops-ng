@@ -17,5 +17,10 @@ NORMAL_USER=blktests
 # The transports the nvme group sets its targets up on: it runs each
 # test once for every one named, and a test of one transport is not
 # run on another. All four take the group four times as long as loop
-# alone, which is blktests' own default.
+# alone, which is blktests' own default. A machine named for one
+# transport, as blktests-nvme-tcp-series, runs that one alone: machines
+# that share this file split the group between them by their names.
 NVMET_TRTYPES="loop tcp rdma fc"
+if [[ $HOSTNAME =~ -nvme-(loop|tcp|rdma|fc)(-|$) ]]; then
+	NVMET_TRTYPES=${BASH_REMATCH[1]}
+fi

@@ -103,7 +103,16 @@ failed. With ``--no-block`` it returns at once, the group runs on with
 the terminal closed, and ``is-active`` says how it stands:
 ``activating`` while it runs, ``inactive`` once it has passed,
 ``failed`` otherwise. In the guest the lines are the same without
-``--host guest``.
+``--host guest``. Which groups of a guest failed is one line:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ systemctl --host guest --failed
+     UNIT                   LOAD   ACTIVE SUB    DESCRIPTION
+   ● blktests@block.service loaded failed failed blktests block
+   ● blktests@nvme.service  loaded failed failed blktests nvme
 
 What blktests prints goes to ``loop.stdout`` and ``loop.stderr`` under
 the build, on the host as it comes, and not to the guest's journal:
@@ -191,8 +200,9 @@ file holds its vsock number and its share.
 
 Name a machine for the kernel and the group it runs,
 ``guest-blktests-base-nvme-tcp``. The nvme group is the long one, and
-splits by transport: each machine has its own config, so one names
-``NVMET_TRTYPES=tcp`` and the next ``rdma``.
+splits by transport: the config sets ``NVMET_TRTYPES`` to the transport
+in the machine's name, so the machines share one file, and a machine
+named for none runs all four.
 
 No machine downloads or installs anything. One disk is made as before,
 with the packages and blktests in it, and is never started; each

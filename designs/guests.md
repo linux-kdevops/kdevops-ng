@@ -254,9 +254,11 @@ lie together.
   takes as a number, and its share, since `%i` in a `[virtiofsd]`
   section is the daemon's instance, the machine and the tag, and not
   the machine.
-- A long group splits by what its config sets, the transports of nvme:
-  the config lies in each machine's share, so the split needs no
-  option of a unit or a task.
+- A long group splits by what its config sets, the transports of nvme.
+  The config reads the transport from the machine's name, so every
+  machine has the same file and the same disk, any of them can run any
+  transport, and the split needs no option of a unit or a task. A
+  machine named for no transport runs them all.
 - Each machine's disk is an overlay of one disk that has the packages
   and the suite, which no machine starts. A machine is made in
   seconds and downloads nothing.
