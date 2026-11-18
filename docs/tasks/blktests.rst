@@ -66,9 +66,10 @@ the directory is there, with the config, before the machine starts:
    :end-at: gid-map
 
 :src:`config <tasks/blktests/files/config>` names the machine's NVMe
-namespace as the device of the tests that need one, which overwrite
-it. Change it on the host, with the guest running or not: the next run
-reads it. `blktests' own page`_ lists what else it can set.
+namespaces as the devices of the tests that need one, which run once
+on each and overwrite it. The second has metadata, which a few tests
+ask of their device. Change it on the host, with the guest running or
+not: the next run reads it. `blktests' own page`_ lists what else it can set.
 
 .. literalinclude:: ../../tasks/blktests/files/config
    :language: bash

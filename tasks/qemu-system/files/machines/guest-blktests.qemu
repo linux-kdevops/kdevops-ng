@@ -2,10 +2,11 @@
 # guest-nvme.qemu with the share that holds blktests' config and takes
 # its results, blktests/ of the guest's state directory. Copy it to
 # ~/.config/qemu/systemd/NAME.qemu, change the lines marked CHANGE, and
-# make the namespace's file and the shared directory, with the config,
+# make the namespaces' files and the shared directory, with the config,
 # in the guest's state directory:
 #
 #   qemu-img create -f qcow2 ~/.local/state/qemu-system/NAME/nvme0.qcow2 1G
+#   qemu-img create -f qcow2 ~/.local/state/qemu-system/NAME/nvme1.qcow2 1G
 #   mkdir --verbose ~/.local/state/qemu-system/NAME/blktests
 #   cp --verbose tasks/blktests/files/config \
 #       ~/.local/state/qemu-system/NAME/blktests/
@@ -41,6 +42,10 @@ device=nvme,serial=nvme0,id=nvme0
 drive=file=nvme0.qcow2,if=none,format=qcow2,id=nvme0-ns0
 # CHANGE: the namespace's options, after bus=nvme0, as the test needs.
 device=nvme-ns,drive=nvme0-ns0,bus=nvme0,logical_block_size=4096,physical_block_size=4096
+# A second namespace, with eight bytes of metadata for each block: a
+# test of the metadata is not run on one without.
+drive=file=nvme1.qcow2,if=none,format=qcow2,id=nvme0-ns1
+device=nvme-ns,drive=nvme0-ns1,bus=nvme0,ms=8,logical_block_size=4096,physical_block_size=4096
 
 [virtiofsd]
 shared-dir=%h/linux/build/mod-install/lib/modules

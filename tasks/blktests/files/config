@@ -5,9 +5,10 @@
 # to blktests/ of the guest's state directory and change the lines
 # marked CHANGE.
 
-# CHANGE: the devices a test that needs one runs on, and overwrites:
-# the machine's NVMe namespace.
-TEST_DEVS=(/dev/nvme0n1)
+# CHANGE: the devices a test that needs one runs on, once on each,
+# and overwrites: the machine's NVMe namespaces, the second with
+# metadata.
+TEST_DEVS=(/dev/nvme0n1 /dev/nvme0n2)
 
 # The user of the tests that run a command without privileges, which
 # tasks/libguestfs/blktests made in the guest.
