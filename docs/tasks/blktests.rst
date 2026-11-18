@@ -142,6 +142,37 @@ the checkout is there under the name it has on the host:
 where a test failed. How the command reaches the guest is yours, or a
 :term:`workflow <Workflow>`'s: the task opens no connection.
 
+What a machine lacks
+====================
+
+Which tests a machine cannot run shows only from a run of each, unless
+blktests' ``check`` stops at what a test requires, with its
+``--require-only``. That needs a blktests tree that has the option,
+which :src:`tasks/libguestfs/blktests` copies in as before. Make the
+disk again: it installs the unit
+:src:`blktests-requirements@.service
+<tasks/libguestfs/files/units/blktests-requirements@.service>`
+and the ``check`` with the option. Then
+:src:`tasks/blktests/requirements` prints the tests of a group that the
+machine cannot run, each with its reasons:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ tasks/blktests/requirements --directory ~/linux --machine guest \
+       --group nvme
+   nvme/047 (tr=loop) (test different queue types for fabric transports) [not run]
+       nvme_trtype=loop is not supported in this test
+   nvme/064 => nvme0n1 (exercise the nvme metadata usage with passthrough commands) [not run]
+       /dev/nvme0n1 does not have metadata
+
+The workflow takes ``--requirements yes`` for the same after the
+machine has booted. A test that could run is skipped with ``requirements
+met``, which the task leaves out. Every group takes under a minute on a
+machine of two vCPUs. Nothing is recorded: that skip would stand over the
+verdict of a full run, and says nothing about the kernel.
+
 The records
 ===========
 

@@ -236,6 +236,14 @@ of the kernel. They go to the guest's state directory on the host,
   blktests says why a test did not run nowhere else, and the journal
   drops lines. The unit's settings write them, the task's `tee`. The
   files are on the host as they grow, so a run is followed there.
+- A requirements-only run leaves no record. `blktests-requirements@.service`
+  writes what `check --require-only` prints to the share beside the group's
+  own files, and check's per-test files to a private `/tmp`, because a
+  record reads every result file under the build. Filed, a skip of
+  "requirements met" would be the latest entry of the test's record,
+  which the site shows over the full run's verdict, and it says nothing
+  about the kernel. `tasks/blktests/requirements` prints from that
+  file and runs no unit of the host (U1).
 - A unit of its own, `suite-machine@blktests.service`, makes
   `machine/` and copies the facts. systemd opens a unit's output files
   before it runs any of its commands, and before it makes a
