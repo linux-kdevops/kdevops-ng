@@ -114,6 +114,10 @@ With blktests the task installs
 in the disk, the unit that runs a group of its tests, with the two it
 needs: the mount of the share for the results, and the one that keeps
 what a record names of the machine (:doc:`/tasks/blktests`).
+It also makes the user ``blktests``, with systemd-sysusers, from
+:src:`blktests.conf <tasks/libguestfs/files/sysusers/blktests.conf>`:
+a few tests run a command as a user without privileges, and are not run
+where the config names none.
 
 .. _requirements-libguestfs:
 

@@ -6,7 +6,8 @@
 ## guest whose state directory is DIR, as /usr/lib/blktests: the tree,
 ## copied in, built and installed in the disk, and with it the units
 ## that run a group of its tests and mount the host's share for their
-## results. The disk has what blktests builds with once
+## results, and the user its tests run unprivileged commands as. The
+## disk has what blktests builds with once
 ## tasks/libguestfs/install has run its blktests profile. The guest
 ## must be stopped:
 ##
@@ -26,6 +27,14 @@ for unit in "$(realpath "$(dirname "$0")")"/files/units/*; do
 	file=$system/$(basename "$unit")
 	units+=(--upload "$unit:$file" --chown "0:0:$file" --chmod "0644:$file")
 done
+# systemd-sysusers makes the user of the file, or leaves the one a run
+# before this made.
+users=/usr/lib/sysusers.d/blktests.conf
+user=(
+	--upload "$(realpath "$(dirname "$0")")/files/sysusers/blktests.conf:$users"
+	--chown "0:0:$users" --chmod "0644:$users"
+	--run-command "systemd-sysusers $users"
+)
 
 transcript
 # The build runs in virt-customize's appliance, which --memsize and
@@ -41,4 +50,4 @@ virt-customize --format qcow2 --add "$directory/work.qcow2" \
 	--run-command "make --directory=$tree prefix=/usr/lib install" \
 	--delete /work \
 	--write "/usr/lib/blktests/version:$version" \
-	"${units[@]}"
+	"${units[@]}" "${user[@]}"

@@ -8,3 +8,7 @@
 # CHANGE: the devices a test that needs one runs on, and overwrites:
 # the machine's NVMe namespace.
 TEST_DEVS=(/dev/nvme0n1)
+
+# The user of the tests that run a command without privileges, which
+# tasks/libguestfs/blktests made in the guest.
+NORMAL_USER=blktests
