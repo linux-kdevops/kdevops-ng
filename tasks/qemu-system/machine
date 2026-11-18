@@ -43,5 +43,5 @@ mkdir --parents --verbose "$config"
 cp --recursive --update=none --verbose "$files/$family-.qemu.d" "$config"
 sed --expression="s|@cid@|$cid|" --expression="s|@directory@|$directory|" \
 	--expression="s|@root@|$root|" \
-	"$files/machine.qemu" | tee "$config/$machine.qemu"
+	"$files/template.qemu" | tee "$config/$machine.qemu"
 systemctl --user start qemu-system-generator.service

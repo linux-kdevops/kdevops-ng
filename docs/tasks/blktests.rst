@@ -200,7 +200,7 @@ machines share one file, and a machine named for none runs all four.
 The machines are a family, as qemu-system-generator reads one, and
 :src:`tasks/qemu-system/files/families/blktests` has its two files.
 ``blktests-.qemu.d`` holds what every machine named ``blktests-*`` has,
-and a machine's own file, written from ``machine.qemu``, its vsock
+and a machine's own file, written from ``template.qemu``, its vsock
 number and its kernel. The namespaces are sparse files the machine
 makes empty at each start, so they take no room until a test writes.
 
