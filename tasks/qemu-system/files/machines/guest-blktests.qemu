@@ -2,11 +2,9 @@
 # guest-nvme.qemu with the share that holds blktests' config and takes
 # its results, blktests/ of the guest's state directory. Copy it to
 # ~/.config/qemu/systemd/NAME.qemu, change the lines marked CHANGE, and
-# make the namespaces' files and the shared directory, with the config,
-# in the guest's state directory:
+# make the shared directory, with the config, in the guest's state
+# directory:
 #
-#   qemu-img create -f qcow2 ~/.local/state/qemu-system/NAME/nvme0.qcow2 1G
-#   qemu-img create -f qcow2 ~/.local/state/qemu-system/NAME/nvme1.qcow2 1G
 #   mkdir --verbose ~/.local/state/qemu-system/NAME/blktests
 #   cp --verbose tasks/blktests/files/config \
 #       ~/.local/state/qemu-system/NAME/blktests/
@@ -17,6 +15,13 @@
 SSHPrivateKey=%h/.ssh/guests
 # The QEMU a tree of yours built, in place of the host's:
 #QEMUBinary=%h/qemu/build/qemu-system-x86_64
+
+[Service]
+# The namespaces start empty at each start of the machine: what a test
+# wrote is of no use to the next, and a sparse file takes the room of
+# what was written and no more.
+ExecStartPre=rm --force nvme0.raw nvme1.raw
+ExecStartPre=truncate --size=1G nvme0.raw nvme1.raw
 
 [QEMU]
 machine=q35
@@ -38,13 +43,15 @@ netdev=user,id=net0
 device=virtio-net-pci-non-transitional,netdev=net0
 # CHANGE: a vsock number no other machine of this host has.
 device=vhost-vsock-pci-non-transitional,guest-cid=100
-device=nvme,serial=nvme0,id=nvme0
-drive=file=nvme0.qcow2,if=none,format=qcow2,id=nvme0-ns0
+device=nvme,serial=nvme0,id=nvme0,ioeventfd=on
+# Nothing of a namespace outlasts the machine, so QEMU flushes none of
+# it (cache=unsafe), and what the guest discards goes back to the host.
+drive=file=nvme0.raw,if=none,format=raw,cache=unsafe,discard=unmap,detect-zeroes=unmap,id=nvme0-ns0
 # CHANGE: the namespace's options, after bus=nvme0, as the test needs.
 device=nvme-ns,drive=nvme0-ns0,bus=nvme0,logical_block_size=4096,physical_block_size=4096
 # A second namespace, with eight bytes of metadata for each block: a
 # test of the metadata is not run on one without.
-drive=file=nvme1.qcow2,if=none,format=qcow2,id=nvme0-ns1
+drive=file=nvme1.raw,if=none,format=raw,cache=unsafe,discard=unmap,detect-zeroes=unmap,id=nvme0-ns1
 device=nvme-ns,drive=nvme0-ns1,bus=nvme0,ms=8,logical_block_size=4096,physical_block_size=4096
 
 [virtiofsd]
