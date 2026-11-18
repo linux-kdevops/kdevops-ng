@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/qemu-system/is-active --machine NAME
+##
+## Say whether the guest of the machine NAME has booted: whether its
+## systemd has reached the target it boots to.
+##
+##   tasks/qemu-system/is-active --machine guest
+##
+## It fails while the guest takes no connection yet or still boots, so
+## a workflow repeats it. A unit of the guest that failed does not fail
+## it: a suite's own tests leave such units, and the guest still runs
+## the next. It runs on the host and reaches the guest as systemctl
+## does with --host.
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+
+transcript
+systemctl --host "$machine" is-active default.target

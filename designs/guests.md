@@ -178,7 +178,7 @@ the group outlives the session that started it, which a command over
 ssh does not. Blocking or not is the caller's to choose on that line.
 
 Two tasks on the host act on a guest this way, `tasks/blktests/start`
-and `tasks/qemu-system/is-system-running`: each runs `systemctl
+and `tasks/qemu-system/is-active`: each runs `systemctl
 --host`, so a workflow has a task to call for it and still holds no
 command. They cannot run in the guest, where `tasks/blktests/check`
 and plain `systemctl` do the same without a connection. The first

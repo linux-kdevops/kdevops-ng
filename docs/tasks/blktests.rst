@@ -287,7 +287,7 @@ unit of your service manager.
 
 The workflow's tasks run alone as well:
 :src:`tasks/blktests/start` runs a group in a machine's guest from the
-host, and :src:`is-system-running <tasks/qemu-system/is-system-running>`
+host, and :src:`is-active <tasks/qemu-system/is-active>`
 of :doc:`qemu-system` says whether a guest has booted. Both reach the
 guest as ``systemctl --host`` does.
 
