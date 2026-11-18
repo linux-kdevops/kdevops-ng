@@ -18,17 +18,8 @@
 copy_in=$(realpath "$copy_in")
 tree=/work/$(basename "$copy_in")
 jobs=$(nproc)
-version=$(git -C "$copy_in" describe --always --dirty --abbrev=12)
-# Where the commit can be read: the first remote with an https address
-# that has it, and nowhere for a commit no such remote has.
-url=
-while read -r remote; do
-	site=$(git -C "$copy_in" remote get-url "${remote%%/*}")
-	[[ $site == https://* ]] || continue
-	url=${site%.git}/commit/$(git -C "$copy_in" rev-parse HEAD)
-	break
-done < <(git -C "$copy_in" for-each-ref --contains HEAD \
-	--format='%(refname:lstrip=2)' refs/remotes)
+checkout=$copy_in
+. "$(dirname "$0")/../common/origin"
 # The units that run a group, each uploaded with the developer's owner
 # and mode, which a file of /usr/lib does not keep.
 system=/usr/lib/systemd/system

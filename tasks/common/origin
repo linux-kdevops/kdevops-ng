@@ -1,0 +1,16 @@
+# shellcheck shell=bash disable=SC2034 # the task that sources this reads them
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What names the source of a tool a task installs, for a record's tool
+# entry: $version, the git describe of the tree in $checkout, and $url,
+# where its commit can be read: on the first remote with an https address
+# that has it, and nowhere for a commit no such remote has.
+: "${checkout:?}"
+version=$(git -C "$checkout" describe --always --dirty --abbrev=12)
+url=
+while read -r remote; do
+	site=$(git -C "$checkout" remote get-url "${remote%%/*}")
+	[[ $site == https://* ]] || continue
+	url=${site%.git}/commit/$(git -C "$checkout" rev-parse HEAD)
+	break
+done < <(git -C "$checkout" for-each-ref --contains HEAD \
+	--format='%(refname:lstrip=2)' refs/remotes)

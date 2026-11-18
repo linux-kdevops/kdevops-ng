@@ -3,15 +3,22 @@
 ## Usage: tasks/lorefetch/install --directory DIR
 ##
 ## Install the lorefetch built in its tree in DIR for you alone, under
-## ~/.local/lib/lorefetch with a link in ~/.local/bin:
+## ~/.local/lib/lorefetch with a link in ~/.local/bin, and beside it the
+## files version and url, which name the commit the tree is at and where
+## to read it:
 ##
 ##   tasks/lorefetch/install --directory ~/lorefetch
 . "$(dirname "$0")/../common/task"
 : "${directory:?}"
 directory=$(realpath "$directory")
 . "$(dirname "$0")/../common/prefix"
+checkout=$directory
+. "$(dirname "$0")/../common/origin"
 
 transcript
 install -D --verbose "$directory/build/lorefetch" "$prefix/bin/$tool"
 mkdir --parents --verbose "$(dirname "$link")"
 ln --symbolic --force --no-dereference --verbose "$prefix/bin/$tool" "$link"
+# lorefetch prints no version: these name the commit it was built from.
+echo "$version" | tee "$prefix/version"
+echo "$url" | tee "$prefix/url"
