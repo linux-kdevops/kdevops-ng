@@ -182,69 +182,87 @@ Several guests at once
 
 A group runs in one guest, and a host has room for more than one: each
 group gets a guest of its own, on the series' kernel and on the base's,
-and they run side by side. The machines are a family, as
-qemu-system-generator reads one: the lines they share lie in
-directories named for the start of their names, and a machine's own
-file holds its vsock number and its share.
+and they run side by side. A machine is named for the suite, the group
+and the kernel, with a name of the series after it where two are
+tested at once:
 
-:src:`guest-blktests-.qemu.d <tasks/qemu-system/files/machines/guest-blktests-.qemu.d/10-machine.conf>`
-   What every machine named ``guest-blktests-*`` has. Its namespaces
-   are sparse files the machine makes empty at each start, so they
-   take no room until a test writes.
+.. code-block:: text
 
-:src:`guest-blktests-series-.qemu.d <tasks/qemu-system/files/machines/guest-blktests-series-.qemu.d/10-kernel.conf>`, :src:`guest-blktests-base-.qemu.d <tasks/qemu-system/files/machines/guest-blktests-base-.qemu.d/10-kernel.conf>`
-   The kernel of the machines named for the series, and for its base.
+   blktests-block-series        blktests-block-base
+   blktests-nvme-tcp-series     blktests-nvme-tcp-base
+   blktests-nvme-rdma-series    blktests-nvme-rdma-base
 
-:src:`guest-blktests-series-block.qemu <tasks/qemu-system/files/machines/guest-blktests-series-block.qemu>`
-   One machine. Copy it for each, and change the two lines marked.
+The nvme group is the long one, and splits by transport: the config
+sets ``NVMET_TRTYPES`` to the transport in the machine's name, so the
+machines share one file, and a machine named for none runs all four.
 
-Name a machine for the kernel and the group it runs,
-``guest-blktests-base-nvme-tcp``. The nvme group is the long one, and
-splits by transport: the config sets ``NVMET_TRTYPES`` to the transport
-in the machine's name, so the machines share one file, and a machine
-named for none runs all four.
+The machines are a family, as qemu-system-generator reads one, and
+:src:`tasks/qemu-system/files/families/blktests` has its two files.
+``blktests-.qemu.d`` holds what every machine named ``blktests-*`` has,
+and a machine's own file, written from ``machine.qemu``, its vsock
+number and its kernel. The namespaces are sparse files the machine
+makes empty at each start, so they take no room until a test writes.
 
 No machine downloads or installs anything. One disk is made as before,
-with the packages and blktests in it, and is never started; each
-machine's disk is an overlay of it with a host name of its own:
+with the packages and blktests in it, in the state directory of
+``blktests``, and is never started. A machine's disk is an overlay of
+it. One :term:`workflow <Workflow>` of the Bash
+:term:`engine <Engine>` makes a machine from its name and its tree:
 
 .. code-block:: console
    :caption: host
    :class: cmd-host
 
-   $ for name in series-block base-block series-nvme-tcp base-nvme-tcp; do
-       state=~/.local/state/qemu-system/guest-blktests-$name
-       mkdir --parents --verbose $state/blktests
-       cp --verbose tasks/blktests/files/config $state/blktests/
-       tasks/libguestfs/overlay --directory $state \
-           --backing-file ~/.local/state/qemu-system/guest-blktests/work.qcow2
-       tasks/libguestfs/customize --directory $state \
-           --hostname guest-blktests-$name --ssh-inject ~/.ssh/guests.pub
+   $ engines/bash/blktests-machine --machine blktests-nvme-tcp-series \
+       --directory ~/linux
+   $ engines/bash/blktests-machine --machine blktests-nvme-tcp-base \
+       --directory ~/linux-base
+
+It runs four tasks. :src:`machine <tasks/qemu-system/machine>` of
+:doc:`qemu-system` writes the machine's file, with a vsock number no
+other machine has, and copies the family's directory to
+``~/.config/qemu/systemd`` where it is not there yet; change the lines
+marked ``CHANGE`` in it once. :src:`tasks/blktests/config` puts
+blktests' config in the machine's share. ``overlay`` and ``customize``
+of :doc:`libguestfs` make the disk, under the machine's name.
+
+A second workflow runs a machine's group and files its records. It
+starts the machine, waits for the guest to boot, runs the group the
+machine is named for, and records what it left, whether the group
+passed or not:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ engines/bash/blktests --machine blktests-nvme-tcp-series \
+       --directory ~/linux
+
+It returns when the group is done, with the group's verdict. To run
+several side by side, start each as a unit of your service manager,
+which returns at once and keeps the workflow's lines in the journal:
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ for machine in blktests-block-series blktests-nvme-tcp-series; do
+       systemd-run --user --unit=$machine engines/bash/blktests \
+           --machine $machine --directory ~/linux
      done
+   $ systemctl --user list-units 'blktests-*'
+   $ journalctl --user --follow --unit=blktests-block-series
 
-Start the machines, wait for each to boot, and start each group
-without waiting for it. A machine's tests then say when they are done,
-and a record is filed as before:
+The workflow's tasks run alone as well:
+:src:`tasks/blktests/start` runs a group in a machine's guest from the
+host, and :src:`is-system-running <tasks/qemu-system/is-system-running>`
+of :doc:`qemu-system` says whether a guest has booted. Both reach the
+guest as ``systemctl --host`` does.
 
-.. code-block:: console
-   :caption: host
-   :class: cmd-host
-
-   $ systemctl --user start qemu-system-generator.service
-   $ tasks/qemu-system/start --machine guest-blktests-series-block
-   $ systemctl --host guest-blktests-series-block is-system-running --wait
-   running
-   $ systemctl --host guest-blktests-series-block start --no-block \
-       blktests@block.service
-   $ systemctl --host guest-blktests-series-block is-active \
-       blktests@block.service
-   activating
-   $ tasks/blktests/record --directory ~/linux \
-       --machine guest-blktests-series-block
-
-Size the machines to the host: each takes the processors and memory its
+Size the machines to the host: each takes the processors and memory the
 family's file names, and more guests than the host has processors make
-the tests that measure time fail.
+the tests that measure time fail. ``systemctl --user stop
+machines.target`` stops them all.
 
 The base
 ========

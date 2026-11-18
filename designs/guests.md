@@ -162,6 +162,13 @@ is one-shot: `start` returns the group's verdict, and with `--no-block`
 the group outlives the session that started it, which a command over
 ssh does not. Blocking or not is the caller's to choose on that line.
 
+Two tasks on the host act on a guest this way, `tasks/blktests/start`
+and `tasks/qemu-system/is-system-running`: each runs `systemctl
+--host`, so a workflow has a task to call for it and still holds no
+command. They cannot run in the guest, where `tasks/blktests/check`
+and plain `systemctl` do the same without a connection. The first
+fails until the guest takes one, and the workflow repeats it (T5).
+
 A task that ran ssh itself could not run it in a unit. A unit of the
 developer's service manager that is sandboxed at all runs in a user
 namespace, where the files root owns are nobody's, and ssh refuses a
@@ -244,16 +251,27 @@ its base's. Nothing deals tests out and nothing merges results: each
 machine's share is recorded by itself, and the records of one build
 lie together.
 
-- The machines are a family of qemu-system-generator: drop-in
-  directories named for the start of a machine's name hold what the
-  machines share, so the kernel comes before the group in a name,
-  `guest-blktests-series-nvme-tcp`, and one directory selects the
-  machines of one kernel. Every name starts with `guest-`, which the
-  ssh configuration of a guest matches.
-- A machine's own file holds its vsock number, which the generator
-  takes as a number, and its share, since `%i` in a `[virtiofsd]`
-  section is the daemon's instance, the machine and the tag, and not
-  the machine.
+- A machine is named for the suite, the group and the kernel,
+  `blktests-nvme-tcp-series`, with a name of the series after it where
+  two are tested at once. The suite comes first, so the family's
+  drop-in directory, `blktests-.qemu.d`, holds what every machine of
+  the suite shares, its share among them: `%i` in a value is the
+  machine's name.
+- A machine's own file holds what no prefix of its name selects: its
+  vsock number, which the generator takes as a number, and its kernel.
+  `tasks/qemu-system/machine` writes it from a file with two marks, with
+  a number one above the highest in use, and a second run keeps the
+  number. The kernel is not a link in the state directory: the
+  generator has systemd make a share that lies there, and that would
+  reach into the developer's tree.
+- The task copies the family's directory where it is missing and
+  leaves it otherwise: the lines marked CHANGE in it are the
+  developer's, as the QEMU a series is tested on. It is a task of
+  `qemu-system`, since a machine is what it works on, and it finds the
+  family's files by the first word of the name, under
+  `tasks/qemu-system/files/families`; `files/machines` there keeps the
+  machines a developer copies and names. What a suite adds to a
+  machine is the suite's task, as `tasks/blktests/config`.
 - A long group splits by what its config sets, the transports of nvme.
   The config reads the transport from the machine's name, so every
   machine has the same file and the same disk, any of them can run any
@@ -271,11 +289,17 @@ lie together.
   of a namespace, need it back. QEMU has no block driver that keeps
   its data in memory; a file on tmpfs would, at the price of the
   host's memory for every byte written.
-- The fan-out is a workflow's: starting the machines, each group with
-  `--no-block`, and the records when `is-active` says a group is done.
-  How many run at once is the host's processors and memory over what
-  the family's file gives a machine. More guests than processors make
-  tests that measure time fail.
+- The fan-out is a workflow's. `engines/bash/blktests-machine` makes
+  a machine from its name, and `engines/bash/blktests` starts it, waits
+  for the boot, runs the group the name gives and files the records,
+  whether the group passed or not. It blocks; the developer runs one
+  for each machine under `systemd-run --user`, so each returns at once
+  and its lines are in the journal. How many run at once is the host's
+  processors and memory over what the family's file gives a machine.
+  More guests than processors make tests that measure time fail.
+- A machine has 4G: with 2G the kernel killed a test of the block
+  group under KASAN. The unit has `OOMPolicy=continue`, so a test
+  that is killed fails and the group goes on.
 
 ## 10. Where a suite's files go in the guest
 

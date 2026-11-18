@@ -48,7 +48,7 @@ name, with that key:
 .. code-block:: text
    :caption: ~/.ssh/guests.conf
 
-   Host guest guest-*
+   Host guest guest-* blktests-*
        ProxyCommand /usr/lib/systemd/systemd-ssh-proxy machine/%n %p
        ProxyUseFdpass yes
        User root
@@ -62,7 +62,8 @@ name, with that key:
 that name and connects to it over vsock, so the host opens no port and
 the file names no address. The host keys are not kept: a guest gets new
 ones each time its disk is made. Name your guests ``guest`` or
-``guest-...``, or add their names to the ``Host`` line. Include the file
+``guest-...``, or for the suite they run, ``blktests-...``, or add
+their names to the ``Host`` line. Include the file
 from your own configuration:
 
 .. code-block:: diff
@@ -132,9 +133,7 @@ The two shares carry the tags the guest's ``/etc/fstab`` mounts.
 
 ``guest-blktests.qemu``
    With two NVMe namespaces that start empty and the share blktests
-   keeps its results in (:doc:`/tasks/blktests`). The files named
-   ``guest-blktests-`` beside it are a family of such machines, one for
-   each group.
+   keeps its results in (:doc:`/tasks/blktests`).
 
 ``guest-lan.qemu``
    With a second card on a segment the guests share, for a test two

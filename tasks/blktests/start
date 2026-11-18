@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/blktests/start --machine NAME --group GROUP
+##
+## Run the blktests group GROUP, or one test of it, in the guest of the
+## machine NAME, as the guest's unit blktests@GROUP.service, and return
+## when it is done, with its verdict:
+##
+##   tasks/blktests/start --machine blktests-nvme-tcp-series --group nvme
+##
+## It runs on the host and reaches the guest as systemctl does with
+## --host. In the guest, tasks/blktests/check runs the group.
+. "$(dirname "$0")/../common/task"
+: "${machine:?} ${group:?}"
+
+transcript
+systemctl --host "$machine" start "blktests@${group//\//-}.service"

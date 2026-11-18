@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: engines/bash/blktests-machine --machine NAME --directory DIR [--backing-file FILE] [--ssh-inject FILE]
+##
+## Make the machine NAME of the blktests-* family, which boots the
+## kernel of the Linux tree in DIR: its description, blktests' config,
+## and its disk as an overlay of FILE, a disk with blktests in it that no machine starts,
+## under the host name NAME and with the key FILE for root. Without
+## them, FILE is work.qcow2 of the state directory of blktests, and the
+## key ~/.ssh/guests.pub. The machine must be stopped:
+##
+##   engines/bash/blktests-machine --machine blktests-nvme-tcp-series \
+##       --directory ~/linux
+. "$(dirname "$0")/workflow"
+: "${machine:?} ${directory:?}"
+state=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system
+: "${backing_file:=$state/blktests/work.qcow2}" "${ssh_inject:=$HOME/.ssh/guests.pub}"
+
+"$tasks/qemu-system/machine" --machine "$machine" --directory "$directory"
+"$tasks/blktests/config" --machine "$machine"
+"$tasks/libguestfs/overlay" --directory "$state/$machine" \
+	--backing-file "$backing_file"
+"$tasks/libguestfs/customize" --directory "$state/$machine" \
+	--hostname "$machine" --ssh-inject "$ssh_inject"

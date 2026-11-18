@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: tasks/blktests/config --machine NAME
+##
+## Give the machine NAME blktests' config, tasks/blktests/files/config,
+## in the share of its state directory that its guest mounts at
+## /var/lib/blktests. A config that is there is left as it is:
+##
+##   tasks/blktests/config --machine blktests-nvme-tcp-series
+. "$(dirname "$0")/../common/task"
+: "${machine:?}"
+files=$(realpath "$(dirname "$0")")/files
+share=${XDG_STATE_HOME:-$HOME/.local/state}/qemu-system/$machine/blktests
+
+transcript
+mkdir --parents --verbose "$share"
+cp --update=none --verbose "$files/config" "$share"

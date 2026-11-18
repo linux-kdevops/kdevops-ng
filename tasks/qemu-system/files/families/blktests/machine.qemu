@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: copyleft-next-0.3.1
+# What one machine of the blktests-* family has for itself, beside the
+# lines of blktests-.qemu.d: its vsock number and the kernel it boots.
+# tasks/qemu-system/machine writes it as ~/.config/qemu/systemd/NAME.qemu,
+# with the number and the Linux tree in place of the two words between
+# at signs.
+
+[QEMU]
+device=vhost-vsock-pci-non-transitional,guest-cid=@cid@
+kernel=@directory@/build/arch/x86_64/boot/bzImage
+initrd=@directory@/build/initrd
+
+[virtiofsd]
+shared-dir=@directory@/build/mod-install/lib/modules
+tag=modules
+cache=always
+sandbox=namespace
+uid-map=:0:%U:1:
+gid-map=:0:%G:1:

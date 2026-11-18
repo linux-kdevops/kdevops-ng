@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: copyleft-next-0.3.1
+## Usage: engines/bash/blktests --machine NAME --directory DIR [--group GROUP]
+##
+## Run one group of blktests in the machine NAME and file its tests as
+## records of the build of the Linux tree in DIR, whose kernel the
+## machine boots: start the machine, wait for its guest to boot, run
+## the group, and record what it left, whether the group passed or not.
+## Without GROUP it is the one the machine is named for, the word after
+## blktests-. The exit status is the group's.
+##
+##   engines/bash/blktests --machine blktests-nvme-tcp-series \
+##       --directory ~/linux
+##
+## It returns when the group is done. To run several side by side,
+## start each as a unit of its own:
+##
+##   systemd-run --user --unit=blktests-nvme-tcp-series \
+##       engines/bash/blktests --machine blktests-nvme-tcp-series \
+##       --directory ~/linux
+. "$(dirname "$0")/workflow"
+: "${machine:?} ${directory:?}"
+: "${group:=$(cut --delimiter=- --fields=2 <<<"$machine")}"
+
+"$tasks/qemu-system/start" --machine "$machine"
+# A guest takes no connection until its sshd listens: two minutes of
+# tries cover a boot.
+tries=60
+until "$tasks/qemu-system/is-system-running" --machine "$machine"; do
+	tries=$((tries - 1))
+	[ "$tries" -gt 0 ]
+	sleep 2
+done
+status=0
+"$tasks/blktests/start" --machine "$machine" --group "$group" || status=$?
+"$tasks/blktests/record" --directory "$directory" --machine "$machine"
+exit "$status"

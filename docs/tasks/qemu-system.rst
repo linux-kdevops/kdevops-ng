@@ -41,6 +41,20 @@ since the machine last started.
 :src:`kill <tasks/qemu-system/kill>` ends a machine whose guest does not
 stop, and clears the failure that leaves its unit in.
 
+:src:`machine <tasks/qemu-system/machine>` describes a machine of a
+family, one of many that share their lines: the family is the first
+word of the machine's name, and :src:`tasks/qemu-system/files/families`
+has, for each, the directory of what its machines share and the file a
+machine's own is written from, with a vsock number no other machine
+has and the tree whose kernel it boots.
+
+.. code-block:: console
+   :caption: host
+   :class: cmd-host
+
+   $ tasks/qemu-system/machine --machine blktests-nvme-tcp-series \
+       --directory ~/linux
+
 :src:`tasks/qemu-system/files/machines` has machines to copy and
 change: a guest that boots a tree's kernel, the same with an NVMe
 namespace, and the same with a card on a segment guests share
